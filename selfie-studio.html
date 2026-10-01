@@ -84,6 +84,10 @@
   .err.on{display:block}
   .note{color:var(--muted);font-size:11.5px;line-height:1.5}
   .note b{color:var(--fg)}
+  .tools{display:flex;flex-wrap:wrap;align-items:center;gap:10px;font-size:12.5px;color:var(--muted);
+       background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+  .tools a{color:var(--accent);text-decoration:none;font-family:var(--font-ui);font-weight:600}
+  .tools a:hover{text-decoration:underline}
 </style>
 </head>
 <body>
@@ -141,10 +145,16 @@
     <div class="empty" id="empty">Chưa có ảnh/video nào. Ảnh và video bạn tạo sẽ hiện ở đây để tải về.</div>
   </div>
 
+  <div class="tools">
+    <span>Camera không chạy? Kiểm tra thiết bị:</span>
+    <a href="https://webcamtests.com/" target="_blank" rel="noopener noreferrer">webcamtests.com ↗</a>
+    <a href="https://www.onlinemictest.com/webcam-test/" target="_blank" rel="noopener noreferrer">onlinemictest ↗</a>
+  </div>
+
   <p class="note">
     <b>Riêng tư:</b> Mọi thứ chạy hoàn toàn trong trình duyệt của bạn. Không có ảnh hay video nào được
     gửi đi đâu cả — không máy chủ, không tải lên. Ảnh/video chỉ được lưu tạm trong trang này cho đến khi
-    bạn tải về hoặc đóng tab.
+    bạn tải về hoặc đóng tab. Các liên kết kiểm tra ở trên dẫn tới trang web bên thứ ba và sẽ mở ở tab mới.
   </p>
 </div>
 

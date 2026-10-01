@@ -1,0 +1,21 @@
+{%- form 'customer', id: form_id, class: 'newsletter-form' -%}
+  <input type="hidden" name="contact[tags]" value="newsletter">
+  {%- if form.posted_successfully? -%}
+    <p class="form-message form-message--success">{% render 'icon', name: 'check' %} {{ 'newsletter.success' | t }}</p>
+  {%- else -%}
+    <div class="newsletter-form__field inset">
+      <input
+        type="email"
+        name="contact[email]"
+        required
+        autocomplete="email"
+        placeholder="{{ 'newsletter.placeholder' | t }}"
+        aria-label="{{ 'newsletter.placeholder' | t }}"
+      >
+      <button type="submit" class="btn btn--primary">{{ 'newsletter.submit' | t }}</button>
+    </div>
+    {%- if form.errors -%}
+      <p class="form-message form-message--error">{{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}</p>
+    {%- endif -%}
+  {%- endif -%}
+{%- endform -%}

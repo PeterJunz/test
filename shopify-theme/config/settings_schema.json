@@ -1,0 +1,84 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Vitalia",
+    "theme_version": "1.0.0",
+    "theme_author": "Vitalia",
+    "theme_documentation_url": "https://help.shopify.com/manual/online-store/themes",
+    "theme_support_url": "https://help.shopify.com"
+  },
+  {
+    "name": "Màu sắc",
+    "settings": [
+      { "type": "color", "id": "color_background", "label": "Nền trang", "default": "#f4f7f6" },
+      { "type": "color", "id": "color_surface", "label": "Nền thẻ / khối", "default": "#ffffff" },
+      { "type": "color", "id": "color_soft", "label": "Nền khu vực nhạt", "default": "#e9f4f1" },
+      { "type": "color", "id": "color_text", "label": "Chữ", "default": "#1e2f2c" },
+      { "type": "color", "id": "color_primary", "label": "Màu chủ đạo", "default": "#2a9d8f" },
+      { "type": "color", "id": "color_on_primary", "label": "Chữ trên nút chủ đạo", "default": "#ffffff" },
+      { "type": "color", "id": "color_accent", "label": "Màu nhấn", "default": "#ff8a5b" },
+      { "type": "color", "id": "color_sale", "label": "Nhãn giảm giá", "default": "#e5484d" },
+      { "type": "color", "id": "color_star", "label": "Sao đánh giá", "default": "#f5a623" }
+    ]
+  },
+  {
+    "name": "Kiểu chữ",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Nhập tên font từ [Google Fonts](https://fonts.google.com/?subset=vietnamese) có hỗ trợ tiếng Việt, ví dụ: Be Vietnam Pro, Nunito, Quicksand, Lexend, Montserrat."
+      },
+      { "type": "text", "id": "heading_font_family", "label": "Font tiêu đề", "default": "Be Vietnam Pro" },
+      { "type": "text", "id": "body_font_family", "label": "Font nội dung", "default": "Be Vietnam Pro" },
+      {
+        "type": "select",
+        "id": "text_effect",
+        "label": "Hiệu ứng chữ tiêu đề",
+        "default": "3d",
+        "options": [
+          { "value": "3d", "label": "Chữ nổi 3D" },
+          { "value": "emboss", "label": "Chữ nổi nhẹ (dập nổi)" },
+          { "value": "none", "label": "Không hiệu ứng" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Bố cục",
+    "settings": [
+      { "type": "range", "id": "page_width", "label": "Chiều rộng trang", "min": 1000, "max": 1600, "step": 20, "unit": "px", "default": 1280 },
+      { "type": "range", "id": "border_radius", "label": "Bo góc", "min": 0, "max": 32, "step": 2, "unit": "px", "default": 22 },
+      {
+        "type": "select",
+        "id": "button_style",
+        "label": "Kiểu nút",
+        "default": "pill",
+        "options": [
+          { "value": "pill", "label": "Bo tròn" },
+          { "value": "rounded", "label": "Bo góc" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Thẻ sản phẩm",
+    "settings": [
+      { "type": "checkbox", "id": "card_show_vendor", "label": "Hiện thương hiệu", "default": false }
+    ]
+  },
+  {
+    "name": "Mạng xã hội",
+    "settings": [
+      { "type": "text", "id": "social_facebook", "label": "Facebook", "placeholder": "https://facebook.com/..." },
+      { "type": "text", "id": "social_instagram", "label": "Instagram", "placeholder": "https://instagram.com/..." },
+      { "type": "text", "id": "social_tiktok", "label": "TikTok", "placeholder": "https://tiktok.com/@..." },
+      { "type": "text", "id": "social_youtube", "label": "YouTube", "placeholder": "https://youtube.com/..." }
+    ]
+  },
+  {
+    "name": "Favicon",
+    "settings": [
+      { "type": "image_picker", "id": "favicon", "label": "Ảnh favicon", "info": "Kích thước 32 x 32px" }
+    ]
+  }
+]

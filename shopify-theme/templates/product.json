@@ -1,0 +1,109 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "vendor": {
+          "type": "vendor",
+          "settings": {}
+        },
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "highlights": {
+          "type": "highlights",
+          "settings": {
+            "items": "Chính hãng 100%\nAn toàn cho cả gia đình\nBảo hành 12 tháng"
+          }
+        },
+        "buy": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": true
+          }
+        },
+        "trust": {
+          "type": "trust",
+          "settings": {}
+        },
+        "description": {
+          "type": "description",
+          "settings": {}
+        },
+        "shipping": {
+          "type": "collapsible",
+          "settings": {
+            "heading": "Vận chuyển & đổi trả",
+            "content": "<p>Giao hàng toàn quốc 1–3 ngày. Miễn phí vận chuyển cho đơn từ 500.000₫. Đổi trả trong 30 ngày nếu sản phẩm có lỗi từ nhà sản xuất.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "vendor",
+        "title",
+        "price",
+        "highlights",
+        "buy",
+        "trust",
+        "description",
+        "shipping"
+      ],
+      "settings": {}
+    },
+    "related": {
+      "type": "product-recommendations",
+      "settings": {
+        "limit": 4
+      }
+    },
+    "trust": {
+      "type": "trust-badges",
+      "blocks": {
+        "b1": {
+          "type": "item",
+          "settings": {
+            "icon": "truck",
+            "title": "Miễn phí vận chuyển",
+            "text": "Cho đơn hàng từ 500.000₫"
+          }
+        },
+        "b2": {
+          "type": "item",
+          "settings": {
+            "icon": "shield",
+            "title": "Chính hãng 100%",
+            "text": "Cam kết hoàn tiền nếu phát hiện hàng giả"
+          }
+        },
+        "b3": {
+          "type": "item",
+          "settings": {
+            "icon": "lock",
+            "title": "Thanh toán an toàn",
+            "text": "Bảo mật thông tin tuyệt đối"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3"
+      ],
+      "settings": {
+        "eyebrow": "",
+        "heading": "",
+        "soft_background": true
+      }
+    }
+  },
+  "order": [
+    "main",
+    "related",
+    "trust"
+  ]
+}

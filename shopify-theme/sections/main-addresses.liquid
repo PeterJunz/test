@@ -1,0 +1,39 @@
+{%- paginate customer.addresses by 10 -%}
+  <section class="section">
+    <div class="page-width page-width--narrow">
+      <a href="{{ routes.account_url }}" class="link-arrow">{% render 'icon', name: 'chevron-left' %} {{ 'customer.back_to_account' | t }}</a>
+      <h1 class="h1 emboss emboss--strong">{{ 'customer.addresses' | t }}</h1>
+
+      <details class="raised card-content address-form">
+        <summary class="btn btn--primary">{{ 'customer.add_address' | t }}</summary>
+        {%- form 'customer_address', customer.new_address, class: 'form' -%}
+          {% render 'address-fields', form: form, address: customer.new_address %}
+          <button type="submit" class="btn btn--primary">{{ 'customer.save' | t }}</button>
+        {%- endform -%}
+      </details>
+
+      {%- for address in customer.addresses -%}
+        <div class="raised card-content address">
+          {%- if address == customer.default_address -%}<span class="badge badge--hot">{{ 'customer.default' | t }}</span>{%- endif -%}
+          {{ address | format_address }}
+          <details>
+            <summary class="btn btn--soft btn--sm">{{ 'customer.edit' | t }}</summary>
+            {%- form 'customer_address', address, class: 'form' -%}
+              {% render 'address-fields', form: form, address: address %}
+              <button type="submit" class="btn btn--primary">{{ 'customer.save' | t }}</button>
+            {%- endform -%}
+          </details>
+          <form method="post" action="{{ routes.account_addresses_url }}/{{ address.id }}" class="address__delete" onsubmit="return confirm('{{ 'customer.delete_confirm' | t }}');">
+            <input type="hidden" name="_method" value="delete">
+            <button type="submit" class="btn btn--soft btn--sm">{{ 'customer.delete' | t }}</button>
+          </form>
+        </div>
+      {%- endfor -%}
+      {% render 'pagination', paginate: paginate %}
+    </div>
+  </section>
+{%- endpaginate -%}
+
+{% schema %}
+{ "name": "Sổ địa chỉ", "settings": [] }
+{% endschema %}

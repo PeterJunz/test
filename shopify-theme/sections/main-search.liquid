@@ -1,0 +1,40 @@
+{%- paginate search.results by 16 -%}
+  <section class="section search">
+    <div class="page-width">
+      <h1 class="h1 emboss emboss--strong page-title">{{ 'search.title' | t }}</h1>
+      <form action="{{ routes.search_url }}" method="get" role="search" class="search-pill search-pill--lg">
+        <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'header.search_placeholder' | t }}" aria-label="{{ 'header.search' | t }}">
+        <input type="hidden" name="options[prefix]" value="last">
+        <button type="submit" aria-label="{{ 'header.search' | t }}">{% render 'icon', name: 'search' %}</button>
+      </form>
+
+      {%- if search.performed -%}
+        <p class="search__count">{{ 'search.results_count' | t: count: search.results_count, terms: search.terms }}</p>
+        {%- if search.results_count > 0 -%}
+          <ul class="product-grid" style="--cols: 4;">
+            {%- for item in search.results -%}
+              <li>
+                {%- if item.object_type == 'product' -%}
+                  {% render 'product-card', product: item, show_quick_add: true %}
+                {%- else -%}
+                  <a href="{{ item.url }}" class="search-result raised">
+                    <span class="eyebrow">{{ item.object_type }}</span>
+                    <strong>{{ item.title | escape }}</strong>
+                    <span>{{ item.content | strip_html | truncatewords: 20 }}</span>
+                  </a>
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+          {% render 'pagination', paginate: paginate %}
+        {%- else -%}
+          <div class="empty-state raised"><p>{{ 'search.no_results' | t }}</p></div>
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+  </section>
+{%- endpaginate -%}
+
+{% schema %}
+{ "name": "Kết quả tìm kiếm", "settings": [] }
+{% endschema %}

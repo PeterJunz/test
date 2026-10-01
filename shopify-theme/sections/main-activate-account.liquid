@@ -1,0 +1,18 @@
+<section class="section">
+  <div class="page-width page-width--narrow">
+    <div class="auth raised">
+      <h1 class="h2 emboss">{{ 'customer.activate_title' | t }}</h1>
+      {%- form 'activate_customer_password', class: 'form' -%}
+        {{ form.errors | default_errors }}
+        <label>{{ 'customer.password' | t }}<input type="password" name="customer[password]" autocomplete="new-password" required></label>
+        <label>{{ 'customer.password_confirm' | t }}<input type="password" name="customer[password_confirmation]" autocomplete="new-password" required></label>
+        <button type="submit" class="btn btn--primary btn--block">{{ 'customer.activate' | t }}</button>
+        <button type="submit" name="decline" class="btn btn--soft btn--block">{{ 'customer.decline' | t }}</button>
+      {%- endform -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Kích hoạt tài khoản", "settings": [] }
+{% endschema %}

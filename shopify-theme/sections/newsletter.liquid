@@ -1,0 +1,23 @@
+<section class="section newsletter">
+  <div class="page-width">
+    <div class="newsletter__card raised">
+      <div class="newsletter__content">
+        <h2 class="h2 emboss">{{ section.settings.heading }}</h2>
+        <div class="rte">{{ section.settings.text }}</div>
+      </div>
+      {% render 'newsletter-form', form_id: section.id %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Đăng ký nhận tin",
+  "class": "section-newsletter",
+  "settings": [
+    { "type": "inline_richtext", "id": "heading", "label": "Tiêu đề", "default": "Nhận ngay ưu đãi 10%" },
+    { "type": "richtext", "id": "text", "label": "Mô tả", "default": "<p>Đăng ký để nhận mẹo chăm sóc sức khỏe, thú cưng, mẹ & bé và ưu đãi độc quyền.</p>" }
+  ],
+  "presets": [{ "name": "Đăng ký nhận tin" }]
+}
+{% endschema %}

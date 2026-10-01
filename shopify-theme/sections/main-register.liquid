@@ -1,0 +1,20 @@
+<section class="section">
+  <div class="page-width page-width--narrow">
+    <div class="auth raised">
+      <h1 class="h2 emboss">{{ 'customer.register_title' | t }}</h1>
+      {%- form 'create_customer', class: 'form' -%}
+        {{ form.errors | default_errors }}
+        <label>{{ 'customer.last_name' | t }}<input type="text" name="customer[last_name]" autocomplete="family-name"></label>
+        <label>{{ 'customer.first_name' | t }}<input type="text" name="customer[first_name]" autocomplete="given-name"></label>
+        <label>{{ 'customer.email' | t }}<input type="email" name="customer[email]" autocomplete="email" required></label>
+        <label>{{ 'customer.password' | t }}<input type="password" name="customer[password]" autocomplete="new-password" required></label>
+        <button type="submit" class="btn btn--primary btn--block">{{ 'customer.register' | t }}</button>
+        <p class="auth__alt">{{ 'customer.have_account' | t }} <a href="{{ routes.account_login_url }}">{{ 'customer.sign_in' | t }}</a></p>
+      {%- endform -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Đăng ký", "settings": [] }
+{% endschema %}

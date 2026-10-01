@@ -1,0 +1,67 @@
+<section class="section trust{% if section.settings.soft_background %} section--soft{% endif %}">
+  <div class="page-width">
+    {% render 'section-heading', eyebrow: section.settings.eyebrow, heading: section.settings.heading %}
+    <ul class="trust__grid">
+      {%- for block in section.blocks -%}
+        <li class="trust__item raised" {{ block.shopify_attributes }}>
+          <span class="trust__icon inset">{% render 'icon', name: block.settings.icon %}</span>
+          <div>
+            <h3 class="trust__title">{{ block.settings.title | escape }}</h3>
+            <p class="trust__text">{{ block.settings.text | escape }}</p>
+          </div>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Cam kết / Lý do chọn",
+  "class": "section-trust",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Dòng nhỏ phía trên", "default": "Vì sao chọn chúng tôi" },
+    { "type": "inline_richtext", "id": "heading", "label": "Tiêu đề", "default": "Mua sắm an tâm" },
+    { "type": "checkbox", "id": "soft_background", "label": "Nền màu nhạt", "default": true }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Cam kết",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "default": "truck",
+          "options": [
+            { "value": "truck", "label": "Vận chuyển" },
+            { "value": "shield", "label": "Bảo đảm" },
+            { "value": "clock", "label": "Nhanh chóng" },
+            { "value": "lock", "label": "Bảo mật" },
+            { "value": "return", "label": "Đổi trả" },
+            { "value": "leaf", "label": "Tự nhiên" },
+            { "value": "heart", "label": "Yêu thương" },
+            { "value": "phone", "label": "Hỗ trợ" },
+            { "value": "gift", "label": "Quà tặng" }
+          ]
+        },
+        { "type": "text", "id": "title", "label": "Tiêu đề", "default": "Miễn phí vận chuyển" },
+        { "type": "textarea", "id": "text", "label": "Mô tả", "default": "Cho đơn hàng từ 500.000₫ trên toàn quốc" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Cam kết / Lý do chọn",
+      "blocks": [
+        { "type": "item", "settings": { "icon": "truck", "title": "Miễn phí vận chuyển", "text": "Cho đơn hàng từ 500.000₫ trên toàn quốc" } },
+        { "type": "item", "settings": { "icon": "shield", "title": "Hàng chính hãng 100%", "text": "Nguồn gốc rõ ràng, đầy đủ hoá đơn và giấy tờ" } },
+        { "type": "item", "settings": { "icon": "clock", "title": "Giao nhanh 24h", "text": "Đóng gói và gửi đi trong vòng 24 giờ" } },
+        { "type": "item", "settings": { "icon": "return", "title": "Đổi trả 30 ngày", "text": "Đổi trả dễ dàng nếu sản phẩm có lỗi" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

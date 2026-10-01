@@ -1,0 +1,24 @@
+<section class="section related" data-recommendations data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ section.settings.limit }}">
+  {%- if recommendations.performed? and recommendations.products_count > 0 -%}
+    <div class="page-width">
+      {% render 'section-heading', eyebrow: section.settings.eyebrow, heading: section.settings.heading, align: 'left' %}
+      <ul class="product-grid" style="--cols: 4;">
+        {%- for rec in recommendations.products -%}
+          <li>{% render 'product-card', product: rec, show_quick_add: true %}</li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Sản phẩm liên quan",
+  "class": "section-related",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Dòng nhỏ phía trên", "default": "Gợi ý" },
+    { "type": "inline_richtext", "id": "heading", "label": "Tiêu đề", "default": "Có thể bạn cũng thích" },
+    { "type": "range", "id": "limit", "label": "Số sản phẩm", "min": 2, "max": 8, "step": 1, "default": 4 }
+  ]
+}
+{% endschema %}

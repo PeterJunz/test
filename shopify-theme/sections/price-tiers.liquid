@@ -1,0 +1,50 @@
+<section class="section section--tight price-tiers">
+  <div class="page-width">
+    {% render 'section-heading', eyebrow: section.settings.eyebrow, heading: section.settings.heading %}
+    <ul class="price-tiers__list">
+      {%- for block in section.blocks -%}
+        <li {{ block.shopify_attributes }}>
+          <a href="{{ block.settings.link | default: routes.all_products_collection_url }}" class="price-tier raised">
+            <span class="price-tier__label">{{ block.settings.caption | escape }}</span>
+            <strong class="price-tier__value emboss">{{ block.settings.value | escape }}</strong>
+            <span class="price-tier__go">{% render 'icon', name: 'arrow-right' %}</span>
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Mua theo mức giá",
+  "class": "section-price-tiers",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Dòng nhỏ phía trên", "default": "Ưu đãi" },
+    { "type": "inline_richtext", "id": "heading", "label": "Tiêu đề", "default": "Mua sắm theo ngân sách" }
+  ],
+  "blocks": [
+    {
+      "type": "tier",
+      "name": "Mức giá",
+      "settings": [
+        { "type": "text", "id": "caption", "label": "Dòng phụ", "default": "Dưới" },
+        { "type": "text", "id": "value", "label": "Mức giá", "default": "200K" },
+        { "type": "url", "id": "link", "label": "Liên kết", "info": "Ví dụ: /collections/all?filter.v.price.lte=200000" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Mua theo mức giá",
+      "blocks": [
+        { "type": "tier", "settings": { "caption": "Dưới", "value": "200K", "link": "/collections/all?filter.v.price.lte=200000" } },
+        { "type": "tier", "settings": { "caption": "Từ", "value": "200K – 500K", "link": "/collections/all?filter.v.price.gte=200000&filter.v.price.lte=500000" } },
+        { "type": "tier", "settings": { "caption": "Từ", "value": "500K – 1 Triệu", "link": "/collections/all?filter.v.price.gte=500000&filter.v.price.lte=1000000" } },
+        { "type": "tier", "settings": { "caption": "Trên", "value": "1 Triệu", "link": "/collections/all?filter.v.price.gte=1000000" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

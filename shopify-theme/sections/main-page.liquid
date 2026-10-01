@@ -1,0 +1,10 @@
+<section class="section">
+  <div class="page-width page-width--narrow">
+    <h1 class="h1 emboss emboss--strong page-title">{{ page.title | escape }}</h1>
+    <div class="rte card-content raised">{{ page.content }}</div>
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Nội dung trang", "settings": [] }
+{% endschema %}

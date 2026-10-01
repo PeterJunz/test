@@ -1,0 +1,48 @@
+{%- liquid
+  assign s = section.settings
+  assign collection_obj = s.collection
+  assign link_url = s.link_url | default: collection_obj.url
+-%}
+<section class="section featured-collection{% if s.soft_background %} section--soft{% endif %}">
+  <div class="page-width">
+    {% render 'section-heading',
+      eyebrow: s.eyebrow,
+      heading: s.heading,
+      subheading: s.subheading,
+      align: 'left',
+      link_label: s.link_label,
+      link_url: link_url
+    %}
+    <ul class="product-grid" style="--cols: {{ s.columns }};">
+      {%- if collection_obj != blank and collection_obj.products_count > 0 -%}
+        {%- for product in collection_obj.products limit: s.limit -%}
+          <li>{% render 'product-card', product: product, show_quick_add: s.quick_add %}</li>
+        {%- endfor -%}
+      {%- else -%}
+        {%- for i in (1..s.limit) -%}
+          <li>{% render 'product-card', product: blank, index: i %}</li>
+        {%- endfor -%}
+      {%- endif -%}
+    </ul>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Sản phẩm nổi bật",
+  "class": "section-featured-collection",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Dòng nhỏ phía trên", "default": "Bán chạy" },
+    { "type": "inline_richtext", "id": "heading", "label": "Tiêu đề", "default": "Sản phẩm được yêu thích" },
+    { "type": "richtext", "id": "subheading", "label": "Mô tả" },
+    { "type": "collection", "id": "collection", "label": "Bộ sưu tập" },
+    { "type": "range", "id": "limit", "label": "Số sản phẩm", "min": 2, "max": 16, "step": 1, "default": 8 },
+    { "type": "range", "id": "columns", "label": "Số cột trên máy tính", "min": 2, "max": 5, "step": 1, "default": 4 },
+    { "type": "checkbox", "id": "quick_add", "label": "Hiện nút thêm nhanh vào giỏ", "default": true },
+    { "type": "checkbox", "id": "soft_background", "label": "Nền màu nhạt", "default": false },
+    { "type": "text", "id": "link_label", "label": "Nhãn liên kết", "default": "Xem tất cả" },
+    { "type": "url", "id": "link_url", "label": "Liên kết", "info": "Để trống sẽ dẫn tới bộ sưu tập đã chọn" }
+  ],
+  "presets": [{ "name": "Sản phẩm nổi bật" }]
+}
+{% endschema %}

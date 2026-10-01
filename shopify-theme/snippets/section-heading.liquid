@@ -1,0 +1,16 @@
+{%- comment -%}
+  Tiêu đề section dùng chung.
+  - eyebrow, heading, subheading, align ('center' | 'left'), link_label, link_url
+{%- endcomment -%}
+{%- if heading != blank or eyebrow != blank or subheading != blank -%}
+  <div class="section-heading section-heading--{{ align | default: 'center' }}">
+    <div>
+      {%- if eyebrow != blank -%}<p class="eyebrow">{{ eyebrow | escape }}</p>{%- endif -%}
+      {%- if heading != blank -%}<h2 class="h2 emboss">{{ heading }}</h2>{%- endif -%}
+      {%- if subheading != blank -%}<div class="section-heading__sub rte">{{ subheading }}</div>{%- endif -%}
+    </div>
+    {%- if link_label != blank and link_url != blank -%}
+      <a href="{{ link_url }}" class="link-arrow">{{ link_label | escape }} {% render 'icon', name: 'arrow-right' %}</a>
+    {%- endif -%}
+  </div>
+{%- endif -%}

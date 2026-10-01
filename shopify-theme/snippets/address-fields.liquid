@@ -1,0 +1,18 @@
+<div class="form__row">
+  <label>{{ 'customer.last_name' | t }}<input type="text" name="address[last_name]" value="{{ form.last_name }}" autocomplete="family-name"></label>
+  <label>{{ 'customer.first_name' | t }}<input type="text" name="address[first_name]" value="{{ form.first_name }}" autocomplete="given-name"></label>
+</div>
+<label>{{ 'customer.phone' | t }}<input type="tel" name="address[phone]" value="{{ form.phone }}" autocomplete="tel"></label>
+<label>{{ 'customer.address1' | t }}<input type="text" name="address[address1]" value="{{ form.address1 }}" autocomplete="address-line1"></label>
+<label>{{ 'customer.address2' | t }}<input type="text" name="address[address2]" value="{{ form.address2 }}" autocomplete="address-line2"></label>
+<div class="form__row">
+  <label>{{ 'customer.city' | t }}<input type="text" name="address[city]" value="{{ form.city }}" autocomplete="address-level2"></label>
+  <label>{{ 'customer.zip' | t }}<input type="text" name="address[zip]" value="{{ form.zip }}" autocomplete="postal-code"></label>
+</div>
+<label>{{ 'customer.country' | t }}
+  <select name="address[country]" autocomplete="country">{{ all_country_option_tags }}</select>
+</label>
+<label class="checkbox">
+  <input type="checkbox" name="address[default]" value="1"{% if form.set_as_default_checkbox contains 'checked' %} checked{% endif %}>
+  {{ 'customer.set_default' | t }}
+</label>

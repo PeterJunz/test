@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="{{ settings.color_primary }}">
+    <link rel="canonical" href="{{ canonical_url }}">
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 64, height: 64 }}">
+    {%- endif -%}
+
+    <title>
+      {{ page_title }}
+      {%- if current_tags %} &ndash; {{ current_tags | join: ', ' }}{% endif -%}
+      {%- if current_page != 1 %} &ndash; {{ 'general.page' | t: page: current_page }}{% endif -%}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    </title>
+
+    {% if page_description %}
+      <meta name="description" content="{{ page_description | escape }}">
+    {% endif %}
+
+    {% render 'meta-tags' %}
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    {%- liquid
+      assign heading_font = settings.heading_font_family | default: 'Be Vietnam Pro'
+      assign body_font = settings.body_font_family | default: 'Be Vietnam Pro'
+      assign heading_font_url = heading_font | replace: ' ', '+'
+      assign body_font_url = body_font | replace: ' ', '+'
+    -%}
+    <link
+      href="https://fonts.googleapis.com/css2?family={{ heading_font_url }}:wght@500;600;700;800;900&family={{ body_font_url }}:wght@400;500;600;700&display=swap&subset=vietnamese"
+      rel="stylesheet"
+    >
+
+    {% render 'css-variables' %}
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+
+    <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
+    <script>
+      window.theme = {
+        routes: {
+          cart_add_url: '{{ routes.cart_add_url }}',
+          cart_url: '{{ routes.cart_url }}',
+          cart_change_url: '{{ routes.cart_change_url }}'
+        },
+        strings: {
+          added: {{ 'cart.added' | t | json }},
+          error: {{ 'cart.error' | t | json }},
+          addToCart: {{ 'products.add_to_cart' | t | json }},
+          soldOut: {{ 'products.sold_out' | t | json }},
+          unavailable: {{ 'products.unavailable' | t | json }}
+        },
+        moneyFormat: {{ shop.money_format | json }}
+      };
+    </script>
+
+    {{ content_for_header }}
+  </head>
+
+  <body class="template-{{ template.name | handle }} text-effect--{{ settings.text_effect }}">
+    <a class="skip-link visually-hidden" href="#MainContent">{{ 'accessibility.skip_to_content' | t }}</a>
+
+    {% sections 'header-group' %}
+
+    <main id="MainContent" class="main-content" role="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    {% sections 'footer-group' %}
+
+    <div class="toast" id="CartToast" role="status" aria-live="polite">
+      {% render 'icon', name: 'check' %}
+      <span class="toast__text"></span>
+      <a href="{{ routes.cart_url }}" class="toast__link">{{ 'cart.view_cart' | t }}</a>
+    </div>
+  </body>
+</html>

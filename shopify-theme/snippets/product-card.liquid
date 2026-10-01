@@ -1,0 +1,106 @@
+{%- comment -%}
+  Thẻ sản phẩm.
+  - product: đối tượng product (để trống để hiện thẻ mẫu)
+  - index: (tuỳ chọn) số thứ tự cho thẻ mẫu
+  - show_quick_add: (tuỳ chọn) hiện nút thêm nhanh
+{%- endcomment -%}
+{%- if product != blank -%}
+  {%- liquid
+    assign variant = product.selected_or_first_available_variant
+    assign discount = 0
+    if product.compare_at_price > product.price
+      assign discount = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round
+    endif
+    assign rating = product.metafields.reviews.rating.value
+    assign rating_count = product.metafields.reviews.rating_count
+  -%}
+  <article class="product-card">
+    <a href="{{ product.url }}" class="product-card__media" aria-label="{{ product.title | escape }}">
+      {%- if product.featured_media -%}
+        {{
+          product.featured_media
+          | image_url: width: 600
+          | image_tag:
+            loading: 'lazy',
+            widths: '240, 360, 480, 600',
+            sizes: '(min-width: 990px) 25vw, 50vw',
+            class: 'product-card__img',
+            alt: product.featured_media.alt
+        }}
+        {%- if product.media[1] != blank -%}
+          {{
+            product.media[1]
+            | image_url: width: 600
+            | image_tag:
+              loading: 'lazy',
+              widths: '240, 360, 480, 600',
+              sizes: '(min-width: 990px) 25vw, 50vw',
+              class: 'product-card__img product-card__img--hover',
+              alt: ''
+          }}
+        {%- endif -%}
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+      {%- endif -%}
+
+      <div class="product-card__badges">
+        {%- if product.available == false -%}
+          <span class="badge badge--muted">{{ 'products.sold_out' | t }}</span>
+        {%- elsif discount > 0 -%}
+          <span class="badge badge--sale">-{{ discount }}%</span>
+        {%- endif -%}
+        {%- if product.tags contains 'bestseller' or product.tags contains 'ban-chay' -%}
+          <span class="badge badge--hot">{{ 'products.bestseller' | t }}</span>
+        {%- endif -%}
+      </div>
+    </a>
+
+    <div class="product-card__info">
+      {%- if settings.card_show_vendor and product.vendor != blank -%}
+        <p class="product-card__vendor">{{ product.vendor }}</p>
+      {%- endif -%}
+      <h3 class="product-card__title">
+        <a href="{{ product.url }}">{{ product.title | escape }}</a>
+      </h3>
+      {%- if rating != blank -%}
+        {%- assign rating_5 = rating.rating | times: 5.0 | divided_by: rating.scale_max -%}
+        {% render 'rating-stars', rating: rating_5, count: rating_count %}
+      {%- endif -%}
+      <div class="product-card__bottom">
+        {% render 'price', product: product %}
+        {%- if show_quick_add and product.available -%}
+          {%- if product.has_only_default_variant -%}
+            {%- form 'product', product, class: 'product-card__form', data-ajax-cart: '' -%}
+              <input type="hidden" name="id" value="{{ variant.id }}">
+              <button type="submit" class="icon-btn icon-btn--primary" aria-label="{{ 'products.add_to_cart' | t }}">
+                {% render 'icon', name: 'plus' %}
+              </button>
+            {%- endform -%}
+          {%- else -%}
+            <a href="{{ product.url }}" class="icon-btn icon-btn--primary" aria-label="{{ 'products.choose_options' | t }}">
+              {% render 'icon', name: 'arrow-right' %}
+            </a>
+          {%- endif -%}
+        {%- endif -%}
+      </div>
+    </div>
+  </article>
+{%- else -%}
+  {%- assign placeholder_index = index | default: 1 | modulo: 6 | plus: 1 -%}
+  <article class="product-card product-card--placeholder">
+    <div class="product-card__media">
+      {{ 'product-' | append: placeholder_index | placeholder_svg_tag: 'placeholder-svg' }}
+      <div class="product-card__badges"><span class="badge badge--sale">-20%</span></div>
+    </div>
+    <div class="product-card__info">
+      <h3 class="product-card__title">{{ 'products.placeholder_title' | t }}</h3>
+      {% render 'rating-stars', rating: 4.8, count: 128 %}
+      <div class="product-card__bottom">
+        <div class="price price--on-sale">
+          <span class="price__current">{{ 3990000 | money }}</span>
+          <s class="price__compare">{{ 4990000 | money }}</s>
+        </div>
+      </div>
+    </div>
+  </article>
+{%- endif -%}

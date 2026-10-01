@@ -1,0 +1,91 @@
+<section class="section categories" style="--cols: {{ section.settings.columns }};">
+  <div class="page-width">
+    {% render 'section-heading',
+      eyebrow: section.settings.eyebrow,
+      heading: section.settings.heading,
+      subheading: section.settings.subheading
+    %}
+    <ul class="categories__grid">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign collection_obj = block.settings.collection
+          assign url = block.settings.link | default: collection_obj.url | default: routes.all_products_collection_url
+          assign title = block.settings.title | default: collection_obj.title
+          assign image = block.settings.image | default: collection_obj.featured_image
+        -%}
+        <li class="category" style="--tile: {{ block.settings.tile_color }};" {{ block.shopify_attributes }}>
+          <a href="{{ url }}" class="category__link">
+            <span class="category__tile raised">
+              {%- if image != blank -%}
+                {{ image | image_url: width: 360 | image_tag: loading: 'lazy', widths: '180, 270, 360', sizes: '180px', alt: title }}
+              {%- else -%}
+                <span class="category__icon">{% render 'icon', name: block.settings.icon %}</span>
+              {%- endif -%}
+            </span>
+            <span class="category__title">{{ title | escape }}</span>
+            {%- if collection_obj != blank and section.settings.show_count -%}
+              <span class="category__count">{{ 'collections.product_count' | t: count: collection_obj.products_count }}</span>
+            {%- endif -%}
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Danh mục nổi bật",
+  "class": "section-categories",
+  "max_blocks": 12,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Dòng nhỏ phía trên", "default": "Danh mục" },
+    { "type": "inline_richtext", "id": "heading", "label": "Tiêu đề", "default": "Mua sắm theo nhu cầu" },
+    { "type": "richtext", "id": "subheading", "label": "Mô tả" },
+    { "type": "range", "id": "columns", "label": "Số cột trên máy tính", "min": 3, "max": 8, "step": 1, "default": 6 },
+    { "type": "checkbox", "id": "show_count", "label": "Hiện số lượng sản phẩm", "default": true }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Danh mục",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Bộ sưu tập" },
+        { "type": "text", "id": "title", "label": "Tên hiển thị", "info": "Để trống sẽ dùng tên bộ sưu tập" },
+        { "type": "image_picker", "id": "image", "label": "Ảnh", "info": "Để trống sẽ dùng icon bên dưới" },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "default": "heart",
+          "options": [
+            { "value": "heart", "label": "Sức khỏe" },
+            { "value": "paw", "label": "Thú cưng" },
+            { "value": "baby", "label": "Mẹ & bé" },
+            { "value": "leaf", "label": "Thiên nhiên" },
+            { "value": "sparkle", "label": "Làm đẹp" },
+            { "value": "home", "label": "Gia dụng" },
+            { "value": "activity", "label": "Thể thao" },
+            { "value": "gift", "label": "Quà tặng" }
+          ]
+        },
+        { "type": "color", "id": "tile_color", "label": "Màu nền ô", "default": "#e6f5f2" },
+        { "type": "url", "id": "link", "label": "Liên kết tuỳ chỉnh" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Danh mục nổi bật",
+      "blocks": [
+        { "type": "category", "settings": { "title": "Sức khỏe", "icon": "heart", "tile_color": "#e6f5f2" } },
+        { "type": "category", "settings": { "title": "Thú cưng", "icon": "paw", "tile_color": "#fff1e6" } },
+        { "type": "category", "settings": { "title": "Mẹ & bé", "icon": "baby", "tile_color": "#fdeef3" } },
+        { "type": "category", "settings": { "title": "Làm đẹp", "icon": "sparkle", "tile_color": "#f1edfd" } },
+        { "type": "category", "settings": { "title": "Gia dụng", "icon": "home", "tile_color": "#eaf3fd" } },
+        { "type": "category", "settings": { "title": "Thể thao", "icon": "activity", "tile_color": "#fdf8e4" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

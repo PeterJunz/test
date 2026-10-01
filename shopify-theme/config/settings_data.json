@@ -1,0 +1,59 @@
+{
+  "current": "Mặc định",
+  "presets": {
+    "Mặc định": {
+      "color_background": "#f4f7f6",
+      "color_surface": "#ffffff",
+      "color_soft": "#e9f4f1",
+      "color_text": "#1e2f2c",
+      "color_primary": "#2a9d8f",
+      "color_on_primary": "#ffffff",
+      "color_accent": "#ff8a5b",
+      "color_sale": "#e5484d",
+      "color_star": "#f5a623",
+      "heading_font_family": "Be Vietnam Pro",
+      "body_font_family": "Be Vietnam Pro",
+      "text_effect": "3d",
+      "page_width": 1280,
+      "border_radius": 22,
+      "button_style": "pill",
+      "card_show_vendor": false
+    },
+    "Thú cưng (Cam)": {
+      "color_background": "#fbf7f3",
+      "color_surface": "#ffffff",
+      "color_soft": "#fdeee3",
+      "color_text": "#33261d",
+      "color_primary": "#f07b3f",
+      "color_on_primary": "#ffffff",
+      "color_accent": "#2a9d8f",
+      "color_sale": "#e5484d",
+      "color_star": "#f5a623",
+      "heading_font_family": "Nunito",
+      "body_font_family": "Be Vietnam Pro",
+      "text_effect": "3d",
+      "page_width": 1280,
+      "border_radius": 24,
+      "button_style": "pill",
+      "card_show_vendor": false
+    },
+    "Mẹ & Bé (Hồng)": {
+      "color_background": "#fbf6f8",
+      "color_surface": "#ffffff",
+      "color_soft": "#fbe9f0",
+      "color_text": "#3a2a33",
+      "color_primary": "#e0709b",
+      "color_on_primary": "#ffffff",
+      "color_accent": "#7cc6d9",
+      "color_sale": "#e5484d",
+      "color_star": "#f5a623",
+      "heading_font_family": "Quicksand",
+      "body_font_family": "Be Vietnam Pro",
+      "text_effect": "3d",
+      "page_width": 1280,
+      "border_radius": 26,
+      "button_style": "pill",
+      "card_show_vendor": false
+    }
+  }
+}

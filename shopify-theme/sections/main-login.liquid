@@ -1,0 +1,41 @@
+<section class="section">
+  <div class="page-width page-width--narrow">
+    <div class="auth raised">
+      <div id="Login">
+        <h1 class="h2 emboss">{{ 'customer.login_title' | t }}</h1>
+        {%- form 'customer_login', class: 'form' -%}
+          {{ form.errors | default_errors }}
+          <label>{{ 'customer.email' | t }}<input type="email" name="customer[email]" autocomplete="email" required></label>
+          {%- if form.password_needed -%}
+            <label>{{ 'customer.password' | t }}<input type="password" name="customer[password]" autocomplete="current-password" required></label>
+            <a href="#RecoverPassword" class="auth__link">{{ 'customer.forgot_password' | t }}</a>
+          {%- endif -%}
+          <button type="submit" class="btn btn--primary btn--block">{{ 'customer.sign_in' | t }}</button>
+          <p class="auth__alt">{{ 'customer.no_account' | t }} <a href="{{ routes.account_register_url }}">{{ 'customer.register' | t }}</a></p>
+        {%- endform -%}
+      </div>
+
+      <div id="RecoverPassword" class="auth__recover">
+        <h2 class="h3">{{ 'customer.recover_title' | t }}</h2>
+        {%- form 'recover_customer_password', class: 'form' -%}
+          {%- if form.posted_successfully? -%}
+            <p class="form-message form-message--success">{{ 'customer.recover_success' | t }}</p>
+          {%- endif -%}
+          {{ form.errors | default_errors }}
+          <label>{{ 'customer.email' | t }}<input type="email" name="email" autocomplete="email" required></label>
+          <button type="submit" class="btn btn--soft btn--block">{{ 'customer.submit' | t }}</button>
+        {%- endform -%}
+      </div>
+
+      {%- if shop.checkout.guest_login -%}
+        {%- form 'guest_login', class: 'form' -%}
+          <button type="submit" class="btn btn--soft btn--block">{{ 'customer.guest' | t }}</button>
+        {%- endform -%}
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Đăng nhập", "settings": [] }
+{% endschema %}

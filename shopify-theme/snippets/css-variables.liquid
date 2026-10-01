@@ -1,0 +1,38 @@
+{%- liquid
+  assign heading_font = settings.heading_font_family | default: 'Be Vietnam Pro'
+  assign body_font = settings.body_font_family | default: 'Be Vietnam Pro'
+  assign primary = settings.color_primary
+  assign text = settings.color_text
+-%}
+<style>
+  :root {
+    --font-heading: '{{ heading_font }}', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-body: '{{ body_font }}', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+    --color-bg: {{ settings.color_background }};
+    --color-surface: {{ settings.color_surface }};
+    --color-soft: {{ settings.color_soft }};
+    --color-text: {{ text }};
+    --color-text-rgb: {{ text.red }}, {{ text.green }}, {{ text.blue }};
+    --color-muted: {{ text | color_mix: settings.color_background, 62 }};
+    --color-border: {{ text | color_mix: settings.color_background, 12 }};
+    --color-primary: {{ primary }};
+    --color-primary-rgb: {{ primary.red }}, {{ primary.green }}, {{ primary.blue }};
+    --color-primary-dark: {{ primary | color_darken: 12 }};
+    --color-primary-light: {{ primary | color_mix: '#ffffff', 16 }};
+    --color-on-primary: {{ settings.color_on_primary }};
+    --color-accent: {{ settings.color_accent }};
+    --color-sale: {{ settings.color_sale }};
+    --color-star: {{ settings.color_star }};
+
+    --emboss-light: {{ settings.color_background | color_lighten: 8 }};
+    --emboss-depth-1: {{ primary | color_mix: '#ffffff', 22 }};
+    --emboss-depth-2: {{ primary | color_mix: '#ffffff', 34 }};
+    --emboss-depth-3: {{ primary | color_mix: '#ffffff', 48 }};
+
+    --page-width: {{ settings.page_width }}px;
+    --radius: {{ settings.border_radius }}px;
+    --radius-sm: {{ settings.border_radius | times: 0.6 | round }}px;
+    --radius-btn: {% if settings.button_style == 'pill' %}999px{% else %}{{ settings.border_radius | times: 0.6 | round }}px{% endif %};
+  }
+</style>

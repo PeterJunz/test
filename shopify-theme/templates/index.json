@@ -1,0 +1,333 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "blocks": {
+        "stat-1": {
+          "type": "stat",
+          "settings": {
+            "value": "50K+",
+            "label": "Khách hàng"
+          }
+        },
+        "stat-2": {
+          "type": "stat",
+          "settings": {
+            "value": "1.200+",
+            "label": "Sản phẩm"
+          }
+        },
+        "stat-3": {
+          "type": "stat",
+          "settings": {
+            "value": "24h",
+            "label": "Giao nhanh"
+          }
+        }
+      },
+      "block_order": [
+        "stat-1",
+        "stat-2",
+        "stat-3"
+      ],
+      "settings": {
+        "eyebrow": "Chăm sóc trọn vẹn cho cả gia đình",
+        "heading": "Sống khỏe mỗi ngày, <em>yêu thương</em> trọn vẹn",
+        "text": "<p>Sản phẩm chọn lọc cho sức khỏe, thú cưng và mẹ & bé – chính hãng, an toàn, giao nhanh toàn quốc.</p>",
+        "button_label": "Mua sắm ngay",
+        "button2_label": "Xem danh mục",
+        "glow_color": "#cdeee8",
+        "badge_value": "4.9★",
+        "badge_text": "từ 20.000+ khách hàng"
+      }
+    },
+    "categories": {
+      "type": "category-list",
+      "blocks": {
+        "c1": {
+          "type": "category",
+          "settings": {
+            "title": "Sức khỏe",
+            "icon": "heart",
+            "tile_color": "#e6f5f2"
+          }
+        },
+        "c2": {
+          "type": "category",
+          "settings": {
+            "title": "Thú cưng",
+            "icon": "paw",
+            "tile_color": "#fff1e6"
+          }
+        },
+        "c3": {
+          "type": "category",
+          "settings": {
+            "title": "Mẹ & bé",
+            "icon": "baby",
+            "tile_color": "#fdeef3"
+          }
+        },
+        "c4": {
+          "type": "category",
+          "settings": {
+            "title": "Làm đẹp",
+            "icon": "sparkle",
+            "tile_color": "#f1edfd"
+          }
+        },
+        "c5": {
+          "type": "category",
+          "settings": {
+            "title": "Gia dụng",
+            "icon": "home",
+            "tile_color": "#eaf3fd"
+          }
+        },
+        "c6": {
+          "type": "category",
+          "settings": {
+            "title": "Thể thao",
+            "icon": "activity",
+            "tile_color": "#fdf8e4"
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2",
+        "c3",
+        "c4",
+        "c5",
+        "c6"
+      ],
+      "settings": {
+        "eyebrow": "Danh mục",
+        "heading": "Mua sắm theo nhu cầu",
+        "columns": 6,
+        "show_count": true
+      }
+    },
+    "bestsellers": {
+      "type": "featured-collection",
+      "settings": {
+        "eyebrow": "Bán chạy",
+        "heading": "Sản phẩm được yêu thích",
+        "limit": 8,
+        "columns": 4,
+        "quick_add": true,
+        "soft_background": false,
+        "link_label": "Xem tất cả"
+      }
+    },
+    "price-tiers": {
+      "type": "price-tiers",
+      "blocks": {
+        "t1": {
+          "type": "tier",
+          "settings": {
+            "caption": "Dưới",
+            "value": "200K",
+            "link": "/collections/all?filter.v.price.lte=200000"
+          }
+        },
+        "t2": {
+          "type": "tier",
+          "settings": {
+            "caption": "Từ",
+            "value": "200K – 500K",
+            "link": "/collections/all?filter.v.price.gte=200000&filter.v.price.lte=500000"
+          }
+        },
+        "t3": {
+          "type": "tier",
+          "settings": {
+            "caption": "Từ",
+            "value": "500K – 1 Triệu",
+            "link": "/collections/all?filter.v.price.gte=500000&filter.v.price.lte=1000000"
+          }
+        },
+        "t4": {
+          "type": "tier",
+          "settings": {
+            "caption": "Trên",
+            "value": "1 Triệu",
+            "link": "/collections/all?filter.v.price.gte=1000000"
+          }
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2",
+        "t3",
+        "t4"
+      ],
+      "settings": {
+        "eyebrow": "Ưu đãi",
+        "heading": "Mua sắm theo ngân sách"
+      }
+    },
+    "trust": {
+      "type": "trust-badges",
+      "blocks": {
+        "b1": {
+          "type": "item",
+          "settings": {
+            "icon": "truck",
+            "title": "Miễn phí vận chuyển",
+            "text": "Cho đơn hàng từ 500.000₫ trên toàn quốc"
+          }
+        },
+        "b2": {
+          "type": "item",
+          "settings": {
+            "icon": "shield",
+            "title": "Hàng chính hãng 100%",
+            "text": "Nguồn gốc rõ ràng, đầy đủ hoá đơn và giấy tờ"
+          }
+        },
+        "b3": {
+          "type": "item",
+          "settings": {
+            "icon": "clock",
+            "title": "Giao nhanh 24h",
+            "text": "Đóng gói và gửi đi trong vòng 24 giờ"
+          }
+        },
+        "b4": {
+          "type": "item",
+          "settings": {
+            "icon": "return",
+            "title": "Đổi trả 30 ngày",
+            "text": "Đổi trả dễ dàng nếu sản phẩm có lỗi"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4"
+      ],
+      "settings": {
+        "eyebrow": "Vì sao chọn chúng tôi",
+        "heading": "Mua sắm an tâm",
+        "soft_background": true
+      }
+    },
+    "new-arrivals": {
+      "type": "featured-collection",
+      "settings": {
+        "eyebrow": "Mới về",
+        "heading": "Sản phẩm mới",
+        "limit": 4,
+        "columns": 4,
+        "quick_add": true,
+        "soft_background": false,
+        "link_label": "Xem tất cả"
+      }
+    },
+    "story": {
+      "type": "image-with-text",
+      "blocks": {
+        "p1": {
+          "type": "point",
+          "settings": {
+            "text": "Nguồn gốc rõ ràng, chứng nhận an toàn"
+          }
+        },
+        "p2": {
+          "type": "point",
+          "settings": {
+            "text": "Tư vấn tận tâm bởi chuyên gia"
+          }
+        },
+        "p3": {
+          "type": "point",
+          "settings": {
+            "text": "Bảo hành và đổi trả dễ dàng"
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "p2",
+        "p3"
+      ],
+      "settings": {
+        "image_right": false,
+        "eyebrow": "Câu chuyện của chúng tôi",
+        "heading": "Chọn lọc kỹ càng cho người bạn yêu thương",
+        "button_label": "Tìm hiểu thêm"
+      }
+    },
+    "reviews": {
+      "type": "testimonials",
+      "blocks": {
+        "r1": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "name": "Ngọc Anh",
+            "quote": "Máy massage cổ dùng rất thích, sau giờ làm việc đỡ mỏi hẳn. Đóng gói cẩn thận, giao trong 1 ngày.",
+            "verified": true
+          }
+        },
+        "r2": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "name": "Minh Tuấn",
+            "quote": "Bé mèo nhà mình mê món pate này. Giá tốt hơn ngoài tiệm, shop tư vấn nhiệt tình.",
+            "verified": true
+          }
+        },
+        "r3": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "name": "Thu Hà",
+            "quote": "Đồ cho bé chất liệu mềm, an toàn. Mình đã mua lần thứ 3 rồi và vẫn rất hài lòng.",
+            "verified": true
+          }
+        },
+        "r4": {
+          "type": "review",
+          "settings": {
+            "stars": 4,
+            "name": "Hoàng Long",
+            "quote": "Website dễ dùng, thanh toán nhanh, hàng đúng mô tả. Rất đáng tin cậy.",
+            "verified": true
+          }
+        }
+      },
+      "block_order": [
+        "r1",
+        "r2",
+        "r3",
+        "r4"
+      ],
+      "settings": {
+        "eyebrow": "Khách hàng nói gì",
+        "heading": "Đánh giá thật từ khách hàng",
+        "rating": "4.9",
+        "rating_caption": "Từ hơn 20.000 đánh giá đã xác minh"
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {}
+    }
+  },
+  "order": [
+    "hero",
+    "categories",
+    "bestsellers",
+    "price-tiers",
+    "trust",
+    "new-arrivals",
+    "story",
+    "reviews",
+    "newsletter"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "type": "header",
+  "name": "Nhóm đầu trang",
+  "sections": {
+    "announcement-bar": {
+      "type": "announcement-bar",
+      "blocks": {
+        "announcement-1": {
+          "type": "announcement",
+          "settings": { "text": "🚚 Miễn phí vận chuyển cho đơn hàng từ 500.000₫", "link": "" }
+        },
+        "announcement-2": {
+          "type": "announcement",
+          "settings": { "text": "🎁 Giảm 10% cho đơn hàng đầu tiên – Nhập mã: XINCHAO", "link": "" }
+        }
+      },
+      "block_order": ["announcement-1", "announcement-2"],
+      "settings": { "background": "#1f7a6f", "text_color": "#ffffff", "speed": 5 }
+    },
+    "header": {
+      "type": "header",
+      "settings": { "logo_width": 140, "menu": "main-menu", "sticky": true }
+    }
+  },
+  "order": ["announcement-bar", "header"]
+}

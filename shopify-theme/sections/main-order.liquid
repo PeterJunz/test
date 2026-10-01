@@ -1,0 +1,43 @@
+<section class="section">
+  <div class="page-width">
+    <a href="{{ routes.account_url }}" class="link-arrow">{% render 'icon', name: 'chevron-left' %} {{ 'customer.back_to_account' | t }}</a>
+    <h1 class="h1 emboss emboss--strong">{{ 'customer.order' | t }} {{ order.name }}</h1>
+    <p>{{ order.created_at | time_tag: format: 'date_at_time' }}</p>
+    {%- if order.cancelled -%}<p class="form-message form-message--error">{{ 'customer.cancelled' | t }}: {{ order.cancel_reason_label }}</p>{%- endif -%}
+    <div class="account__grid">
+      <div class="raised card-content">
+        <table class="table">
+          <thead><tr><th>{{ 'customer.product' | t }}</th><th>{{ 'cart.quantity' | t }}</th><th>{{ 'customer.total' | t }}</th></tr></thead>
+          <tbody>
+            {%- for line_item in order.line_items -%}
+              <tr>
+                <td>{{ line_item.title | link_to: line_item.product.url }}</td>
+                <td>{{ line_item.quantity }}</td>
+                <td>{{ line_item.final_line_price | money }}</td>
+              </tr>
+            {%- endfor -%}
+          </tbody>
+          <tfoot>
+            <tr><td colspan="2">{{ 'cart.subtotal' | t }}</td><td>{{ order.line_items_subtotal_price | money }}</td></tr>
+            {%- for shipping_method in order.shipping_methods -%}
+              <tr><td colspan="2">{{ shipping_method.title }}</td><td>{{ shipping_method.price | money }}</td></tr>
+            {%- endfor -%}
+            <tr><td colspan="2"><strong>{{ 'customer.total' | t }}</strong></td><td><strong>{{ order.total_price | money_with_currency }}</strong></td></tr>
+          </tfoot>
+        </table>
+      </div>
+      <div class="raised card-content">
+        <h2 class="h3">{{ 'customer.shipping_address' | t }}</h2>
+        {{ order.shipping_address | format_address }}
+        <p>{{ order.fulfillment_status_label }}</p>
+        <h2 class="h3">{{ 'customer.billing_address' | t }}</h2>
+        {{ order.billing_address | format_address }}
+        <p>{{ order.financial_status_label }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Chi tiết đơn hàng", "settings": [] }
+{% endschema %}

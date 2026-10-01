@@ -1,0 +1,88 @@
+<section class="section testimonials">
+  <div class="page-width">
+    <div class="testimonials__head">
+      {% render 'section-heading', eyebrow: section.settings.eyebrow, heading: section.settings.heading, align: 'left' %}
+      {%- if section.settings.rating != blank -%}
+        <div class="testimonials__summary raised">
+          <strong class="testimonials__score emboss emboss--strong">{{ section.settings.rating }}</strong>
+          <div>
+            {% render 'rating-stars', rating: section.settings.rating %}
+            <p>{{ section.settings.rating_caption | escape }}</p>
+          </div>
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="slider" data-slider>
+      <ul class="testimonials__track slider__track" data-slider-track>
+        {%- for block in section.blocks -%}
+          <li class="testimonial raised" {{ block.shopify_attributes }}>
+            {% render 'rating-stars', rating: block.settings.stars %}
+            <blockquote class="testimonial__quote">“{{ block.settings.quote | escape }}”</blockquote>
+            <div class="testimonial__author">
+              <span class="testimonial__avatar inset">
+                {%- if block.settings.avatar != blank -%}
+                  {{ block.settings.avatar | image_url: width: 96 | image_tag: loading: 'lazy', alt: block.settings.name }}
+                {%- else -%}
+                  {{ block.settings.name | slice: 0 }}
+                {%- endif -%}
+              </span>
+              <span>
+                <strong>{{ block.settings.name | escape }}</strong>
+                {%- if block.settings.verified -%}
+                  <span class="testimonial__verified">{% render 'icon', name: 'check' %} {{ 'general.verified_buyer' | t }}</span>
+                {%- endif -%}
+                {%- if block.settings.product != blank -%}
+                  <a href="{{ block.settings.product.url }}" class="testimonial__product">{{ block.settings.product.title | escape }}</a>
+                {%- endif -%}
+              </span>
+            </div>
+          </li>
+        {%- endfor -%}
+      </ul>
+      <div class="slider__controls">
+        <button type="button" class="icon-btn icon-btn--raised" data-slider-prev aria-label="{{ 'general.previous' | t }}">{% render 'icon', name: 'chevron-left' %}</button>
+        <button type="button" class="icon-btn icon-btn--raised" data-slider-next aria-label="{{ 'general.next' | t }}">{% render 'icon', name: 'chevron-right' %}</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Đánh giá khách hàng",
+  "class": "section-testimonials",
+  "max_blocks": 12,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Dòng nhỏ phía trên", "default": "Khách hàng nói gì" },
+    { "type": "inline_richtext", "id": "heading", "label": "Tiêu đề", "default": "Đánh giá thật từ khách hàng" },
+    { "type": "text", "id": "rating", "label": "Điểm trung bình", "default": "4.9" },
+    { "type": "text", "id": "rating_caption", "label": "Chú thích điểm", "default": "Từ hơn 20.000 đánh giá đã xác minh" }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Đánh giá",
+      "settings": [
+        { "type": "range", "id": "stars", "label": "Số sao", "min": 1, "max": 5, "step": 1, "default": 5 },
+        { "type": "textarea", "id": "quote", "label": "Nội dung", "default": "Sản phẩm chất lượng, giao hàng rất nhanh. Sẽ tiếp tục ủng hộ shop!" },
+        { "type": "text", "id": "name", "label": "Tên khách hàng", "default": "Ngọc Anh" },
+        { "type": "image_picker", "id": "avatar", "label": "Ảnh đại diện" },
+        { "type": "checkbox", "id": "verified", "label": "Đã mua hàng", "default": true },
+        { "type": "product", "id": "product", "label": "Sản phẩm đã mua" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Đánh giá khách hàng",
+      "blocks": [
+        { "type": "review", "settings": { "name": "Ngọc Anh", "quote": "Máy massage cổ dùng rất thích, sau giờ làm việc đỡ mỏi hẳn. Đóng gói cẩn thận, giao trong 1 ngày." } },
+        { "type": "review", "settings": { "name": "Minh Tuấn", "quote": "Bé mèo nhà mình mê món pate này. Giá tốt hơn ngoài tiệm, shop tư vấn nhiệt tình." } },
+        { "type": "review", "settings": { "name": "Thu Hà", "quote": "Đồ cho bé chất liệu mềm, an toàn. Mình đã mua lần thứ 3 rồi và vẫn rất hài lòng." } },
+        { "type": "review", "settings": { "name": "Hoàng Long", "quote": "Website dễ dùng, thanh toán nhanh, hàng đúng mô tả. Rất đáng tin cậy." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,17 @@
+{%- paginate blog.articles by 9 -%}
+  <section class="section">
+    <div class="page-width">
+      <h1 class="h1 emboss emboss--strong page-title">{{ blog.title | escape }}</h1>
+      <ul class="article-grid">
+        {%- for article in blog.articles -%}
+          <li>{% render 'article-card', article: article %}</li>
+        {%- endfor -%}
+      </ul>
+      {% render 'pagination', paginate: paginate %}
+    </div>
+  </section>
+{%- endpaginate -%}
+
+{% schema %}
+{ "name": "Danh sách bài viết", "settings": [] }
+{% endschema %}

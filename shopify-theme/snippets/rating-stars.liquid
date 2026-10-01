@@ -1,0 +1,20 @@
+{%- comment -%}
+  Hiển thị sao đánh giá.
+  - rating: số từ 0 đến 5 (vd 4.7)
+  - count: (tuỳ chọn) số lượt đánh giá
+{%- endcomment -%}
+{%- assign rating_value = rating | default: 0 | times: 1.0 -%}
+{%- assign percent = rating_value | divided_by: 5.0 | times: 100 -%}
+<div class="rating" role="img" aria-label="{{ 'products.rating' | t: rating: rating_value }}">
+  <span class="rating__stars" style="--rating: {{ percent }}%;">
+    <span class="rating__base">
+      {%- for i in (1..5) -%}{% render 'icon', name: 'star' %}{%- endfor -%}
+    </span>
+    <span class="rating__fill">
+      {%- for i in (1..5) -%}{% render 'icon', name: 'star' %}{%- endfor -%}
+    </span>
+  </span>
+  {%- if count != blank -%}
+    <span class="rating__count">({{ count }})</span>
+  {%- endif -%}
+</div>

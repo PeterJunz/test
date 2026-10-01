@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Selfie Studio</title>
+<style>
+  /* Layout: single-column app shell — toolbar, stage (camera), controls, gallery */
+  :root{
+    --bg:#0f1115; --surface:#191c23; --surface-2:#22262f;
+    --fg:#eef1f6; --muted:#9aa3b2; --line:#2c313b;
+    --accent:#5b8cff; --accent-ink:#0a1020;
+    --danger:#ff5b6e; --ok:#39d98a;
+    --radius:16px; --gap:14px;
+    --font-ui:'Space Grotesk',ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    --font-body:'Inter',ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);
+       min-height:100svh;display:flex;flex-direction:column;align-items:center}
+  .wrap{width:100%;max-width:560px;padding:18px 16px 40px;display:flex;flex-direction:column;gap:var(--gap)}
+
+  header{display:flex;align-items:center;gap:10px;padding-block:2px}
+  .logo{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;
+        background:linear-gradient(135deg,var(--accent),#9a7bff);color:#fff;font-weight:700}
+  header h1{font-family:var(--font-ui);font-size:18px;letter-spacing:.2px;margin:0;font-weight:600}
+  header p{margin:0;color:var(--muted);font-size:12px}
+
+  .stage{position:relative;aspect-ratio:3/4;width:100%;background:#000;border-radius:var(--radius);
+         overflow:hidden;border:1px solid var(--line);display:grid;place-items:center}
+  video,canvas.preview{width:100%;height:100%;object-fit:cover;display:block}
+  video.mirror{transform:scaleX(-1)}
+  .stage .hint{position:absolute;inset:0;display:flex;flex-direction:column;gap:10px;
+       align-items:center;justify-content:center;text-align:center;padding:24px;color:var(--muted)}
+  .stage .hint strong{color:var(--fg);font-family:var(--font-ui);font-size:16px}
+  .badge{position:absolute;top:10px;left:10px;display:none;align-items:center;gap:7px;
+         background:rgba(0,0,0,.55);padding:5px 10px;border-radius:999px;font-size:12px;
+         font-variant-numeric:tabular-nums;backdrop-filter:blur(6px)}
+  .badge.on{display:inline-flex}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--danger);animation:pulse 1s infinite}
+  @keyframes pulse{50%{opacity:.25}}
+  .count{position:absolute;inset:0;display:none;place-items:center;font-family:var(--font-ui);
+         font-size:88px;font-weight:700;color:#fff;text-shadow:0 4px 30px rgba(0,0,0,.6)}
+  .count.on{display:grid}
+
+  .modes{display:flex;gap:8px;background:var(--surface);padding:5px;border-radius:999px;border:1px solid var(--line)}
+  .modes button{flex:1;border:0;background:transparent;color:var(--muted);padding:9px;border-radius:999px;
+       font-family:var(--font-ui);font-size:14px;cursor:pointer}
+  .modes button[aria-selected="true"]{background:var(--surface-2);color:var(--fg)}
+
+  .controls{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .icon-btn{width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:var(--surface);
+       color:var(--fg);font-size:18px;cursor:pointer;display:grid;place-items:center}
+  .icon-btn:disabled{opacity:.4;cursor:not-allowed}
+  .shutter{width:76px;height:76px;border-radius:50%;border:4px solid var(--fg);background:var(--fg);
+       cursor:pointer;position:relative;transition:transform .1s}
+  .shutter:active{transform:scale(.94)}
+  .shutter[data-rec="true"]{background:var(--danger);border-color:#fff}
+  .shutter[data-rec="true"]::after{content:"";position:absolute;inset:26px;background:#fff;border-radius:5px}
+  .shutter:disabled{opacity:.4;cursor:not-allowed}
+
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  .field{flex:1;min-width:150px;display:flex;flex-direction:column;gap:5px}
+  label{font-size:12px;color:var(--muted);font-family:var(--font-ui)}
+  select{background:var(--surface);color:var(--fg);border:1px solid var(--line);border-radius:10px;
+       padding:9px 10px;font-size:14px;font-family:var(--font-body)}
+
+  .gallery{display:flex;flex-direction:column;gap:8px}
+  .gallery h2{font-family:var(--font-ui);font-size:13px;color:var(--muted);margin:0;font-weight:600;
+       text-transform:uppercase;letter-spacing:.6px}
+  .shots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .shot{position:relative;aspect-ratio:3/4;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#000}
+  .shot img,.shot video{width:100%;height:100%;object-fit:cover}
+  .shot .tag{position:absolute;top:5px;left:5px;background:rgba(0,0,0,.6);font-size:10px;padding:2px 6px;border-radius:6px}
+  .shot a.dl{position:absolute;right:5px;bottom:5px;background:var(--accent);color:var(--accent-ink);
+       text-decoration:none;font-size:11px;font-weight:700;padding:4px 8px;border-radius:7px}
+  .shot button.del{position:absolute;right:5px;top:5px;border:0;background:rgba(0,0,0,.6);color:#fff;
+       width:22px;height:22px;border-radius:50%;cursor:pointer;font-size:12px;line-height:1}
+  .empty{color:var(--muted);font-size:13px;padding:14px;text-align:center;border:1px dashed var(--line);border-radius:12px}
+
+  .err{display:none;background:rgba(255,91,110,.12);border:1px solid rgba(255,91,110,.4);
+       color:#ffb3bd;padding:12px 14px;border-radius:12px;font-size:13px;line-height:1.5}
+  .err.on{display:block}
+  .note{color:var(--muted);font-size:11.5px;line-height:1.5}
+  .note b{color:var(--fg)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">S</div>
+    <div>
+      <h1>Selfie Studio</h1>
+      <p>Chụp ảnh &amp; quay video selfie — ngay trên thiết bị của bạn</p>
+    </div>
+  </header>
+
+  <div class="err" id="err"></div>
+
+  <div class="stage">
+    <video id="video" autoplay playsinline muted class="mirror"></video>
+    <div class="hint" id="hint">
+      <strong>Camera chưa bật</strong>
+      <span>Nhấn “Bật camera” để bắt đầu.</span>
+    </div>
+    <div class="badge" id="badge"><span class="dot"></span><span id="timer">00:00</span></div>
+    <div class="count" id="count"></div>
+  </div>
+
+  <div class="modes" role="tablist">
+    <button role="tab" id="mode-photo" aria-selected="true">📷 Ảnh</button>
+    <button role="tab" id="mode-video" aria-selected="false">🎬 Video</button>
+  </div>
+
+  <div class="controls">
+    <button class="icon-btn" id="flip" title="Đổi camera trước/sau" disabled>🔄</button>
+    <button class="shutter" id="shutter" disabled aria-label="Chụp / Quay"></button>
+    <button class="icon-btn" id="power" title="Bật/tắt camera">⏻</button>
+  </div>
+
+  <div class="row">
+    <div class="field">
+      <label for="cam">Camera</label>
+      <select id="cam"><option>— bật camera để chọn —</option></select>
+    </div>
+    <div class="field" style="max-width:120px">
+      <label for="timer-sel">Hẹn giờ</label>
+      <select id="timer-sel">
+        <option value="0">Tắt</option>
+        <option value="3">3 giây</option>
+        <option value="5">5 giây</option>
+        <option value="10">10 giây</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="gallery">
+    <h2>Thư viện</h2>
+    <div class="shots" id="shots"></div>
+    <div class="empty" id="empty">Chưa có ảnh/video nào. Ảnh và video bạn tạo sẽ hiện ở đây để tải về.</div>
+  </div>
+
+  <p class="note">
+    <b>Riêng tư:</b> Mọi thứ chạy hoàn toàn trong trình duyệt của bạn. Không có ảnh hay video nào được
+    gửi đi đâu cả — không máy chủ, không tải lên. Ảnh/video chỉ được lưu tạm trong trang này cho đến khi
+    bạn tải về hoặc đóng tab.
+  </p>
+</div>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const video=$('video'), hint=$('hint'), err=$('err'), shutter=$('shutter'),
+        flip=$('flip'), power=$('power'), badge=$('badge'), timerEl=$('timer'),
+        countEl=$('count'), camSel=$('cam'), timerSel=$('timer-sel'),
+        shots=$('shots'), empty=$('empty'),
+        modePhoto=$('mode-photo'), modeVideo=$('mode-video');
+
+  let stream=null, facing='user', mode='photo';
+  let recorder=null, chunks=[], recStart=0, recInt=null, items=[];
+
+  function showErr(msg){ err.textContent=msg; err.classList.add('on'); }
+  function clearErr(){ err.classList.remove('on'); }
+
+  function setMode(m){
+    mode=m;
+    const isPhoto=m==='photo';
+    modePhoto.setAttribute('aria-selected',isPhoto);
+    modeVideo.setAttribute('aria-selected',!isPhoto);
+  }
+  modePhoto.onclick=()=>setMode('photo');
+  modeVideo.onclick=()=>{ if(recorder) return; setMode('video'); };
+
+  async function listCams(){
+    try{
+      const devs=(await navigator.mediaDevices.enumerateDevices()).filter(d=>d.kind==='videoinput');
+      if(!devs.length) return;
+      camSel.innerHTML='';
+      devs.forEach((d,i)=>{
+        const o=document.createElement('option');
+        o.value=d.deviceId; o.textContent=d.label||('Camera '+(i+1));
+        camSel.appendChild(o);
+      });
+      if(stream){
+        const id=stream.getVideoTracks()[0]?.getSettings().deviceId;
+        if(id) camSel.value=id;
+      }
+    }catch(e){/* ignore */}
+  }
+
+  async function start(constraints){
+    clearErr();
+    if(stream) stream.getTracks().forEach(t=>t.stop());
+    if(!navigator.mediaDevices?.getUserMedia){
+      showErr('Trình duyệt này không hỗ trợ camera, hoặc trang đang mở không qua HTTPS. Hãy mở bằng Chrome/Safari qua https:// hoặc http://localhost.');
+      return;
+    }
+    try{
+      stream=await navigator.mediaDevices.getUserMedia(constraints||{
+        video:{facingMode:facing,width:{ideal:1280},height:{ideal:1706}}, audio:true
+      });
+      video.srcObject=stream;
+      hint.style.display='none';
+      shutter.disabled=false; flip.disabled=false;
+      video.classList.toggle('mirror', facing==='user');
+      await listCams();
+    }catch(e){
+      let msg='Không thể truy cập camera.';
+      if(e.name==='NotAllowedError') msg='Bạn đã từ chối quyền camera. Hãy nhấn vào biểu tượng camera/🔒 trên thanh địa chỉ và chọn “Cho phép”, rồi bật lại.';
+      else if(e.name==='NotFoundError') msg='Không tìm thấy camera nào trên thiết bị này.';
+      else if(e.name==='NotReadableError') msg='Camera đang được một ứng dụng khác sử dụng. Hãy đóng ứng dụng đó rồi thử lại.';
+      else if(location.protocol==='file:') msg='Camera bị chặn khi mở file trực tiếp. Hãy chạy một server tĩnh (ví dụ: python3 -m http.server) rồi mở http://localhost:8000/selfie-studio.html';
+      showErr(msg);
+      hint.style.display='flex';
+    }
+  }
+  function stop(){
+    if(recorder) stopRec();
+    if(stream) stream.getTracks().forEach(t=>t.stop());
+    stream=null; video.srcObject=null;
+    hint.style.display='flex'; shutter.disabled=true; flip.disabled=true;
+  }
+
+  power.onclick=()=> stream ? stop() : start();
+  flip.onclick=async()=>{ facing = facing==='user'?'environment':'user'; await start(); };
+  camSel.onchange=async()=>{
+    if(!stream) return;
+    await start({video:{deviceId:{exact:camSel.value}},audio:true});
+  };
+
+  // ---- capture ----
+  function addItem(kind,url,blob){
+    items.unshift({kind,url});
+    empty.style.display='none';
+    const ts=new Date().toISOString().replace(/[:.]/g,'-').slice(0,19);
+    const el=document.createElement('div'); el.className='shot';
+    const media = kind==='photo'
+      ? `<img src="${url}" alt="ảnh selfie">`
+      : `<video src="${url}" muted playsinline loop autoplay></video>`;
+    const ext = kind==='photo'?'png':'webm';
+    el.innerHTML = `${media}
+      <span class="tag">${kind==='photo'?'ẢNH':'VIDEO'}</span>
+      <button class="del" title="Xóa">✕</button>
+      <a class="dl" download="selfie-${ts}.${ext}" href="${url}">Tải</a>`;
+    el.querySelector('.del').onclick=()=>{ URL.revokeObjectURL(url); el.remove();
+      if(!shots.children.length) empty.style.display='block'; };
+    shots.prepend(el);
+  }
+
+  function withCountdown(fn){
+    const s=parseInt(timerSel.value,10)||0;
+    if(!s) return fn();
+    let n=s; countEl.textContent=n; countEl.classList.add('on');
+    const iv=setInterval(()=>{ n--; if(n<=0){ clearInterval(iv); countEl.classList.remove('on'); fn(); }
+      else countEl.textContent=n; },1000);
+  }
+
+  function takePhoto(){
+    const c=document.createElement('canvas');
+    c.width=video.videoWidth; c.height=video.videoHeight;
+    const ctx=c.getContext('2d');
+    if(facing==='user'){ ctx.translate(c.width,0); ctx.scale(-1,1); }
+    ctx.drawImage(video,0,0);
+    c.toBlob(b=>{ if(b) addItem('photo',URL.createObjectURL(b),b); },'image/png');
+  }
+
+  function startRec(){
+    chunks=[];
+    const type=['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm']
+      .find(t=>window.MediaRecorder&&MediaRecorder.isTypeSupported(t))||'video/webm';
+    try{ recorder=new MediaRecorder(stream,{mimeType:type}); }
+    catch(e){ showErr('Thiết bị không hỗ trợ quay video (MediaRecorder).'); return; }
+    recorder.ondataavailable=e=>{ if(e.data.size) chunks.push(e.data); };
+    recorder.onstop=()=>{ const b=new Blob(chunks,{type}); addItem('video',URL.createObjectURL(b),b); };
+    recorder.start();
+    recStart=Date.now(); badge.classList.add('on'); shutter.dataset.rec='true';
+    recInt=setInterval(()=>{
+      const s=Math.floor((Date.now()-recStart)/1000);
+      timerEl.textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+    },250);
+  }
+  function stopRec(){
+    if(recorder&&recorder.state!=='inactive') recorder.stop();
+    recorder=null; clearInterval(recInt);
+    badge.classList.remove('on'); shutter.dataset.rec='false'; timerEl.textContent='00:00';
+  }
+
+  shutter.onclick=()=>{
+    if(!stream) return;
+    if(mode==='photo'){ withCountdown(takePhoto); }
+    else { recorder ? stopRec() : withCountdown(startRec); }
+  };
+
+  window.addEventListener('beforeunload',()=>{ if(stream) stream.getTracks().forEach(t=>t.stop()); });
+})();
+</script>
+</body>
+</html>

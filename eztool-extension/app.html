@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EZ Ads Toolkit</title>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand"><img src="icons/icon48.png" alt=""><span>EZ Ads Toolkit</span></div>
+    <nav id="nav">
+      <button data-tab="dashboard" class="active">🏠 Tổng quan</button>
+      <div class="nav-group">Quảng cáo</div>
+      <button data-tab="adaccounts">💳 Tài khoản QC</button>
+      <button data-tab="campaigns">📣 Chiến dịch</button>
+      <button data-tab="bm">🏢 Business Manager</button>
+      <div class="nav-group">Trang</div>
+      <button data-tab="pages">📄 Fanpage</button>
+      <div class="nav-group">Tiện ích</div>
+      <button data-tab="findid">🔎 Lấy ID từ link</button>
+      <button data-tab="text">📝 Xử lý văn bản</button>
+      <button data-tab="tempmail">✉️ Email tạm / OTP</button>
+      <button data-tab="totp">🔐 Mã 2FA</button>
+      <div class="nav-group">Hệ thống</div>
+      <button data-tab="settings">⚙️ Cài đặt token</button>
+    </nav>
+    <div class="sidebar-foot" id="userBox">Chưa đăng nhập</div>
+  </aside>
+
+  <main>
+    <div id="toast" class="toast hidden"></div>
+
+    <!-- TỔNG QUAN -->
+    <section id="tab-dashboard" class="tab active">
+      <h1>Tổng quan</h1>
+      <p class="muted">Mọi dữ liệu được lưu trên máy của bạn (chrome.storage.local). Tiện ích chỉ gọi API chính thức của Facebook (Graph API).</p>
+      <div class="cards" id="statCards">
+        <div class="card stat"><div class="stat-num" id="statAcc">–</div><div>Tài khoản QC</div></div>
+        <div class="card stat"><div class="stat-num" id="statActive">–</div><div>TK đang hoạt động</div></div>
+        <div class="card stat"><div class="stat-num" id="statDisabled">–</div><div>TK bị vô hiệu</div></div>
+        <div class="card stat"><div class="stat-num" id="statBm">–</div><div>Business Manager</div></div>
+        <div class="card stat"><div class="stat-num" id="statPages">–</div><div>Fanpage</div></div>
+      </div>
+      <div class="card">
+        <h3>Bắt đầu nhanh</h3>
+        <ol>
+          <li>Vào <b>Cài đặt token</b>, dán Access Token (User token) có quyền <code>ads_read</code>, <code>ads_management</code>, <code>business_management</code>, <code>pages_show_list</code>.</li>
+          <li>Bấm <b>Tải lại tất cả</b> bên dưới để đồng bộ dữ liệu.</li>
+        </ol>
+        <button id="btnReloadAll" class="primary">🔄 Tải lại tất cả</button>
+      </div>
+    </section>
+
+    <!-- TÀI KHOẢN QC -->
+    <section id="tab-adaccounts" class="tab">
+      <h1>Tài khoản quảng cáo</h1>
+      <div class="toolbar">
+        <input id="accSearch" placeholder="Tìm theo tên / ID…">
+        <select id="accStatus">
+          <option value="">Tất cả trạng thái</option>
+        </select>
+        <select id="accPreset" title="Khoảng thời gian chi tiêu">
+          <option value="today">Hôm nay</option>
+          <option value="yesterday">Hôm qua</option>
+          <option value="last_7d">7 ngày</option>
+          <option value="last_30d" selected>30 ngày</option>
+          <option value="this_month">Tháng này</option>
+          <option value="last_month">Tháng trước</option>
+          <option value="maximum">Toàn bộ</option>
+        </select>
+        <button id="btnLoadAcc" class="primary">🔄 Tải TK</button>
+        <button id="btnLoadSpend">💰 Tải chi tiêu</button>
+        <button id="btnCopyAccIds">📋 Copy ID</button>
+        <button id="btnExportAcc">⬇️ Xuất CSV</button>
+      </div>
+      <div class="table-wrap"><table id="accTable"></table></div>
+    </section>
+
+    <!-- CHIẾN DỊCH -->
+    <section id="tab-campaigns" class="tab">
+      <h1>Chiến dịch</h1>
+      <div class="toolbar">
+        <select id="campAccount"><option value="">— Chọn tài khoản QC —</option></select>
+        <select id="campPreset">
+          <option value="today">Hôm nay</option>
+          <option value="yesterday">Hôm qua</option>
+          <option value="last_7d" selected>7 ngày</option>
+          <option value="last_30d">30 ngày</option>
+          <option value="maximum">Toàn bộ</option>
+        </select>
+        <button id="btnLoadCamp" class="primary">🔄 Tải chiến dịch</button>
+        <button id="btnPauseSel">⏸ Tắt đã chọn</button>
+        <button id="btnActiveSel">▶️ Bật đã chọn</button>
+        <button id="btnExportCamp">⬇️ Xuất CSV</button>
+      </div>
+      <div class="table-wrap"><table id="campTable"></table></div>
+    </section>
+
+    <!-- BM -->
+    <section id="tab-bm" class="tab">
+      <h1>Business Manager</h1>
+      <div class="toolbar">
+        <button id="btnLoadBm" class="primary">🔄 Tải BM</button>
+        <button id="btnExportBm">⬇️ Xuất CSV</button>
+      </div>
+      <div class="table-wrap"><table id="bmTable"></table></div>
+      <div id="bmDetail"></div>
+    </section>
+
+    <!-- PAGES -->
+    <section id="tab-pages" class="tab">
+      <h1>Fanpage</h1>
+      <div class="toolbar">
+        <input id="pageSearch" placeholder="Tìm theo tên / ID…">
+        <button id="btnLoadPages" class="primary">🔄 Tải Fanpage</button>
+        <button id="btnCopyPageIds">📋 Copy ID</button>
+        <button id="btnExportPages">⬇️ Xuất CSV</button>
+      </div>
+      <div class="table-wrap"><table id="pageTable"></table></div>
+    </section>
+
+    <!-- LẤY ID -->
+    <section id="tab-findid" class="tab">
+      <h1>Lấy ID từ link</h1>
+      <p class="muted">Mỗi dòng một link Facebook (profile, page, group, bài viết…). Link dạng username sẽ được tra qua Graph API nếu có token.</p>
+      <textarea id="idInput" rows="8" placeholder="https://www.facebook.com/profile.php?id=1000...&#10;https://www.facebook.com/groups/123456789&#10;https://www.facebook.com/tenpage"></textarea>
+      <div class="toolbar"><button id="btnFindId" class="primary">🔎 Lấy ID</button><button id="btnCopyIds">📋 Copy kết quả</button></div>
+      <div class="table-wrap"><table id="idTable"></table></div>
+    </section>
+
+    <!-- VĂN BẢN -->
+    <section id="tab-text" class="tab">
+      <h1>Xử lý văn bản</h1>
+      <div class="two-col">
+        <div>
+          <label>Đầu vào <span class="muted" id="inCount"></span></label>
+          <textarea id="txtIn" rows="16"></textarea>
+        </div>
+        <div>
+          <label>Kết quả <span class="muted" id="outCount"></span></label>
+          <textarea id="txtOut" rows="16" readonly></textarea>
+        </div>
+      </div>
+      <div class="toolbar wrap">
+        <button data-op="dedupe">Lọc trùng</button>
+        <button data-op="trim">Xoá dòng trống / khoảng trắng</button>
+        <button data-op="sort">Sắp xếp A→Z</button>
+        <button data-op="shuffle">Trộn ngẫu nhiên</button>
+        <button data-op="reverse">Đảo ngược</button>
+        <button data-op="uids">Trích UID (số)</button>
+        <button data-op="emails">Trích email</button>
+        <button data-op="phones">Trích SĐT</button>
+        <button data-op="links">Trích link</button>
+        <span class="sep"></span>
+        <label class="inline">Gộp bằng <input id="joinSep" value="," size="4"></label>
+        <button data-op="join">Gộp dòng</button>
+        <label class="inline">Tách bằng <input id="splitSep" value="|" size="4"></label>
+        <label class="inline">lấy cột <input id="splitCol" type="number" value="1" min="1" style="width:60px"></label>
+        <button data-op="column">Lấy cột</button>
+        <label class="inline">Chia nhóm <input id="chunkSize" type="number" value="100" min="1" style="width:70px"> dòng</label>
+        <button data-op="chunk">Chia</button>
+        <span class="sep"></span>
+        <button id="btnOutToIn">⬅️ Dùng kết quả làm đầu vào</button>
+        <button id="btnCopyOut" class="primary">📋 Copy kết quả</button>
+      </div>
+    </section>
+
+    <!-- EMAIL TẠM -->
+    <section id="tab-tempmail" class="tab">
+      <h1>Email tạm thời &amp; lấy OTP</h1>
+      <p class="muted">Sử dụng dịch vụ công khai mail.tm. Chỉ dùng cho mục đích thử nghiệm, không dùng cho tài khoản quan trọng.</p>
+      <div class="toolbar">
+        <button id="btnNewMail" class="primary">➕ Tạo email mới</button>
+        <input id="mailAddr" readonly placeholder="Chưa có email" style="min-width:320px">
+        <button id="btnCopyMail">📋 Copy</button>
+        <button id="btnRefreshMail">🔄 Làm mới hộp thư</button>
+        <label class="inline"><input type="checkbox" id="mailAuto"> Tự làm mới 5s</label>
+      </div>
+      <div class="two-col">
+        <div class="table-wrap"><table id="mailTable"></table></div>
+        <div class="card" id="mailView"><span class="muted">Chọn một thư để xem.</span></div>
+      </div>
+    </section>
+
+    <!-- TOTP -->
+    <section id="tab-totp" class="tab">
+      <h1>Tạo mã 2FA (TOTP)</h1>
+      <p class="muted">Nhập khoá bí mật 2FA (Base32) của tài khoản của bạn, mỗi dòng một khoá. Có thể ghi dạng <code>ghi_chú|KHOA</code>. Mã được tính ngay trên máy.</p>
+      <textarea id="totpInput" rows="6" placeholder="Tài khoản A|JBSWY3DPEHPK3PXP"></textarea>
+      <div class="toolbar"><label class="inline"><input type="checkbox" id="totpSave"> Lưu khoá trên máy này</label></div>
+      <div class="table-wrap"><table id="totpTable"></table></div>
+    </section>
+
+    <!-- CÀI ĐẶT -->
+    <section id="tab-settings" class="tab">
+      <h1>Cài đặt Access Token</h1>
+      <div class="card">
+        <label>Access Token</label>
+        <textarea id="tokenInput" rows="4" placeholder="EAA..."></textarea>
+        <div class="toolbar">
+          <label class="inline">Graph API version <input id="apiVersion" value="v23.0" size="8"></label>
+          <button id="btnSaveToken" class="primary">💾 Lưu &amp; kiểm tra</button>
+          <button id="btnClearToken" class="danger">🗑 Xoá token</button>
+        </div>
+        <div id="tokenInfo"></div>
+      </div>
+      <div class="card">
+        <h3>Cách lấy token</h3>
+        <ol>
+          <li>Mở <a href="https://developers.facebook.com/tools/explorer/" target="_blank" rel="noopener">Graph API Explorer</a>.</li>
+          <li>Chọn App của bạn → <b>User Token</b> → thêm quyền: <code>ads_read</code>, <code>ads_management</code>, <code>business_management</code>, <code>pages_show_list</code>, <code>pages_read_engagement</code>.</li>
+          <li>Bấm <b>Generate Access Token</b>, copy và dán vào ô trên.</li>
+          <li>Có thể đổi sang token dài hạn tại <a href="https://developers.facebook.com/tools/debug/accesstoken/" target="_blank" rel="noopener">Access Token Debugger</a>.</li>
+        </ol>
+        <p class="muted">Token chỉ được lưu trong trình duyệt này và chỉ gửi tới graph.facebook.com.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/util.js"></script>
+  <script src="js/graph.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

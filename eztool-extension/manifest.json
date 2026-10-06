@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "EZ Ads Toolkit",
+  "short_name": "EZ Ads",
+  "version": "1.0.0",
+  "description": "Bộ công cụ hỗ trợ quản lý tài khoản quảng cáo, Business Manager, Fanpage và tiện ích cho dân chạy Ads.",
+  "default_locale": "vi",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_title": "EZ Ads Toolkit",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": ["storage"],
+  "host_permissions": [
+    "https://graph.facebook.com/*",
+    "https://api.mail.tm/*"
+  ]
+}

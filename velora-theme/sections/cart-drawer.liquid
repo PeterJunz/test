@@ -1,0 +1,70 @@
+<cart-drawer>
+  <dialog class="drawer drawer--right cart-drawer" id="CartDrawer" aria-labelledby="CartDrawerTitle" data-drawer>
+    <div class="drawer__inner" data-cart-drawer-content data-count="{{ cart.item_count }}">
+      <div class="drawer__head">
+        <h2 class="h4" id="CartDrawerTitle">{{ 'cart.title' | t }} <span class="muted">({{ cart.item_count }})</span></h2>
+        <button type="button" class="icon-btn" data-drawer-close aria-label="{{ 'general.close' | t }}">{% render 'icon', name: 'close' %}</button>
+      </div>
+
+      {%- if cart.item_count > 0 -%}
+        <form action="{{ routes.cart_url }}" method="post" class="drawer__body" id="CartDrawerForm" novalidate>
+          <ul class="lines" role="list">
+            {%- for item in cart.items -%}
+              {% render 'cart-line', item: item, index: forloop.index, context: 'drawer' %}
+            {%- endfor -%}
+          </ul>
+          {%- if settings.cart_show_note -%}
+            <details class="cart-note">
+              <summary>{{ 'cart.note' | t }} {% render 'icon', name: 'plus', size: 16 %}</summary>
+              <label class="visually-hidden" for="CartDrawerNote">{{ 'cart.note' | t }}</label>
+              <textarea id="CartDrawerNote" name="note" rows="3" data-cart-note>{{ cart.note }}</textarea>
+            </details>
+          {%- endif -%}
+        </form>
+        <div class="drawer__foot">
+          {%- if settings.cart_drawer_message != blank -%}
+            <div class="cart-message rte">{{ settings.cart_drawer_message }}</div>
+          {%- endif -%}
+          {% render 'cart-summary' %}
+          <button type="submit" name="checkout" form="CartDrawerForm" class="btn btn--primary btn--block btn--lg">
+            {{ 'cart.checkout' | t }} {% render 'icon', name: 'arrow-right', size: 18 %}
+          </button>
+          <a href="{{ routes.cart_url }}" class="btn btn--ghost btn--block">{{ 'cart.view_cart' | t }}</a>
+        </div>
+      {%- else -%}
+        <div class="drawer__body cart-empty">
+          <div class="cart-empty__orb" aria-hidden="true"></div>
+          <p class="h3 display">{{ 'cart.empty' | t }}</p>
+          <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary">{{ 'cart.continue' | t }}</a>
+          {%- assign suggest = settings.cart_empty_collection -%}
+          {%- if suggest != blank and suggest.products_count > 0 -%}
+            <p class="eyebrow cart-empty__label">{{ 'cart.suggestions' | t }}</p>
+            <ul class="mini-products" role="list">
+              {%- for product in suggest.products limit: 3 -%}
+                <li>
+                  <a href="{{ product.url }}" class="mini-product">
+                    {%- if product.featured_media -%}
+                      {{ product.featured_media.preview_image | image_url: width: 160 | image_tag: loading: 'lazy', alt: product.featured_media.preview_image.alt | default: product.title }}
+                    {%- endif -%}
+                    <span>{{ product.title | escape }}</span>
+                    {% render 'price', product: product, show_from: true %}
+                  </a>
+                </li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </dialog>
+</cart-drawer>
+
+{% schema %}
+{
+  "name": "Cart drawer",
+  "class": "section-cart-drawer",
+  "settings": [
+    { "type": "paragraph", "content": "Configure the cart drawer in Theme settings > Cart." }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,36 @@
+{%- comment -%}
+  Params: product (required), variant (optional), show_from (bool), class (optional)
+  Prices always use Shopify's money filters so currency follows store localization.
+{%- endcomment -%}
+{%- liquid
+  assign target = variant | default: product.selected_or_first_available_variant
+  assign price = target.price
+  assign compare = target.compare_at_price
+  assign on_sale = false
+  if compare > price
+    assign on_sale = true
+  endif
+-%}
+<div class="price{% if on_sale %} price--sale{% endif %}{% if class %} {{ class }}{% endif %}">
+  {%- if show_from and product.price_varies and variant == blank -%}
+    <span class="visually-hidden">{{ 'products.product.price.regular' | t }}</span>
+    {%- assign min_price = product.price_min | money -%}
+    <span class="price__current">{{ 'products.product.price.from_html' | t: price: min_price }}</span>
+  {%- else -%}
+    {%- if on_sale -%}
+      <span class="visually-hidden">{{ 'products.product.price.sale' | t }}</span>
+    {%- else -%}
+      <span class="visually-hidden">{{ 'products.product.price.regular' | t }}</span>
+    {%- endif -%}
+    <span class="price__current">{{ price | money }}</span>
+    {%- if on_sale -%}
+      <span class="visually-hidden">{{ 'products.product.price.compare' | t }}</span>
+      <s class="price__compare">{{ compare | money }}</s>
+    {%- endif -%}
+  {%- endif -%}
+  {%- if target.unit_price_measurement -%}
+    <small class="price__unit">
+      {{ target.unit_price | money }}/{%- if target.unit_price_measurement.reference_value != 1 -%}{{ target.unit_price_measurement.reference_value }}{%- endif -%}{{ target.unit_price_measurement.reference_unit }}
+    </small>
+  {%- endif -%}
+</div>

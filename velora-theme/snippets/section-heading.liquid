@@ -1,0 +1,14 @@
+{%- comment -%} Params: eyebrow, heading, text, align, link_label, link_url, tag {%- endcomment -%}
+{%- assign htag = tag | default: 'h2' -%}
+{%- if eyebrow != blank or heading != blank or text != blank -%}
+  <header class="section-head section-head--{{ align | default: 'left' }}" data-reveal>
+    <div class="section-head__copy">
+      {%- if eyebrow != blank -%}<p class="eyebrow">{{ eyebrow | escape }}</p>{%- endif -%}
+      {%- if heading != blank -%}<{{ htag }} class="h2 display">{{ heading }}</{{ htag }}>{%- endif -%}
+      {%- if text != blank -%}<div class="section-head__text rte">{{ text }}</div>{%- endif -%}
+    </div>
+    {%- if link_label != blank and link_url != blank -%}
+      <a href="{{ link_url }}" class="link-arrow">{{ link_label | escape }} {% render 'icon', name: 'arrow-right', size: 18 %}</a>
+    {%- endif -%}
+  </header>
+{%- endif -%}

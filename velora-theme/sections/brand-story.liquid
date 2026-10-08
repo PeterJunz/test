@@ -1,0 +1,58 @@
+{%- assign s = section.settings -%}
+<section class="story scheme-{{ s.color_scheme }}" aria-labelledby="Story-{{ section.id }}">
+  <div class="story__layers" aria-hidden="true">
+    <span class="story__layer story__layer--1" data-parallax="0.08"></span>
+    <span class="story__layer story__layer--2" data-parallax="0.16"></span>
+  </div>
+  <div class="page-width page-width--wide story__grid">
+    <div class="story__head">
+      {%- if s.eyebrow != blank -%}<p class="eyebrow" data-reveal>{{ s.eyebrow | escape }}</p>{%- endif -%}
+      <h2 class="story__title display" id="Story-{{ section.id }}" data-reveal-words>{{ s.heading }}</h2>
+    </div>
+
+    <div class="story__media story__media--a" data-parallax="-0.06">
+      {%- if s.image != blank -%}
+        {{ s.image | image_url: width: 1600 | image_tag: widths: '600, 900, 1200, 1600', sizes: '(min-width: 990px) 45vw, 92vw', loading: 'lazy', alt: s.image.alt | default: '' }}
+      {%- else -%}
+        <div class="story__placeholder story__placeholder--a" aria-hidden="true">{% render 'wellness-visual', variant: 'cushion', uid: section.id %}</div>
+      {%- endif -%}
+    </div>
+    <div class="story__media story__media--b" data-parallax="0.1">
+      {%- if s.image_2 != blank -%}
+        {{ s.image_2 | image_url: width: 900 | image_tag: widths: '400, 600, 900', sizes: '(min-width: 990px) 25vw, 60vw', loading: 'lazy', alt: s.image_2.alt | default: '' }}
+      {%- else -%}
+        <div class="story__placeholder story__placeholder--b" aria-hidden="true"></div>
+      {%- endif -%}
+    </div>
+
+    <div class="story__body" data-reveal>
+      <div class="rte story__text">{{ s.text }}</div>
+      {%- if s.button_label != blank and s.button_link != blank -%}
+        <a href="{{ s.button_link }}" class="link-arrow">{{ s.button_label | escape }} {% render 'icon', name: 'arrow-right', size: 18 %}</a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Immersive story",
+  "class": "section-story",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Our philosophy" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Make space <em>for comfort.</em>" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>We believe wellness should feel like part of home — not another task. Our products are designed to be beautiful enough to leave out and simple enough to use every day, so a moment of calm is always within reach.</p>" },
+    { "type": "image_picker", "id": "image", "label": "Main image" },
+    { "type": "image_picker", "id": "image_2", "label": "Accent image" },
+    { "type": "text", "id": "button_label", "label": "Link label", "default": "Read our story" },
+    { "type": "url", "id": "button_link", "label": "Link" },
+    { "type": "select", "id": "color_scheme", "label": "Color scheme", "default": "light", "options": [
+      { "value": "light", "label": "Ivory" },
+      { "value": "white", "label": "White" },
+      { "value": "sage", "label": "Sage" },
+      { "value": "dark", "label": "Midnight" }
+    ] }
+  ],
+  "presets": [{ "name": "Immersive story" }]
+}
+{% endschema %}

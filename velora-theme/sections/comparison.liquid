@@ -1,0 +1,137 @@
+{%- comment -%}
+  Comparison values come from block settings first, then from product metafields
+  in the "custom" namespace (custom.body_area, custom.heat, custom.modes, custom.portability,
+  custom.power, custom.dimensions, custom.accessories). Rows with no data are hidden.
+{%- endcomment -%}
+{%- liquid
+  assign s = section.settings
+  assign keys = 'body_area,heat,modes,portability,power,dimensions,accessories' | split: ','
+  assign columns = section.blocks | where: 'type', 'product'
+-%}
+{%- if columns.size > 0 or request.design_mode -%}
+<section class="section compare scheme-{{ s.color_scheme }}">
+  <div class="page-width page-width--wide">
+    {% render 'section-heading', eyebrow: s.eyebrow, heading: s.heading, text: s.text %}
+    {%- if columns.size > 0 -%}
+      <div class="compare__scroll" data-reveal tabindex="0" role="region" aria-label="{{ s.heading | strip_html | escape }}">
+        <table class="compare__table">
+          <caption class="visually-hidden">{{ s.heading | strip_html | escape }}</caption>
+          <thead>
+            <tr>
+              <td class="compare__corner"></td>
+              {%- for block in columns -%}
+                {%- assign p = block.settings.product -%}
+                <th scope="col" {{ block.shopify_attributes }}>
+                  {%- if p != blank -%}
+                    <a href="{{ p.url }}" class="compare__product">
+                      {%- if p.featured_media -%}
+                        {{ p.featured_media.preview_image | image_url: width: 400 | image_tag: loading: 'lazy', widths: '200, 400', sizes: '160px', alt: '' }}
+                      {%- endif -%}
+                      <span class="compare__name">{{ block.settings.label | default: p.title | escape }}</span>
+                    </a>
+                    {% render 'price', product: p, show_from: true %}
+                  {%- else -%}
+                    <span class="compare__name">{{ block.settings.label | escape }}</span>
+                  {%- endif -%}
+                </th>
+              {%- endfor -%}
+            </tr>
+          </thead>
+          <tbody>
+            {%- for key in keys -%}
+              {%- liquid
+                assign label_key = 'label_' | append: key
+                assign row_label = s[label_key]
+                assign has_value = false
+                capture cells
+                  for block in columns
+                    assign p = block.settings.product
+                    assign v = block.settings[key]
+                    if v == blank and p != blank
+                      assign v = p.metafields.custom[key].value
+                    endif
+                    if v != blank
+                      assign has_value = true
+                    endif
+                    echo '<td>'
+                    if v == blank
+                      echo '<span class="muted">—</span>'
+                    elsif v == true
+                      echo '<span class="compare__yes">'
+                      echo 'general.yes' | t
+                      echo '</span>'
+                    elsif v == false
+                      echo '<span class="muted">'
+                      echo 'general.no' | t
+                      echo '</span>'
+                    else
+                      echo v | escape
+                    endif
+                    echo '</td>'
+                  endfor
+                endcapture
+              -%}
+              {%- if has_value and row_label != blank -%}
+                <tr>
+                  <th scope="row">{{ row_label | escape }}</th>
+                  {{ cells }}
+                </tr>
+              {%- endif -%}
+            {%- endfor -%}
+          </tbody>
+        </table>
+      </div>
+      {%- if s.footnote != blank -%}<p class="compare__note muted">{{ s.footnote | escape }}</p>{%- endif -%}
+    {%- elsif request.design_mode -%}
+      <p class="empty-note">{{ 'sections.compare.empty' | t }}</p>
+    {%- endif -%}
+  </div>
+</section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Product comparison",
+  "class": "section-compare",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Compare" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Find your <em>fit</em>" },
+    { "type": "richtext", "id": "text", "label": "Text" },
+    { "type": "paragraph", "content": "The section stays hidden on the live store until at least one product block is added. Only enter specifications provided by the manufacturer. Empty rows are hidden automatically. Values can also come from product metafields custom.body_area, custom.heat, custom.modes, custom.portability, custom.power, custom.dimensions and custom.accessories." },
+    { "type": "header", "content": "Row labels" },
+    { "type": "text", "id": "label_body_area", "label": "Body area row", "default": "Intended body area" },
+    { "type": "text", "id": "label_heat", "label": "Heat row", "default": "Heat function" },
+    { "type": "text", "id": "label_modes", "label": "Modes row", "default": "Massage modes" },
+    { "type": "text", "id": "label_portability", "label": "Portability row", "default": "Portability" },
+    { "type": "text", "id": "label_power", "label": "Power row", "default": "Power source" },
+    { "type": "text", "id": "label_dimensions", "label": "Dimensions row", "default": "Dimensions" },
+    { "type": "text", "id": "label_accessories", "label": "Accessories row", "default": "Included accessories" },
+    { "type": "text", "id": "footnote", "label": "Footnote" },
+    { "type": "select", "id": "color_scheme", "label": "Color scheme", "default": "white", "options": [
+      { "value": "light", "label": "Ivory" },
+      { "value": "white", "label": "White" },
+      { "value": "sage", "label": "Sage" },
+      { "value": "dark", "label": "Midnight" }
+    ] }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Product" },
+        { "type": "text", "id": "label", "label": "Column label override" },
+        { "type": "text", "id": "body_area", "label": "Intended body area" },
+        { "type": "text", "id": "heat", "label": "Heat function" },
+        { "type": "text", "id": "modes", "label": "Massage modes" },
+        { "type": "text", "id": "portability", "label": "Portability" },
+        { "type": "text", "id": "power", "label": "Power source" },
+        { "type": "text", "id": "dimensions", "label": "Dimensions" },
+        { "type": "text", "id": "accessories", "label": "Included accessories" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Product comparison" }]
+}
+{% endschema %}

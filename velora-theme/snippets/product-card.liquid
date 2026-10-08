@@ -1,0 +1,91 @@
+{%- comment -%}
+  Params:
+  - product: product object (required)
+  - eager: load image eagerly (first row above the fold)
+  - sizes: sizes attribute override
+  - uid: unique id suffix for form ids
+{%- endcomment -%}
+{%- liquid
+  assign img = product.featured_media.preview_image
+  assign img2 = product.media[1].preview_image
+  assign sizes_attr = sizes | default: '(min-width: 1100px) 25vw, (min-width: 750px) 33vw, 50vw'
+  assign loading = 'lazy'
+  if eager
+    assign loading = 'eager'
+  endif
+  assign ratio = settings.card_image_ratio
+  assign variant = product.selected_or_first_available_variant
+  assign card_uid = uid | default: product.id
+-%}
+<article class="card{% if img2 and settings.card_show_secondary_image %} card--has-alt{% endif %}" data-depth-card>
+  <div class="card__media card__media--{{ ratio }}"{% if ratio == 'adapt' and img %} style="aspect-ratio: {{ img.aspect_ratio }};"{% endif %}>
+    <a href="{{ product.url }}" class="card__media-link" tabindex="-1" aria-hidden="true">
+      {%- if img -%}
+        {{ img | image_url: width: 1200 | image_tag:
+          widths: '300, 450, 600, 800, 1000, 1200',
+          sizes: sizes_attr,
+          loading: loading,
+          class: 'card__img',
+          alt: img.alt | default: product.title
+        }}
+        {%- if img2 and settings.card_show_secondary_image -%}
+          {{ img2 | image_url: width: 1200 | image_tag:
+            widths: '300, 450, 600, 800, 1000, 1200',
+            sizes: sizes_attr,
+            loading: 'lazy',
+            class: 'card__img card__img--alt',
+            alt: ''
+          }}
+        {%- endif -%}
+      {%- else -%}
+        <div class="card__placeholder">{{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}</div>
+      {%- endif -%}
+    </a>
+    {% render 'product-badges', product: product %}
+
+    {%- if settings.card_quick_add and product.available -%}
+      <div class="card__quick">
+        {%- if product.has_only_default_variant and product.requires_selling_plan == false -%}
+          {%- assign quick_id = 'QuickAdd-' | append: card_uid -%}
+          {%- form 'product', product, id: quick_id, class: 'card__quick-form', data-product-form: '', novalidate: 'novalidate' -%}
+            <input type="hidden" name="id" value="{{ variant.id }}">
+            <button type="submit" class="card__quick-btn" data-add-button>
+              <span data-label>{% render 'icon', name: 'plus', size: 16 %} {{ 'products.product.quick_add' | t }}</span>
+              <span class="spinner" aria-hidden="true"></span>
+              <span class="visually-hidden">{{ product.title | escape }}</span>
+            </button>
+          {%- endform -%}
+        {%- else -%}
+          <a href="{{ product.url }}" class="card__quick-btn">
+            {{ 'products.product.choose_options' | t }}
+            <span class="visually-hidden">{{ product.title | escape }}</span>
+          </a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+
+  <div class="card__info">
+    {%- if settings.card_show_vendor -%}
+      <p class="card__vendor">{{ product.vendor | escape }}</p>
+    {%- endif -%}
+    <h3 class="card__title">
+      <a href="{{ product.url }}" class="card__link">{{ product.title | escape }}</a>
+    </h3>
+    {%- if settings.card_show_rating -%}
+      {% render 'rating', product: product %}
+    {%- endif -%}
+    {% render 'price', product: product, show_from: true %}
+    {%- unless product.has_only_default_variant -%}
+      {%- assign first_option = product.options_with_values | first -%}
+      <p class="card__options">
+        {%- for value in first_option.values limit: 4 -%}
+          <span class="chip">{{ value | escape }}</span>
+        {%- endfor -%}
+        {%- if first_option.values.size > 4 -%}
+          <span class="chip chip--more">+{{ first_option.values.size | minus: 4 }}</span>
+        {%- endif -%}
+      </p>
+    {%- endunless -%}
+  </div>
+</article>

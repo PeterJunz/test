@@ -1,0 +1,25 @@
+<div class="section blog">
+  <div class="page-width page-width--wide">
+    {% render 'section-heading', eyebrow: section.settings.eyebrow, heading: blog.title, tag: 'h1' %}
+    {%- paginate blog.articles by 9 -%}
+      {%- if blog.articles.size > 0 -%}
+        <ul class="blog__grid" role="list">
+          {%- for article in blog.articles -%}
+            <li data-reveal style="--i: {{ forloop.index0 | modulo: 3 }};">{% render 'article-card', article: article %}</li>
+          {%- endfor -%}
+        </ul>
+      {%- else -%}
+        <p class="empty-state muted">{{ 'blogs.empty' | t }}</p>
+      {%- endif -%}
+      {% render 'pagination', paginate: paginate %}
+    {%- endpaginate -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Blog posts",
+  "class": "section-main-blog",
+  "settings": [{ "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Journal" }]
+}
+{% endschema %}

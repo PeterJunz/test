@@ -1,0 +1,79 @@
+{%- assign s = section.settings -%}
+<div class="collection" id="CollectionSection-{{ section.id }}" data-facet-root>
+  {%- if s.show_banner -%}
+    <header class="collection-hero scheme-{{ s.color_scheme }}{% if collection.image and s.show_image %} collection-hero--image{% endif %}">
+      {%- if collection.image and s.show_image -%}
+        <div class="collection-hero__media">
+          {{ collection.image | image_url: width: 2000 | image_tag: widths: '750, 1100, 1500, 2000', sizes: '100vw', loading: 'eager', fetchpriority: 'high', alt: collection.image.alt | default: collection.title }}
+        </div>
+      {%- endif -%}
+      <div class="collection-hero__ambient" aria-hidden="true"><span class="orb orb--a"></span><span class="orb orb--b"></span></div>
+      <div class="page-width page-width--wide collection-hero__inner">
+        {% render 'breadcrumbs' %}
+        <h1 class="h0 display anim-rise">{{ collection.title | escape }}</h1>
+        {%- if collection.description != blank and s.show_description -%}
+          <div class="rte collection-hero__desc anim-rise" style="--delay: .15s;">{{ collection.description }}</div>
+        {%- endif -%}
+      </div>
+    </header>
+  {%- endif -%}
+
+  <div class="page-width page-width--wide collection__body">
+    {%- paginate collection.products by s.per_page -%}
+      {% render 'facets', results: collection, sort_by: collection.sort_by %}
+
+      <div class="collection__results" data-facet-results>
+        <h2 class="visually-hidden">{{ 'collections.products_heading' | t }}</h2>
+        {%- if collection.products.size > 0 -%}
+          <ul class="product-grid product-grid--{{ s.columns }}" role="list">
+            {%- for product in collection.products -%}
+              {%- liquid
+                assign eager = false
+                if forloop.index <= 4
+                  assign eager = true
+                endif
+              -%}
+              <li class="product-grid__item" data-reveal style="--i: {{ forloop.index0 | modulo: 4 }};">
+                {%- capture cuid -%}{{ section.id }}-{{ product.id }}{%- endcapture -%}
+                {% render 'product-card', product: product, eager: eager, uid: cuid %}
+              </li>
+            {%- endfor -%}
+          </ul>
+          {% render 'pagination', paginate: paginate %}
+        {%- else -%}
+          <div class="empty-state">
+            <p class="h3 display">{{ 'collections.empty' | t }}</p>
+            {%- if collection.filters.size > 0 -%}
+              <a href="{{ collection.url }}" class="btn btn--ghost" data-facet-link>{{ 'collections.clear_all' | t }}</a>
+            {%- else -%}
+              <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary">{{ 'cart.continue' | t }}</a>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endpaginate -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Collection products",
+  "class": "section-main-collection",
+  "settings": [
+    { "type": "checkbox", "id": "show_banner", "label": "Show collection banner", "default": true },
+    { "type": "checkbox", "id": "show_image", "label": "Show collection image", "default": true },
+    { "type": "checkbox", "id": "show_description", "label": "Show description", "default": true },
+    { "type": "select", "id": "color_scheme", "label": "Banner color scheme", "default": "dark", "options": [
+      { "value": "light", "label": "Ivory" },
+      { "value": "sage", "label": "Sage" },
+      { "value": "dark", "label": "Midnight" }
+    ] },
+    { "type": "range", "id": "per_page", "label": "Products per page", "min": 8, "max": 48, "step": 4, "default": 16 },
+    { "type": "select", "id": "columns", "label": "Desktop columns", "default": "4", "options": [
+      { "value": "3", "label": "3" },
+      { "value": "4", "label": "4" }
+    ] },
+    { "type": "paragraph", "content": "Configure filters with the Shopify Search & Discovery app." }
+  ]
+}
+{% endschema %}

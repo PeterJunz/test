@@ -1,0 +1,194 @@
+{%- liquid
+  assign s = section.settings
+  assign heading_tag = 'h2'
+  if s.heading_is_h1
+    assign heading_tag = 'h1'
+  endif
+  assign uid = 'hero-' | append: section.id
+-%}
+<section
+  class="hero scheme-{{ s.color_scheme }} hero--{{ s.layout }} hero--h-{{ s.height }}"
+  style="--hero-depth: {{ s.depth_intensity }}; --hero-glow-a: {{ s.glow_color_a }}; --hero-glow-b: {{ s.glow_color_b }};"
+  aria-labelledby="{{ uid }}-title"
+>
+  {%- if s.background_image != blank -%}
+    <div class="hero__bg">
+      {{ s.background_image | image_url: width: 2400 | image_tag:
+        widths: '750, 1100, 1500, 1920, 2400',
+        sizes: '100vw',
+        loading: 'eager',
+        fetchpriority: 'high',
+        alt: ''
+      }}
+    </div>
+  {%- endif -%}
+
+  <div class="hero__ambient" aria-hidden="true">
+    <span class="orb orb--a"></span>
+    <span class="orb orb--b"></span>
+    <span class="orb orb--c"></span>
+  </div>
+  {%- if s.show_grid -%}<div class="hero__floor" aria-hidden="true"></div>{%- endif -%}
+  {%- if s.backdrop_word != blank -%}
+    <p class="hero__word" aria-hidden="true">{{ s.backdrop_word | escape }}</p>
+  {%- endif -%}
+
+  <div class="page-width page-width--wide hero__inner">
+    <div class="hero__copy">
+      {%- if s.eyebrow != blank -%}
+        <p class="eyebrow hero__eyebrow anim-rise" style="--delay: 0.05s;"><span class="pulse-dot" aria-hidden="true"></span>{{ s.eyebrow | escape }}</p>
+      {%- endif -%}
+      <{{ heading_tag }} id="{{ uid }}-title" class="hero__title display anim-rise" style="--delay: 0.15s;">{{ s.heading }}</{{ heading_tag }}>
+      {%- if s.text != blank -%}
+        <div class="hero__text anim-rise" style="--delay: 0.3s;">{{ s.text }}</div>
+      {%- endif -%}
+      <div class="hero__ctas anim-rise" style="--delay: 0.42s;">
+        {%- if s.button_label != blank and s.button_link != blank -%}
+          <a href="{{ s.button_link }}" class="btn btn--primary btn--lg btn--glow">
+            {{ s.button_label | escape }} {% render 'icon', name: 'arrow-right', size: 18 %}
+          </a>
+        {%- endif -%}
+        {%- if s.button_label_2 != blank and s.button_link_2 != blank -%}
+          <a href="{{ s.button_link_2 }}" class="btn btn--glass btn--lg">
+            {{ s.button_label_2 | escape }}
+          </a>
+        {%- elsif s.button_label_2 != blank and request.design_mode -%}
+          <span class="btn btn--glass btn--lg is-placeholder" title="{{ 'sections.general.add_link' | t }}">{{ s.button_label_2 | escape }}</span>
+        {%- endif -%}
+      </div>
+      {%- if s.show_scroll_cue -%}
+        <div class="hero__cue anim-rise" style="--delay: 0.6s;" aria-hidden="true">
+          <span class="hero__cue-line"></span>{{ 'sections.hero.scroll' | t }}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <depth-scene class="hero__stage anim-zoom" style="--delay: 0.2s;">
+      <div class="hero__ring" style="--d: 0.15;" aria-hidden="true"></div>
+      <div class="hero__ring hero__ring--inner" style="--d: 0.3;" aria-hidden="true"></div>
+      <div class="hero__halo" style="--d: 0.25;" aria-hidden="true"></div>
+
+      <div class="hero__product" style="--d: 0.55;">
+        <div class="hero__product-float">
+          {%- if s.product_image != blank -%}
+            {%- assign product_alt = s.product_image.alt | default: s.image_alt -%}
+            {{ s.product_image | image_url: width: 1600 | image_tag:
+              widths: '480, 720, 960, 1200, 1600',
+              sizes: '(min-width: 990px) 46vw, 88vw',
+              loading: 'eager',
+              fetchpriority: 'high',
+              class: 'hero__product-img',
+              alt: product_alt
+            }}
+          {%- else -%}
+            {% render 'wellness-visual', variant: s.fallback_visual, uid: uid %}
+          {%- endif -%}
+        </div>
+        <div class="hero__shadow" aria-hidden="true"></div>
+      </div>
+
+      {%- for block in section.blocks -%}
+        <div
+          class="float-chip float-chip--{{ block.settings.style }}"
+          style="--x: {{ block.settings.pos_x }}%; --y: {{ block.settings.pos_y }}%; --d: {{ block.settings.depth | divided_by: 100.0 }}; --i: {{ forloop.index }};"
+          {{ block.shopify_attributes }}
+        >
+          <span class="float-chip__icon" aria-hidden="true">{% render 'icon', name: block.settings.icon, size: 18 %}</span>
+          <span class="float-chip__copy">
+            <strong>{{ block.settings.title | escape }}</strong>
+            {%- if block.settings.text != blank -%}<small>{{ block.settings.text | escape }}</small>{%- endif -%}
+          </span>
+        </div>
+      {%- endfor -%}
+    </depth-scene>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Immersive hero",
+  "tag": "div",
+  "class": "section-hero",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "header", "content": "Content" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The at-home wellness collection" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Relaxation, <em>reimagined.</em>", "info": "Wrap words in italics to use the editorial accent font." },
+    { "type": "checkbox", "id": "heading_is_h1", "label": "Use heading as the page's main H1", "default": true },
+    { "type": "richtext", "id": "text", "label": "Supporting text", "default": "<p>Discover thoughtfully designed wellness essentials that bring everyday comfort into your home.</p>" },
+    { "type": "text", "id": "button_label", "label": "Primary button label", "default": "Shop Best Sellers" },
+    { "type": "url", "id": "button_link", "label": "Primary button link", "default": "/collections/all" },
+    { "type": "text", "id": "button_label_2", "label": "Secondary button label", "default": "Explore Our Technology" },
+    { "type": "url", "id": "button_link_2", "label": "Secondary button link", "info": "Link to your technology page. The button is hidden until a link is set." },
+    { "type": "checkbox", "id": "show_scroll_cue", "label": "Show scroll cue", "default": true },
+    { "type": "header", "content": "Product visual" },
+    { "type": "image_picker", "id": "product_image", "label": "Product image", "info": "Best results: a transparent PNG/WebP cut-out of your hero product, at least 1600px wide." },
+    { "type": "text", "id": "image_alt", "label": "Product image alt text", "default": "Ergonomic neck and shoulder massager" },
+    { "type": "select", "id": "fallback_visual", "label": "Built-in visual (when no image)", "default": "neck", "options": [
+      { "value": "neck", "label": "Neck massager" },
+      { "value": "gun", "label": "Massage gun" },
+      { "value": "cushion", "label": "Massage cushion" }
+    ] },
+    { "type": "image_picker", "id": "background_image", "label": "Background image", "info": "Optional. A soft, low-contrast image works best behind the product." },
+    { "type": "text", "id": "backdrop_word", "label": "Oversized backdrop word", "default": "CALM" },
+    { "type": "header", "content": "Atmosphere" },
+    { "type": "select", "id": "color_scheme", "label": "Color scheme", "default": "dark", "options": [
+      { "value": "dark", "label": "Midnight" },
+      { "value": "light", "label": "Ivory" },
+      { "value": "sage", "label": "Sage" }
+    ] },
+    { "type": "select", "id": "layout", "label": "Layout", "default": "split", "options": [
+      { "value": "split", "label": "Copy left, product right" },
+      { "value": "center", "label": "Centered stage" }
+    ] },
+    { "type": "select", "id": "height", "label": "Height", "default": "full", "options": [
+      { "value": "full", "label": "Full screen" },
+      { "value": "large", "label": "Large" },
+      { "value": "medium", "label": "Medium" }
+    ] },
+    { "type": "color", "id": "glow_color_a", "label": "Ambient light 1", "default": "#A8C3AE" },
+    { "type": "color", "id": "glow_color_b", "label": "Ambient light 2", "default": "#D6BE91" },
+    { "type": "checkbox", "id": "show_grid", "label": "Show perspective floor", "default": true },
+    { "type": "range", "id": "depth_intensity", "label": "3D depth intensity", "min": 0, "max": 10, "step": 1, "default": 6 }
+  ],
+  "blocks": [
+    {
+      "type": "chip",
+      "name": "Floating callout",
+      "settings": [
+        { "type": "select", "id": "icon", "label": "Icon", "default": "sparkle", "options": [
+          { "value": "sparkle", "label": "Sparkle" },
+          { "value": "heat", "label": "Warmth" },
+          { "value": "wave", "label": "Waves" },
+          { "value": "battery", "label": "Battery" },
+          { "value": "leaf", "label": "Leaf" },
+          { "value": "home", "label": "Home" },
+          { "value": "hand", "label": "Hand" },
+          { "value": "feather", "label": "Feather" },
+          { "value": "clock", "label": "Clock" },
+          { "value": "shield", "label": "Shield" }
+        ] },
+        { "type": "text", "id": "title", "label": "Title", "default": "Ergonomic form" },
+        { "type": "text", "id": "text", "label": "Detail", "default": "Shaped to rest naturally" },
+        { "type": "range", "id": "pos_x", "label": "Horizontal position", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 8 },
+        { "type": "range", "id": "pos_y", "label": "Vertical position", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 22 },
+        { "type": "range", "id": "depth", "label": "Depth layer", "min": 10, "max": 100, "step": 5, "default": 80 },
+        { "type": "select", "id": "style", "label": "Style", "default": "glass", "options": [
+          { "value": "glass", "label": "Glass" },
+          { "value": "solid", "label": "Solid" }
+        ] }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Immersive hero",
+      "blocks": [
+        { "type": "chip", "settings": { "icon": "sparkle", "title": "Ergonomic form", "text": "Shaped to rest naturally", "pos_x": 2, "pos_y": 66, "depth": 85 } },
+        { "type": "chip", "settings": { "icon": "home", "title": "Made for home", "text": "Unwind on your schedule", "pos_x": 70, "pos_y": 72, "depth": 70, "style": "solid" } },
+        { "type": "chip", "settings": { "icon": "feather", "title": "Calm by design", "text": "Quiet, considered details", "pos_x": 74, "pos_y": 12, "depth": 45 } }
+      ]
+    }
+  ]
+}
+{% endschema %}

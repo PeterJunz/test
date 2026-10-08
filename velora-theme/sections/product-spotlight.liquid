@@ -1,0 +1,160 @@
+{%- liquid
+  assign s = section.settings
+  assign p = s.product
+  assign img = s.image
+  if img == blank and p != blank
+    assign img = p.featured_media.preview_image
+  endif
+  assign model = ''
+  if s.use_model and p != blank
+    assign models = p.media | where: 'media_type', 'model'
+    if models.size > 0
+      assign model = models | first
+    endif
+  endif
+  assign url = s.link | default: p.url
+  assign uid = 'spot-' | append: section.id
+-%}
+<section class="section spotlight scheme-{{ s.color_scheme }} spotlight--media-{{ s.media_position }}" aria-labelledby="{{ uid }}-title">
+  <div class="spotlight__glow" aria-hidden="true"></div>
+  <div class="page-width page-width--wide spotlight__grid">
+    <div class="spotlight__stage" data-reveal>
+      <depth-scene class="spotlight__scene">
+        <div class="spotlight__disc" style="--d: 0.15;" aria-hidden="true"></div>
+        <div class="spotlight__media" style="--d: 0.45;">
+          {%- if model != blank -%}
+            {{ model | model_viewer_tag: image_size: '1200x', reveal: 'interaction', toggleable: true, class: 'spotlight__model' }}
+          {%- elsif img != blank -%}
+            {{ img | image_url: width: 1400 | image_tag:
+              widths: '500, 800, 1100, 1400',
+              sizes: '(min-width: 990px) 50vw, 92vw',
+              loading: 'lazy',
+              alt: img.alt | default: p.title
+            }}
+          {%- else -%}
+            {% render 'wellness-visual', variant: s.fallback_visual, uid: uid %}
+          {%- endif -%}
+        </div>
+
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'hotspot' -%}
+            <div class="hotspot" style="--x: {{ block.settings.pos_x }}%; --y: {{ block.settings.pos_y }}%; --d: 0.6;" {{ block.shopify_attributes }}>
+              <button type="button" class="hotspot__btn" aria-expanded="false" aria-controls="{{ uid }}-hs-{{ forloop.index }}" data-hotspot>
+                <span class="visually-hidden">{{ block.settings.title | escape }}</span>
+              </button>
+              <div class="hotspot__card" id="{{ uid }}-hs-{{ forloop.index }}" role="note" hidden>
+                <strong>{{ block.settings.title | escape }}</strong>
+                {%- if block.settings.text != blank -%}<p>{{ block.settings.text | escape }}</p>{%- endif -%}
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </depth-scene>
+    </div>
+
+    <div class="spotlight__copy">
+      {%- if s.eyebrow != blank -%}<p class="eyebrow" data-reveal>{{ s.eyebrow | escape }}</p>{%- endif -%}
+      <h2 class="h1 display" id="{{ uid }}-title" data-reveal>{{ s.heading | default: p.title }}</h2>
+      {%- if s.text != blank -%}<div class="rte spotlight__text" data-reveal>{{ s.text }}</div>{%- endif -%}
+
+      <ul class="spotlight__features" role="list">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'feature' -%}
+            <li class="feature-row" data-reveal style="--i: {{ forloop.index0 }};" {{ block.shopify_attributes }}>
+              <span class="feature-row__icon" aria-hidden="true">{% render 'icon', name: block.settings.icon, size: 20 %}</span>
+              <span>
+                <strong>{{ block.settings.title | escape }}</strong>
+                {%- if block.settings.text != blank -%}<small>{{ block.settings.text | escape }}</small>{%- endif -%}
+              </span>
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+
+      <div class="spotlight__actions" data-reveal>
+        {%- if p != blank and s.show_price -%}
+          {% render 'price', product: p, show_from: true, class: 'price--lg' %}
+        {%- endif -%}
+        {%- if url != blank and s.button_label != blank -%}
+          <a href="{{ url }}" class="btn btn--primary btn--lg">{{ s.button_label | escape }} {% render 'icon', name: 'arrow-right', size: 18 %}</a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Product spotlight",
+  "class": "section-spotlight",
+  "max_blocks": 10,
+  "settings": [
+    { "type": "product", "id": "product", "label": "Product" },
+    { "type": "checkbox", "id": "use_model", "label": "Show 3D model when available", "default": true, "info": "Uses a 3D model uploaded to the product's media (GLB). Falls back to the image." },
+    { "type": "image_picker", "id": "image", "label": "Image override" },
+    { "type": "select", "id": "fallback_visual", "label": "Built-in visual (when no image)", "default": "gun", "options": [
+      { "value": "neck", "label": "Neck massager" },
+      { "value": "gun", "label": "Massage gun" },
+      { "value": "cushion", "label": "Massage cushion" }
+    ] },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "In focus" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Engineered for <em>quiet</em> recovery" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Describe what makes this product special. Keep it to real, verifiable features.</p>" },
+    { "type": "checkbox", "id": "show_price", "label": "Show price", "default": true },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "View product" },
+    { "type": "url", "id": "link", "label": "Button link override" },
+    { "type": "select", "id": "media_position", "label": "Media position", "default": "left", "options": [
+      { "value": "left", "label": "Left" },
+      { "value": "right", "label": "Right" }
+    ] },
+    { "type": "select", "id": "color_scheme", "label": "Color scheme", "default": "dark", "options": [
+      { "value": "light", "label": "Ivory" },
+      { "value": "white", "label": "White" },
+      { "value": "sage", "label": "Sage" },
+      { "value": "dark", "label": "Midnight" }
+    ] }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        { "type": "select", "id": "icon", "label": "Icon", "default": "wave", "options": [
+          { "value": "wave", "label": "Waves" },
+          { "value": "heat", "label": "Warmth" },
+          { "value": "battery", "label": "Battery" },
+          { "value": "feather", "label": "Feather" },
+          { "value": "clock", "label": "Clock" },
+          { "value": "sparkle", "label": "Sparkle" },
+          { "value": "hand", "label": "Hand" },
+          { "value": "shield", "label": "Shield" }
+        ] },
+        { "type": "text", "id": "title", "label": "Title", "default": "Adjustable intensity" },
+        { "type": "text", "id": "text", "label": "Detail", "default": "Replace with this product's real specification." }
+      ]
+    },
+    {
+      "type": "hotspot",
+      "name": "Hotspot",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Detail" },
+        { "type": "text", "id": "text", "label": "Text" },
+        { "type": "range", "id": "pos_x", "label": "Horizontal position", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 50 },
+        { "type": "range", "id": "pos_y", "label": "Vertical position", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 50 }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product spotlight",
+      "blocks": [
+        { "type": "feature", "settings": { "icon": "wave", "title": "Multiple massage modes", "text": "Replace with this product's real specification." } },
+        { "type": "feature", "settings": { "icon": "battery", "title": "Cordless convenience", "text": "Replace with this product's real specification." } },
+        { "type": "feature", "settings": { "icon": "feather", "title": "Considered ergonomics", "text": "Replace with this product's real specification." } },
+        { "type": "hotspot", "settings": { "title": "Interchangeable heads", "pos_x": 84, "pos_y": 36 } },
+        { "type": "hotspot", "settings": { "title": "Simple controls", "pos_x": 36, "pos_y": 37 } }
+      ]
+    }
+  ]
+}
+{% endschema %}

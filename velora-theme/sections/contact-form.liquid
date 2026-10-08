@@ -1,0 +1,48 @@
+<section class="section contact scheme-{{ section.settings.color_scheme }}">
+  <div class="page-width page-width--narrow">
+    {% render 'section-heading', heading: section.settings.heading, text: section.settings.text %}
+    {%- form 'contact', class: 'form contact__form' -%}
+      {%- if form.posted_successfully? -%}
+        <p class="form-message form-message--success" role="status" tabindex="-1" autofocus>{% render 'icon', name: 'check', size: 18 %} {{ 'contact.success' | t }}</p>
+      {%- elsif form.errors -%}
+        <div class="form-message form-message--error" role="alert">{{ form.errors | default_errors }}</div>
+      {%- endif -%}
+      <div class="form__row">
+        <div class="field">
+          <label for="ContactName">{{ 'contact.name' | t }}</label>
+          <input id="ContactName" type="text" name="contact[name]" autocomplete="name" value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}">
+        </div>
+        <div class="field">
+          <label for="ContactEmail">{{ 'contact.email' | t }} <span aria-hidden="true">*</span></label>
+          <input id="ContactEmail" type="email" name="contact[email]" autocomplete="email" required aria-required="true" value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}">
+        </div>
+      </div>
+      <div class="field">
+        <label for="ContactPhone">{{ 'contact.phone' | t }}</label>
+        <input id="ContactPhone" type="tel" name="contact[phone]" autocomplete="tel" value="{{ form.phone }}">
+      </div>
+      <div class="field">
+        <label for="ContactBody">{{ 'contact.message' | t }}</label>
+        <textarea id="ContactBody" name="contact[body]" rows="6">{{ form.body }}</textarea>
+      </div>
+      <button type="submit" class="btn btn--primary btn--lg">{{ 'contact.send' | t }}</button>
+    {%- endform -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Contact form",
+  "class": "section-contact",
+  "settings": [
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "We're here to <em>help</em>" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Questions about a product or order? Send us a message.</p>" },
+    { "type": "select", "id": "color_scheme", "label": "Color scheme", "default": "light", "options": [
+      { "value": "light", "label": "Ivory" },
+      { "value": "white", "label": "White" },
+      { "value": "sage", "label": "Sage" }
+    ] }
+  ],
+  "presets": [{ "name": "Contact form" }]
+}
+{% endschema %}

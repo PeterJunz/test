@@ -1,0 +1,67 @@
+{%- if section.blocks.size > 0 -%}
+<section class="trust scheme-{{ section.settings.color_scheme }}" aria-label="{{ section.settings.label | escape }}">
+  <div class="page-width page-width--wide">
+    <ul class="trust__list" role="list">
+      {%- for block in section.blocks -%}
+        <li class="trust__item" data-reveal style="--i: {{ forloop.index0 }};" {{ block.shopify_attributes }}>
+          <span class="trust__icon" aria-hidden="true">{% render 'icon', name: block.settings.icon, size: 22 %}</span>
+          <span>
+            <strong>{{ block.settings.title | escape }}</strong>
+            {%- if block.settings.text != blank -%}<small>{{ block.settings.text | escape }}</small>{%- endif -%}
+          </span>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Trust indicators",
+  "class": "section-trust",
+  "max_blocks": 5,
+  "settings": [
+    { "type": "text", "id": "label", "label": "Accessible region label", "default": "Why shop with us" },
+    { "type": "select", "id": "color_scheme", "label": "Color scheme", "default": "light", "options": [
+      { "value": "light", "label": "Ivory" },
+      { "value": "white", "label": "White" },
+      { "value": "sage", "label": "Sage" },
+      { "value": "dark", "label": "Midnight" }
+    ] },
+    { "type": "paragraph", "content": "Only list guarantees, certifications, ratings or shipping terms your store actually offers." }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Indicator",
+      "settings": [
+        { "type": "select", "id": "icon", "label": "Icon", "default": "sparkle", "options": [
+          { "value": "sparkle", "label": "Sparkle" },
+          { "value": "home", "label": "Home" },
+          { "value": "hand", "label": "Hand" },
+          { "value": "chat", "label": "Chat" },
+          { "value": "shield", "label": "Shield" },
+          { "value": "truck", "label": "Truck" },
+          { "value": "return", "label": "Return" },
+          { "value": "leaf", "label": "Leaf" },
+          { "value": "clock", "label": "Clock" }
+        ] },
+        { "type": "text", "id": "title", "label": "Title", "default": "Designed for Everyday Comfort" },
+        { "type": "text", "id": "text", "label": "Detail" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trust indicators",
+      "blocks": [
+        { "type": "item", "settings": { "icon": "sparkle", "title": "Designed for Everyday Comfort" } },
+        { "type": "item", "settings": { "icon": "home", "title": "Convenient At-Home Relaxation" } },
+        { "type": "item", "settings": { "icon": "hand", "title": "Thoughtful Product Design" } },
+        { "type": "item", "settings": { "icon": "chat", "title": "Support When You Need It" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,17 @@
+{%- comment -%}
+  Rendered via the Section Rendering API (?section_id=product-card-fragment) on a
+  product URL to return a single product card. Used by "Recently viewed".
+{%- endcomment -%}
+{%- if product -%}
+  <li class="product-grid__item">
+    {%- capture frag_uid -%}recent-{{ product.id }}{%- endcapture -%}
+    {% render 'product-card', product: product, uid: frag_uid %}
+  </li>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Product card fragment",
+  "settings": []
+}
+{% endschema %}

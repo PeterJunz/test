@@ -1,0 +1,19 @@
+{
+  "type": "header",
+  "name": "Header group",
+  "sections": {
+    "announcement": {
+      "type": "announcement-bar",
+      "blocks": {
+        "msg-1": { "type": "message", "settings": { "text": "COMFORT THAT FITS YOUR EVERYDAY LIFE — EXPLORE OUR COLLECTION", "link": "shopify://collections/all" } }
+      },
+      "block_order": ["msg-1"],
+      "settings": { "scrolling": false, "background": "#101820", "text_color": "#F7F5F0" }
+    },
+    "header": {
+      "type": "header",
+      "settings": { "menu": "main-menu", "sticky": true, "transparent_on_home": true }
+    }
+  },
+  "order": ["announcement", "header"]
+}

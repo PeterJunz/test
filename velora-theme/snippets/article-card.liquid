@@ -1,0 +1,26 @@
+{%- comment -%} Params: article, eager {%- endcomment -%}
+<article class="article-card">
+  <a href="{{ article.url }}" class="article-card__link">
+    <div class="article-card__media">
+      {%- if article.image -%}
+        {{ article.image | image_url: width: 1000 | image_tag:
+          widths: '400, 600, 800, 1000',
+          sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw',
+          loading: 'lazy',
+          alt: article.image.alt | default: article.title
+        }}
+      {%- else -%}
+        <div class="article-card__placeholder" aria-hidden="true">{% render 'icon', name: 'leaf', size: 40 %}</div>
+      {%- endif -%}
+    </div>
+    <div class="article-card__body">
+      <p class="eyebrow">{{ article.published_at | time_tag: format: 'month_day_year' }}</p>
+      <h3 class="h4">{{ article.title | escape }}</h3>
+      {%- if article.excerpt != blank -%}
+        <p class="muted">{{ article.excerpt | strip_html | truncatewords: 22 }}</p>
+      {%- else -%}
+        <p class="muted">{{ article.content | strip_html | truncatewords: 22 }}</p>
+      {%- endif -%}
+    </div>
+  </a>
+</article>

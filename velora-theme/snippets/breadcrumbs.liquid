@@ -1,0 +1,19 @@
+<nav class="breadcrumbs" aria-label="{{ 'general.breadcrumbs' | t }}">
+  <ol role="list">
+    <li><a href="{{ routes.root_url }}">{{ 'general.home' | t }}</a></li>
+    {%- if request.page_type == 'product' -%}
+      {%- if collection -%}
+        <li><a href="{{ collection.url }}">{{ collection.title | escape }}</a></li>
+      {%- endif -%}
+      <li><span aria-current="page">{{ product.title | escape }}</span></li>
+    {%- elsif request.page_type == 'collection' -%}
+      <li><a href="{{ routes.collections_url }}">{{ 'collections.all_collections' | t }}</a></li>
+      <li><span aria-current="page">{{ collection.title | escape }}</span></li>
+    {%- elsif request.page_type == 'article' -%}
+      <li><a href="{{ blog.url }}">{{ blog.title | escape }}</a></li>
+      <li><span aria-current="page">{{ article.title | escape }}</span></li>
+    {%- else -%}
+      <li><span aria-current="page">{{ page_title | escape }}</span></li>
+    {%- endif -%}
+  </ol>
+</nav>

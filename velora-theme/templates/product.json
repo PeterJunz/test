@@ -1,0 +1,92 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "eyebrow": {
+          "type": "vendor",
+          "settings": {}
+        },
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "rating": {
+          "type": "rating",
+          "settings": {}
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "variants": {
+          "type": "variant_picker",
+          "settings": {
+            "swatches": true
+          }
+        },
+        "buy": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": true
+          }
+        },
+        "highlights": {
+          "type": "highlights",
+          "settings": {}
+        },
+        "shipping": {
+          "type": "shipping",
+          "settings": {}
+        },
+        "desc": {
+          "type": "description",
+          "settings": {}
+        },
+        "specs": {
+          "type": "specs",
+          "settings": {}
+        },
+        "care": {
+          "type": "collapsible",
+          "settings": {
+            "heading": "Care & safety",
+            "content": "<p>Add care and safety guidance from the manufacturer's manual.</p>"
+          }
+        },
+        "share": {
+          "type": "share",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "eyebrow",
+        "title",
+        "rating",
+        "price",
+        "variants",
+        "buy",
+        "highlights",
+        "shipping",
+        "desc",
+        "specs",
+        "care",
+        "share"
+      ],
+      "settings": {}
+    },
+    "related": {
+      "type": "product-recommendations",
+      "settings": {}
+    },
+    "recent": {
+      "type": "recently-viewed",
+      "settings": {}
+    }
+  },
+  "order": [
+    "main",
+    "related",
+    "recent"
+  ]
+}

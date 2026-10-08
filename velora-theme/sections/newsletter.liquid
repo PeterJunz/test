@@ -1,0 +1,36 @@
+{%- assign s = section.settings -%}
+<section class="section newsletter scheme-{{ s.color_scheme }}">
+  <div class="page-width">
+    <div class="newsletter__panel" data-reveal>
+      <div class="newsletter__orb" aria-hidden="true"></div>
+      {%- if s.eyebrow != blank -%}<p class="eyebrow">{{ s.eyebrow | escape }}</p>{%- endif -%}
+      <h2 class="h1 display">{{ s.heading }}</h2>
+      {%- if s.text != blank -%}<div class="rte newsletter__text">{{ s.text }}</div>{%- endif -%}
+      {%- capture nl_id -%}Newsletter-{{ section.id }}{%- endcapture -%}
+      {% render 'newsletter-form', form_id: nl_id, button_label: s.button_label %}
+      {%- if s.disclaimer != blank -%}<div class="newsletter__fine rte">{{ s.disclaimer }}</div>{%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "class": "section-newsletter",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Join the list" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "A calmer <em>inbox</em>" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Product launches, care guides and wellness rituals — a few times a month.</p>" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Subscribe" },
+    { "type": "richtext", "id": "disclaimer", "label": "Fine print", "default": "<p>You can unsubscribe at any time.</p>" },
+    { "type": "select", "id": "color_scheme", "label": "Color scheme", "default": "sage", "options": [
+      { "value": "light", "label": "Ivory" },
+      { "value": "white", "label": "White" },
+      { "value": "sage", "label": "Sage" },
+      { "value": "dark", "label": "Midnight" }
+    ] },
+    { "type": "paragraph", "content": "Subscribers are saved to Customers in Shopify admin with email marketing consent." }
+  ],
+  "presets": [{ "name": "Newsletter" }]
+}
+{% endschema %}

@@ -1,0 +1,41 @@
+<product-recommendations
+  class="section related scheme-{{ section.settings.color_scheme }}"
+  data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ section.settings.limit }}&intent={{ section.settings.intent }}"
+>
+  {%- if recommendations.performed and recommendations.products_count > 0 -%}
+    <div class="page-width page-width--wide">
+      {% render 'section-heading', eyebrow: section.settings.eyebrow, heading: section.settings.heading %}
+      <ul class="product-grid product-grid--4 product-grid--scroll" role="list">
+        {%- for rec in recommendations.products -%}
+          <li class="product-grid__item">
+            {%- capture rec_uid -%}{{ section.id }}-{{ rec.id }}{%- endcapture -%}
+            {% render 'product-card', product: rec, uid: rec_uid %}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  {%- endif -%}
+</product-recommendations>
+
+{% schema %}
+{
+  "name": "Related products",
+  "tag": "section",
+  "class": "section-related",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Pairs well with" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Complete your <em>ritual</em>" },
+    { "type": "select", "id": "intent", "label": "Recommendation type", "default": "related", "options": [
+      { "value": "related", "label": "Related" },
+      { "value": "complementary", "label": "Complementary (Search & Discovery app)" }
+    ] },
+    { "type": "range", "id": "limit", "label": "Products", "min": 2, "max": 8, "step": 1, "default": 4 },
+    { "type": "select", "id": "color_scheme", "label": "Color scheme", "default": "light", "options": [
+      { "value": "light", "label": "Ivory" },
+      { "value": "white", "label": "White" },
+      { "value": "sage", "label": "Sage" },
+      { "value": "dark", "label": "Midnight" }
+    ] }
+  ]
+}
+{% endschema %}

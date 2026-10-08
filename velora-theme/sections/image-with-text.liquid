@@ -1,0 +1,45 @@
+{%- assign s = section.settings -%}
+<section class="section iwt scheme-{{ s.color_scheme }} iwt--{{ s.layout }}">
+  <div class="page-width page-width--wide iwt__grid">
+    <div class="iwt__media" data-reveal data-tilt>
+      {%- if s.image != blank -%}
+        {{ s.image | image_url: width: 1600 | image_tag: widths: '600, 900, 1200, 1600', sizes: '(min-width: 990px) 50vw, 92vw', loading: 'lazy', alt: s.image.alt | default: '' }}
+      {%- else -%}
+        <div class="iwt__placeholder">{% render 'wellness-visual', variant: 'neck', uid: section.id %}</div>
+      {%- endif -%}
+    </div>
+    <div class="iwt__copy" data-reveal>
+      {%- if s.eyebrow != blank -%}<p class="eyebrow">{{ s.eyebrow | escape }}</p>{%- endif -%}
+      <h2 class="h1 display">{{ s.heading }}</h2>
+      <div class="rte">{{ s.text }}</div>
+      {%- if s.button_label != blank and s.button_link != blank -%}
+        <a href="{{ s.button_link }}" class="btn btn--primary">{{ s.button_label | escape }}</a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Image with text",
+  "class": "section-iwt",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "select", "id": "layout", "label": "Image position", "default": "left", "options": [
+      { "value": "left", "label": "Left" }, { "value": "right", "label": "Right" }
+    ] },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Our technology" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Considered from <em>every angle</em>" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Explain your materials, design process or how your products work.</p>" },
+    { "type": "text", "id": "button_label", "label": "Button label" },
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "select", "id": "color_scheme", "label": "Color scheme", "default": "light", "options": [
+      { "value": "light", "label": "Ivory" },
+      { "value": "white", "label": "White" },
+      { "value": "sage", "label": "Sage" },
+      { "value": "dark", "label": "Midnight" }
+    ] }
+  ],
+  "presets": [{ "name": "Image with text" }]
+}
+{% endschema %}

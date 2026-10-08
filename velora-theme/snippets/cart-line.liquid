@@ -1,0 +1,41 @@
+{%- comment -%} Params: item, index (1-based line), context ('drawer' | 'page') {%- endcomment -%}
+<li class="line" data-line-key="{{ item.key }}" data-line="{{ index }}">
+  <a href="{{ item.url }}" class="line__media" tabindex="-1" aria-hidden="true">
+    {%- if item.image -%}
+      {{ item.image | image_url: width: 240 | image_tag: loading: 'lazy', widths: '120, 240', sizes: '120px', alt: item.image.alt | default: item.product.title }}
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+    {%- endif -%}
+  </a>
+  <div class="line__info">
+    <a href="{{ item.url }}" class="line__title">{{ item.product.title | escape }}</a>
+    {%- unless item.product.has_only_default_variant -%}
+      <p class="line__meta">{{ item.variant.title | escape }}</p>
+    {%- endunless -%}
+    {%- if item.selling_plan_allocation -%}
+      <p class="line__meta">{{ item.selling_plan_allocation.selling_plan.name | escape }}</p>
+    {%- endif -%}
+    {%- for property in item.properties -%}
+      {%- assign first_char = property.first | slice: 0 -%}
+      {%- if property.last != blank and first_char != '_' -%}
+        <p class="line__meta">{{ property.first | escape }}: {{ property.last | escape }}</p>
+      {%- endif -%}
+    {%- endfor -%}
+    {%- for discount in item.line_level_discount_allocations -%}
+      <p class="line__discount">{{ discount.discount_application.title | escape }} (−{{ discount.amount | money }})</p>
+    {%- endfor -%}
+    <div class="line__actions">
+      {%- capture qty_id -%}{{ context }}-qty-{{ index }}{%- endcapture -%}
+      {% render 'quantity-input', id: qty_id, name: 'updates[]', value: item.quantity, min: 0, label: item.product.title, line: index %}
+      <a href="{{ item.url_to_remove }}" class="line__remove" data-line-remove="{{ index }}" aria-label="{{ 'cart.remove' | t: product: item.product.title }}">
+        {% render 'icon', name: 'trash', size: 18 %}
+      </a>
+    </div>
+  </div>
+  <div class="line__price">
+    {%- if item.original_line_price != item.final_line_price -%}
+      <s class="price__compare">{{ item.original_line_price | money }}</s>
+    {%- endif -%}
+    <span>{{ item.final_line_price | money }}</span>
+  </div>
+</li>

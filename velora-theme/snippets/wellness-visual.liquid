@@ -1,0 +1,69 @@
+{%- comment -%}
+  Original vector "product render" used as an art-directed fallback when the merchant
+  has not uploaded imagery yet. Purely decorative.
+  Params: variant ('neck' | 'gun' | 'cushion'), uid (unique string for gradient ids)
+{%- endcomment -%}
+{%- assign v = variant | default: 'neck' -%}
+{%- assign u = uid | default: 'wv' -%}
+{%- case v -%}
+  {%- when 'gun' -%}
+    <svg class="wellness-visual" viewBox="0 0 600 600" role="presentation" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="{{ u }}-body" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F7F5F0"/><stop offset=".55" stop-color="#DCE6DC"/><stop offset="1" stop-color="#8FA897"/></linearGradient>
+        <linearGradient id="{{ u }}-grip" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2E3539"/><stop offset=".5" stop-color="#4A5357"/><stop offset="1" stop-color="#1A2126"/></linearGradient>
+        <radialGradient id="{{ u }}-head" cx=".35" cy=".35" r=".7"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".6" stop-color="#E9DFC9"/><stop offset="1" stop-color="#B89E6E"/></radialGradient>
+        <filter id="{{ u }}-blur"><feGaussianBlur stdDeviation="18"/></filter>
+      </defs>
+      <ellipse cx="300" cy="528" rx="170" ry="22" fill="#000" opacity=".28" filter="url(#{{ u }}-blur)"/>
+      <rect x="250" y="250" width="92" height="270" rx="40" fill="url(#{{ u }}-grip)" transform="rotate(-8 296 385)"/>
+      <rect x="120" y="150" width="340" height="150" rx="75" fill="url(#{{ u }}-body)"/>
+      <rect x="140" y="162" width="300" height="34" rx="17" fill="#fff" opacity=".55"/>
+      <rect x="440" y="190" width="56" height="70" rx="14" fill="#C9D6CB"/>
+      <circle cx="530" cy="225" r="52" fill="url(#{{ u }}-head)"/>
+      <circle cx="515" cy="208" r="16" fill="#fff" opacity=".7"/>
+      <circle cx="210" cy="225" r="16" fill="none" stroke="#101820" stroke-opacity=".35" stroke-width="3"/>
+      <circle cx="210" cy="225" r="5" fill="#A8C3AE"/>
+    </svg>
+  {%- when 'cushion' -%}
+    <svg class="wellness-visual" viewBox="0 0 600 600" role="presentation" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="{{ u }}-c" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7F5F0"/><stop offset="1" stop-color="#B9CDBE"/></linearGradient>
+        <radialGradient id="{{ u }}-n" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#D6BE91"/></radialGradient>
+        <filter id="{{ u }}-blur"><feGaussianBlur stdDeviation="20"/></filter>
+      </defs>
+      <ellipse cx="300" cy="520" rx="210" ry="26" fill="#000" opacity=".25" filter="url(#{{ u }}-blur)"/>
+      <path d="M130 140c0-40 30-60 70-60h200c40 0 70 20 70 60v330c0 25-20 40-45 40H175c-25 0-45-15-45-40Z" fill="url(#{{ u }}-c)"/>
+      <path d="M150 150c0-30 25-45 55-45h190c30 0 55 15 55 45" fill="none" stroke="#fff" stroke-width="10" opacity=".6" stroke-linecap="round"/>
+      {%- for row in (1..4) -%}
+        <circle cx="250" cy="{{ row | times: 80 | plus: 100 }}" r="20" fill="url(#{{ u }}-n)"/>
+        <circle cx="350" cy="{{ row | times: 80 | plus: 100 }}" r="20" fill="url(#{{ u }}-n)"/>
+      {%- endfor -%}
+    </svg>
+  {%- else -%}
+    <svg class="wellness-visual" viewBox="0 0 600 600" role="presentation" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="{{ u }}-shell" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".45" stop-color="#EEF2EC"/><stop offset="1" stop-color="#A8C3AE"/></linearGradient>
+        <linearGradient id="{{ u }}-under" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5C6F63"/><stop offset="1" stop-color="#1C262B"/></linearGradient>
+        <radialGradient id="{{ u }}-pod" cx=".35" cy=".3" r=".75"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".55" stop-color="#E6ECE4"/><stop offset="1" stop-color="#8FA897"/></radialGradient>
+        <radialGradient id="{{ u }}-node" cx=".35" cy=".3" r=".7"><stop offset="0" stop-color="#FFF8EA"/><stop offset=".6" stop-color="#D6BE91"/><stop offset="1" stop-color="#9C8257"/></radialGradient>
+        <radialGradient id="{{ u }}-glow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#D6BE91" stop-opacity=".9"/><stop offset="1" stop-color="#D6BE91" stop-opacity="0"/></radialGradient>
+        <filter id="{{ u }}-blur"><feGaussianBlur stdDeviation="22"/></filter>
+      </defs>
+      <ellipse cx="300" cy="500" rx="220" ry="30" fill="#000" opacity=".3" filter="url(#{{ u }}-blur)"/>
+      <circle cx="300" cy="330" r="150" fill="url(#{{ u }}-glow)" opacity=".55"/>
+      <path d="M118 238c-6 120 70 214 182 214s188-94 182-214" fill="none" stroke="url(#{{ u }}-under)" stroke-width="96" stroke-linecap="round"/>
+      <path d="M118 226c-6 120 70 214 182 214s188-94 182-214" fill="none" stroke="url(#{{ u }}-shell)" stroke-width="84" stroke-linecap="round"/>
+      <path d="M100 250c4 92 70 162 160 172" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" opacity=".75"/>
+      <path d="M190 330c28 40 64 58 110 58s82-18 110-58" fill="none" stroke="#101820" stroke-opacity=".12" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="214" cy="352" r="17" fill="url(#{{ u }}-node)"/>
+      <circle cx="262" cy="378" r="17" fill="url(#{{ u }}-node)"/>
+      <circle cx="338" cy="378" r="17" fill="url(#{{ u }}-node)"/>
+      <circle cx="386" cy="352" r="17" fill="url(#{{ u }}-node)"/>
+      <circle cx="118" cy="214" r="52" fill="url(#{{ u }}-pod)"/>
+      <circle cx="482" cy="214" r="52" fill="url(#{{ u }}-pod)"/>
+      <circle cx="104" cy="198" r="14" fill="#fff" opacity=".8"/>
+      <circle cx="468" cy="198" r="14" fill="#fff" opacity=".8"/>
+      <circle cx="300" cy="452" r="12" fill="#101820" opacity=".7"/>
+      <circle cx="300" cy="452" r="4" fill="#A8C3AE"/>
+    </svg>
+{%- endcase -%}

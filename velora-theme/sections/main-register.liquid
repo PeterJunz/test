@@ -1,0 +1,27 @@
+<section class="section auth">
+  <div class="page-width page-width--narrow">
+    <div class="auth__card">
+      <h1 class="h2 display">{{ 'customer.register.title' | t }}</h1>
+      {%- form 'create_customer', class: 'form', novalidate: 'novalidate' -%}
+        {%- if form.errors -%}<div class="form-message form-message--error" role="alert">{{ form.errors | default_errors }}</div>{%- endif -%}
+        <div class="form__row">
+          <div class="field"><label for="RegFirst">{{ 'customer.fields.first_name' | t }}</label><input id="RegFirst" type="text" name="customer[first_name]" autocomplete="given-name" value="{{ form.first_name }}"></div>
+          <div class="field"><label for="RegLast">{{ 'customer.fields.last_name' | t }}</label><input id="RegLast" type="text" name="customer[last_name]" autocomplete="family-name" value="{{ form.last_name }}"></div>
+        </div>
+        <div class="field"><label for="RegEmail">{{ 'customer.fields.email' | t }}</label><input id="RegEmail" type="email" name="customer[email]" autocomplete="email" value="{{ form.email }}" required></div>
+        <div class="field"><label for="RegPassword">{{ 'customer.fields.password' | t }}</label><input id="RegPassword" type="password" name="customer[password]" autocomplete="new-password" required></div>
+        <label class="check">
+          <input type="checkbox" name="customer[accepts_marketing]" value="true">
+          <span class="check__box" aria-hidden="true">{% render 'icon', name: 'check', size: 12 %}</span>
+          <span>{{ 'customer.register.marketing' | t }}</span>
+        </label>
+        <button type="submit" class="btn btn--primary btn--block btn--lg">{{ 'customer.register.submit' | t }}</button>
+        <p class="muted"><a href="{{ routes.account_login_url }}" class="link-underline">{{ 'customer.login.title' | t }}</a></p>
+      {%- endform -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Customer register", "class": "section-auth", "settings": [] }
+{% endschema %}

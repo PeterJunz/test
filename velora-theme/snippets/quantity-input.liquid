@@ -1,0 +1,11 @@
+{%- comment -%} Params: id, name, value, min, max (optional), label, line (optional) {%- endcomment -%}
+<quantity-input class="qty">
+  <button type="button" class="qty__btn" name="minus" aria-label="{{ 'products.product.quantity.decrease' | t: product: label }}">
+    {% render 'icon', name: 'minus', size: 16 %}
+  </button>
+  <label class="visually-hidden" for="{{ id }}">{{ 'products.product.quantity.label' | t }}</label>
+  <input class="qty__input" type="number" id="{{ id }}" name="{{ name }}" value="{{ value | default: 1 }}" min="{{ min | default: 1 }}"{% if max %} max="{{ max }}"{% endif %} inputmode="numeric"{% if line %} data-line="{{ line }}"{% endif %}>
+  <button type="button" class="qty__btn" name="plus" aria-label="{{ 'products.product.quantity.increase' | t: product: label }}">
+    {% render 'icon', name: 'plus', size: 16 %}
+  </button>
+</quantity-input>

@@ -1,0 +1,21 @@
+{%- comment -%} Order-level discounts + subtotal. {%- endcomment -%}
+{%- if cart.cart_level_discount_applications.size > 0 -%}
+  <ul class="cart-discounts" role="list">
+    {%- for discount in cart.cart_level_discount_applications -%}
+      <li>{{ discount.title | escape }} <span>−{{ discount.total_allocated_amount | money }}</span></li>
+    {%- endfor -%}
+  </ul>
+{%- endif -%}
+<div class="cart-subtotal">
+  <span>{{ 'cart.subtotal' | t }}</span>
+  <strong data-cart-subtotal>{{ cart.total_price | money_with_currency }}</strong>
+</div>
+<p class="cart-taxes muted">
+  {%- if cart.duties_included and cart.taxes_included -%}
+    {{ 'cart.taxes_duties_included' | t }}
+  {%- elsif cart.taxes_included -%}
+    {{ 'cart.taxes_included' | t }}
+  {%- else -%}
+    {{ 'cart.taxes_at_checkout' | t }}
+  {%- endif -%}
+</p>

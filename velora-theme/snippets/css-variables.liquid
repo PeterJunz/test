@@ -1,0 +1,63 @@
+{%- liquid
+  assign heading_font = settings.type_heading_font
+  assign heading_font_bold = heading_font | font_modify: 'weight', 'bolder'
+  assign accent_font = settings.type_accent_font
+  assign accent_font_italic = accent_font | font_modify: 'style', 'italic'
+  assign body_font = settings.type_body_font
+  assign body_font_medium = body_font | font_modify: 'weight', '500'
+  assign body_font_bold = body_font | font_modify: 'weight', 'bold'
+  assign body_font_italic = body_font | font_modify: 'style', 'italic'
+
+  case settings.button_style
+    when 'pill'
+      assign btn_radius = '999px'
+    when 'rounded'
+      assign btn_radius = '12px'
+    else
+      assign btn_radius = '0px'
+  endcase
+-%}
+<style>
+  {{ heading_font | font_face: font_display: 'swap' }}
+  {{ heading_font_bold | font_face: font_display: 'swap' }}
+  {{ accent_font | font_face: font_display: 'swap' }}
+  {{ accent_font_italic | font_face: font_display: 'swap' }}
+  {{ body_font | font_face: font_display: 'swap' }}
+  {{ body_font_medium | font_face: font_display: 'swap' }}
+  {{ body_font_bold | font_face: font_display: 'swap' }}
+  {{ body_font_italic | font_face: font_display: 'swap' }}
+
+  :root {
+    --c-midnight: {{ settings.color_midnight }};
+    --c-midnight-rgb: {{ settings.color_midnight.red }}, {{ settings.color_midnight.green }}, {{ settings.color_midnight.blue }};
+    --c-ivory: {{ settings.color_ivory }};
+    --c-ivory-rgb: {{ settings.color_ivory.red }}, {{ settings.color_ivory.green }}, {{ settings.color_ivory.blue }};
+    --c-charcoal: {{ settings.color_charcoal }};
+    --c-charcoal-rgb: {{ settings.color_charcoal.red }}, {{ settings.color_charcoal.green }}, {{ settings.color_charcoal.blue }};
+    --c-white: {{ settings.color_white }};
+    --c-green: {{ settings.color_green }};
+    --c-green-rgb: {{ settings.color_green.red }}, {{ settings.color_green.green }}, {{ settings.color_green.blue }};
+    --c-sage: {{ settings.color_sage }};
+    --c-champagne: {{ settings.color_champagne }};
+    --c-champagne-rgb: {{ settings.color_champagne.red }}, {{ settings.color_champagne.green }}, {{ settings.color_champagne.blue }};
+    --c-sale: {{ settings.color_sale }};
+    --c-btn: {{ settings.color_button }};
+    --c-btn-text: {{ settings.color_button_text }};
+
+    --font-heading: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+    --font-heading-weight: {{ settings.heading_weight }};
+    --font-heading-transform: {% if settings.heading_uppercase %}uppercase{% else %}none{% endif %};
+    --font-heading-scale: {{ settings.heading_scale | divided_by: 100.0 }};
+    --font-accent: {{ accent_font.family }}, {{ accent_font.fallback_families }};
+    --font-body: {{ body_font.family }}, {{ body_font.fallback_families }};
+    --font-body-weight: {{ body_font.weight }};
+    --font-body-scale: {{ settings.body_scale | divided_by: 100.0 }};
+
+    --page-width: {{ settings.page_width }}px;
+    --section-space: {{ settings.section_spacing }}px;
+    --grid-gap: {{ settings.grid_gap }}px;
+    --radius-btn: {{ btn_radius }};
+    --radius-card: {{ settings.radius_card }}px;
+    --radius-media: {{ settings.radius_media }}px;
+  }
+</style>

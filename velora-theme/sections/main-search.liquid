@@ -1,0 +1,59 @@
+<div class="section search-page" data-facet-root id="SearchSection-{{ section.id }}">
+  <div class="page-width page-width--wide">
+    <header class="search-page__head">
+      {%- assign safe_terms = search.terms | escape -%}
+      <h1 class="h1 display">{%- if search.performed -%}{{ 'search.results_for' | t: terms: safe_terms }}{%- else -%}{{ 'search.title' | t }}{%- endif -%}</h1>
+      <form action="{{ routes.search_url }}" method="get" role="search" class="search-page__form">
+        <label class="visually-hidden" for="SearchPageInput">{{ 'search.label' | t }}</label>
+        <input id="SearchPageInput" type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'search.placeholder' | t }}">
+        <input type="hidden" name="options[prefix]" value="last">
+        <button type="submit" class="btn btn--primary">{% render 'icon', name: 'search', size: 18 %} {{ 'search.submit' | t }}</button>
+      </form>
+    </header>
+
+    {%- if search.performed -%}
+      {%- paginate search.results by 24 -%}
+        {% render 'facets', results: search, sort_by: search.sort_by, terms: search.terms %}
+        <div data-facet-results>
+          <h2 class="visually-hidden">{{ 'search.results_heading' | t }}</h2>
+          {%- if search.results_count > 0 -%}
+            <ul class="product-grid product-grid--4" role="list">
+              {%- for item in search.results -%}
+                <li class="product-grid__item">
+                  {%- case item.object_type -%}
+                    {%- when 'product' -%}
+                      {%- capture suid -%}search-{{ item.id }}{%- endcapture -%}
+                      {% render 'product-card', product: item, uid: suid %}
+                    {%- when 'article' -%}
+                      {% render 'article-card', article: item %}
+                    {%- when 'page' -%}
+                      <a href="{{ item.url }}" class="text-card">
+                        <p class="eyebrow">{{ 'search.page' | t }}</p>
+                        <h2 class="h4">{{ item.title | escape }}</h2>
+                        <p class="muted">{{ item.content | strip_html | truncatewords: 20 }}</p>
+                      </a>
+                  {%- endcase -%}
+                </li>
+              {%- endfor -%}
+            </ul>
+            {% render 'pagination', paginate: paginate %}
+          {%- else -%}
+            <div class="empty-state">
+              <p class="h3 display">{{ 'search.no_results' | t: terms: safe_terms }}</p>
+              <p class="muted">{{ 'search.no_results_tip' | t }}</p>
+              <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary">{{ 'cart.continue' | t }}</a>
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endpaginate -%}
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Search results",
+  "class": "section-main-search",
+  "settings": []
+}
+{% endschema %}

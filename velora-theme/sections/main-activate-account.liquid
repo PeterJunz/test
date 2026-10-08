@@ -1,0 +1,19 @@
+<section class="section auth">
+  <div class="page-width page-width--narrow">
+    <div class="auth__card">
+      <h1 class="h2 display">{{ 'customer.activate.title' | t }}</h1>
+      <p class="muted">{{ 'customer.activate.text' | t }}</p>
+      {%- form 'activate_customer_password', class: 'form' -%}
+        {{ form.errors | default_errors }}
+        <div class="field"><label for="ActPass">{{ 'customer.fields.password' | t }}</label><input id="ActPass" type="password" name="customer[password]" autocomplete="new-password" required></div>
+        <div class="field"><label for="ActPass2">{{ 'customer.fields.password_confirm' | t }}</label><input id="ActPass2" type="password" name="customer[password_confirmation]" autocomplete="new-password" required></div>
+        <button type="submit" class="btn btn--primary btn--block">{{ 'customer.activate.submit' | t }}</button>
+        <button type="submit" name="decline" class="btn btn--ghost btn--block">{{ 'customer.activate.decline' | t }}</button>
+      {%- endform -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Activate account", "class": "section-auth", "settings": [] }
+{% endschema %}

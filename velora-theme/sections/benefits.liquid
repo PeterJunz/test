@@ -1,0 +1,73 @@
+<section class="section benefits scheme-{{ section.settings.color_scheme }}">
+  <div class="page-width page-width--wide">
+    {% render 'section-heading', eyebrow: section.settings.eyebrow, heading: section.settings.heading, text: section.settings.text, align: 'center' %}
+    <ol class="benefits__grid" role="list">
+      {%- for block in section.blocks -%}
+        <li class="benefit" data-reveal style="--i: {{ forloop.index0 }};" {{ block.shopify_attributes }}>
+          {%- if block.settings.image != blank -%}
+            <div class="benefit__media">
+              {{ block.settings.image | image_url: width: 900 | image_tag: widths: '400, 600, 900', sizes: '(min-width: 990px) 25vw, 90vw', loading: 'lazy', alt: block.settings.image.alt | default: '' }}
+            </div>
+          {%- else -%}
+            <span class="benefit__icon" aria-hidden="true">{% render 'icon', name: block.settings.icon, size: 28 %}</span>
+          {%- endif -%}
+          <span class="benefit__num" aria-hidden="true">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+          <h3 class="h4">{{ block.settings.title | escape }}</h3>
+          {%- if block.settings.text != blank -%}<div class="rte muted">{{ block.settings.text }}</div>{%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ol>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Product benefits",
+  "class": "section-benefits",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Why it feels different" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Small rituals, <em>everyday</em> ease" },
+    { "type": "richtext", "id": "text", "label": "Text" },
+    { "type": "select", "id": "color_scheme", "label": "Color scheme", "default": "sage", "options": [
+      { "value": "light", "label": "Ivory" },
+      { "value": "white", "label": "White" },
+      { "value": "sage", "label": "Sage" },
+      { "value": "dark", "label": "Midnight" }
+    ] },
+    { "type": "paragraph", "content": "Describe comfort and convenience. Avoid claims to treat, cure or prevent medical conditions unless you have appropriate authorization." }
+  ],
+  "blocks": [
+    {
+      "type": "benefit",
+      "name": "Benefit",
+      "settings": [
+        { "type": "select", "id": "icon", "label": "Icon", "default": "sparkle", "options": [
+          { "value": "sparkle", "label": "Sparkle" },
+          { "value": "home", "label": "Home" },
+          { "value": "hand", "label": "Hand" },
+          { "value": "clock", "label": "Clock" },
+          { "value": "leaf", "label": "Leaf" },
+          { "value": "heat", "label": "Warmth" },
+          { "value": "wave", "label": "Waves" },
+          { "value": "feather", "label": "Feather" }
+        ] },
+        { "type": "image_picker", "id": "image", "label": "Image (replaces icon)" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Comfort in Your Daily Routine" },
+        { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Easy to fit into mornings, breaks and evenings.</p>" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product benefits",
+      "blocks": [
+        { "type": "benefit", "settings": { "icon": "clock", "title": "Comfort in Your Daily Routine", "text": "<p>Easy to fit into mornings, work breaks and evenings.</p>" } },
+        { "type": "benefit", "settings": { "icon": "home", "title": "Relaxation at Home", "text": "<p>A calming ritual on your own time, in your own space.</p>" } },
+        { "type": "benefit", "settings": { "icon": "hand", "title": "Thoughtful Ergonomic Design", "text": "<p>Forms shaped around how people actually sit, rest and move.</p>" } },
+        { "type": "benefit", "settings": { "icon": "feather", "title": "Convenient Everyday Use", "text": "<p>Intuitive controls and simple care, so comfort is effortless.</p>" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

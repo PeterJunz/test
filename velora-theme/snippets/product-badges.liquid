@@ -1,0 +1,21 @@
+{%- comment -%} Badges derived from real product data and merchant tags. Param: product {%- endcomment -%}
+{%- liquid
+  assign prefix = settings.card_badge_tag_prefix | default: 'badge:'
+  assign custom_badge = ''
+  for tag in product.tags
+    if tag contains prefix
+      assign custom_badge = tag | remove_first: prefix | strip
+      break
+    endif
+  endfor
+-%}
+<div class="badges">
+  {%- if product.available == false and settings.card_show_soldout_badge -%}
+    <span class="badge badge--muted">{{ 'products.product.sold_out' | t }}</span>
+  {%- elsif product.compare_at_price > product.price and settings.card_show_sale_badge -%}
+    <span class="badge badge--sale">{{ 'products.product.on_sale' | t }}</span>
+  {%- endif -%}
+  {%- if custom_badge != blank -%}
+    <span class="badge badge--accent">{{ custom_badge | escape }}</span>
+  {%- endif -%}
+</div>

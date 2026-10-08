@@ -1,0 +1,31 @@
+{%- comment -%}
+  Privacy-friendly: product handles are kept only in the visitor's own browser
+  (localStorage, max 8 items). Nothing is sent to third parties.
+{%- endcomment -%}
+<recently-viewed class="section recent scheme-{{ section.settings.color_scheme }}" data-limit="{{ section.settings.limit }}" data-current="{{ product.handle }}" hidden>
+  <div class="page-width page-width--wide">
+    {% render 'section-heading', eyebrow: section.settings.eyebrow, heading: section.settings.heading %}
+    <ul class="product-grid product-grid--4 product-grid--scroll" role="list" data-recent-list></ul>
+  </div>
+</recently-viewed>
+
+{% schema %}
+{
+  "name": "Recently viewed",
+  "tag": "section",
+  "class": "section-recent",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Recently viewed" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Pick up <em>where you left off</em>" },
+    { "type": "range", "id": "limit", "label": "Products", "min": 2, "max": 8, "step": 1, "default": 4 },
+    { "type": "select", "id": "color_scheme", "label": "Color scheme", "default": "white", "options": [
+      { "value": "light", "label": "Ivory" },
+      { "value": "white", "label": "White" },
+      { "value": "sage", "label": "Sage" },
+      { "value": "dark", "label": "Midnight" }
+    ] },
+    { "type": "paragraph", "content": "Viewed products are remembered only in the shopper's own browser." }
+  ],
+  "presets": [{ "name": "Recently viewed" }]
+}
+{% endschema %}

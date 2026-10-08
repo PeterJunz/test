@@ -1,0 +1,66 @@
+{%- assign s = section.settings -%}
+<section class="section faq scheme-{{ s.color_scheme }}">
+  <div class="page-width faq__grid">
+    <div class="faq__intro">
+      {% render 'section-heading', eyebrow: s.eyebrow, heading: s.heading, text: s.text %}
+      {%- if s.contact_label != blank and s.contact_link != blank -%}
+        <a href="{{ s.contact_link }}" class="btn btn--ghost" data-reveal>{{ s.contact_label | escape }}</a>
+      {%- endif -%}
+    </div>
+    <div class="faq__list">
+      {%- for block in section.blocks -%}
+        <details class="accordion" data-reveal {{ block.shopify_attributes }}>
+          <summary class="accordion__summary">
+            <span>{{ block.settings.question | escape }}</span>
+            <span class="accordion__icon" aria-hidden="true"></span>
+          </summary>
+          <div class="accordion__content rte">{{ block.settings.answer }}</div>
+        </details>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "FAQ",
+  "class": "section-faq",
+  "max_blocks": 20,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Questions" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Good to <em>know</em>" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Answers based on our store policies and product guides.</p>" },
+    { "type": "text", "id": "contact_label", "label": "Contact button label", "default": "Contact support" },
+    { "type": "url", "id": "contact_link", "label": "Contact button link" },
+    { "type": "select", "id": "color_scheme", "label": "Color scheme", "default": "white", "options": [
+      { "value": "light", "label": "Ivory" },
+      { "value": "white", "label": "White" },
+      { "value": "sage", "label": "Sage" },
+      { "value": "dark", "label": "Midnight" }
+    ] }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question", "default": "How do I use my massager?" },
+        { "type": "richtext", "id": "answer", "label": "Answer", "default": "<p>Add the answer from your product manual or store policy.</p>" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ",
+      "blocks": [
+        { "type": "question", "settings": { "question": "How do I use my massager?", "answer": "<p>Add usage guidance from the product manual, including recommended session length.</p>" } },
+        { "type": "question", "settings": { "question": "Is it right for me?", "answer": "<p>Share who the product is designed for. Recommend consulting a healthcare professional if customers are pregnant, have a medical condition or use an implanted device.</p>" } },
+        { "type": "question", "settings": { "question": "How do I clean and care for it?", "answer": "<p>Add care instructions from the manufacturer.</p>" } },
+        { "type": "question", "settings": { "question": "When will my order ship?", "answer": "<p>Summarize your shipping policy and link to the full policy.</p>" } },
+        { "type": "question", "settings": { "question": "What is your return policy?", "answer": "<p>Summarize your refund policy and link to the full policy.</p>" } },
+        { "type": "question", "settings": { "question": "Is there a warranty?", "answer": "<p>Describe the warranty only if one is offered by you or the manufacturer.</p>" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

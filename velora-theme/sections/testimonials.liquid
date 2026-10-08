@@ -1,0 +1,83 @@
+{%- comment -%}
+  Shows ONLY merchant-entered, genuine customer reviews or a review app block.
+  If no blocks exist, the section renders an optional, non-deceptive brand message.
+{%- endcomment -%}
+{%- assign s = section.settings -%}
+{%- if section.blocks.size > 0 or s.fallback_message != blank -%}
+<section class="section reviews scheme-{{ s.color_scheme }}">
+  <div class="page-width page-width--wide">
+    {% render 'section-heading', eyebrow: s.eyebrow, heading: s.heading, text: s.text %}
+
+    {%- if section.blocks.size > 0 -%}
+      <ul class="reviews__track" role="list">
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when '@app' -%}
+              <li class="reviews__app">{% render block %}</li>
+            {%- when 'review' -%}
+              <li class="review" data-reveal style="--i: {{ forloop.index0 | modulo: 3 }};" {{ block.shopify_attributes }}>
+                <figure>
+                  {%- if block.settings.rating > 0 -%}
+                    {%- assign pct = block.settings.rating | times: 20 -%}
+                    <p class="rating">
+                      <span class="rating__stars" style="--pct: {{ pct }}%;" aria-hidden="true"></span>
+                      <span class="visually-hidden">{{ 'products.product.rating' | t: rating: block.settings.rating, max: 5 }}</span>
+                    </p>
+                  {%- endif -%}
+                  <blockquote class="review__quote">{{ block.settings.quote }}</blockquote>
+                  <figcaption class="review__by">
+                    <strong>{{ block.settings.author | escape }}</strong>
+                    {%- if block.settings.verified -%}<span class="badge badge--accent">{{ 'sections.reviews.verified' | t }}</span>{%- endif -%}
+                    {%- if block.settings.product != blank -%}
+                      <a href="{{ block.settings.product.url }}" class="muted">{{ block.settings.product.title | escape }}</a>
+                    {%- endif -%}
+                  </figcaption>
+                </figure>
+              </li>
+          {%- endcase -%}
+        {%- endfor -%}
+      </ul>
+    {%- else -%}
+      <div class="reviews__fallback rte" data-reveal>{{ s.fallback_message }}</div>
+    {%- endif -%}
+  </div>
+</section>
+{%- elsif request.design_mode -%}
+  <div class="page-width section"><p class="empty-note">{{ 'sections.reviews.editor_hint' | t }}</p></div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Customer reviews",
+  "class": "section-reviews",
+  "max_blocks": 12,
+  "settings": [
+    { "type": "paragraph", "content": "Add only genuine reviews from real customers (with their permission), or add a review app block. Never fabricate reviews or ratings." },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "In their words" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Loved at <em>home</em>" },
+    { "type": "richtext", "id": "text", "label": "Text" },
+    { "type": "richtext", "id": "fallback_message", "label": "Message when no reviews are added", "info": "Leave empty to hide the section entirely until reviews exist." },
+    { "type": "select", "id": "color_scheme", "label": "Color scheme", "default": "light", "options": [
+      { "value": "light", "label": "Ivory" },
+      { "value": "white", "label": "White" },
+      { "value": "sage", "label": "Sage" },
+      { "value": "dark", "label": "Midnight" }
+    ] }
+  ],
+  "blocks": [
+    { "type": "@app" },
+    {
+      "type": "review",
+      "name": "Customer review",
+      "settings": [
+        { "type": "richtext", "id": "quote", "label": "Review text" },
+        { "type": "text", "id": "author", "label": "Customer name" },
+        { "type": "range", "id": "rating", "label": "Star rating given by the customer", "min": 0, "max": 5, "step": 1, "default": 0, "info": "0 hides the stars." },
+        { "type": "checkbox", "id": "verified", "label": "Verified purchase", "default": false, "info": "Enable only if you have confirmed the purchase." },
+        { "type": "product", "id": "product", "label": "Reviewed product" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Customer reviews" }]
+}
+{% endschema %}

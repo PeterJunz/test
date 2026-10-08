@@ -1,0 +1,22 @@
+{%- comment -%}
+  Renders a rating ONLY when genuine data exists in the standard reviews metafields
+  (reviews.rating / reviews.rating_count), written by compatible review apps.
+  Param: product
+{%- endcomment -%}
+{%- assign rating = product.metafields.reviews.rating.value -%}
+{%- if rating != blank -%}
+  {%- liquid
+    assign rating_value = rating.rating | round: 1
+    assign rating_max = rating.scale_max
+    assign rating_count = product.metafields.reviews.rating_count.value
+    assign pct = rating.rating | divided_by: rating.scale_max | times: 100.0
+  -%}
+  <div class="rating" title="{{ 'products.product.rating' | t: rating: rating_value, max: rating_max }}">
+    <span class="rating__stars" style="--pct: {{ pct }}%;" aria-hidden="true"></span>
+    <span class="visually-hidden">{{ 'products.product.rating' | t: rating: rating_value, max: rating_max }}</span>
+    <span class="rating__value" aria-hidden="true">{{ rating_value }}</span>
+    {%- if rating_count != blank -%}
+      <span class="rating__count">({{ rating_count }})</span>
+    {%- endif -%}
+  </div>
+{%- endif -%}

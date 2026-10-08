@@ -1,0 +1,59 @@
+<div class="section cart-page" id="MainCart-{{ section.id }}" data-cart-page data-section-id="{{ section.id }}" data-count="{{ cart.item_count }}">
+  <div class="page-width page-width--wide">
+    <header class="cart-page__head">
+      <h1 class="h1 display">{{ 'cart.title' | t }}</h1>
+      {%- if cart.item_count > 0 -%}<a href="{{ routes.all_products_collection_url }}" class="link-arrow">{{ 'cart.continue' | t }} {% render 'icon', name: 'arrow-right', size: 18 %}</a>{%- endif -%}
+    </header>
+
+    {%- if cart.item_count > 0 -%}
+      <form action="{{ routes.cart_url }}" method="post" id="CartPageForm" class="cart-page__grid" novalidate>
+        <div class="cart-page__items">
+          <ul class="lines lines--page" role="list">
+            {%- for item in cart.items -%}
+              {% render 'cart-line', item: item, index: forloop.index, context: 'page' %}
+            {%- endfor -%}
+          </ul>
+          <noscript><button type="submit" name="update" class="btn btn--ghost">{{ 'cart.update' | t }}</button></noscript>
+        </div>
+
+        <aside class="cart-page__summary" aria-label="{{ 'cart.summary' | t }}">
+          <div class="summary-card">
+            <h2 class="h4">{{ 'cart.summary' | t }}</h2>
+            {%- if section.settings.show_note or settings.cart_show_note -%}
+              <label class="field-label" for="CartPageNote">{{ 'cart.note' | t }}</label>
+              <textarea id="CartPageNote" name="note" rows="3" data-cart-note>{{ cart.note }}</textarea>
+            {%- endif -%}
+            {% render 'cart-summary' %}
+            <p class="muted cart-page__discount-note">{{ 'cart.discount_note' | t }}</p>
+            <button type="submit" name="checkout" class="btn btn--primary btn--block btn--lg">
+              {{ 'cart.checkout' | t }} {% render 'icon', name: 'arrow-right', size: 18 %}
+            </button>
+            {%- if additional_checkout_buttons and section.settings.show_dynamic -%}
+              <div class="cart-page__dynamic">{{ content_for_additional_checkout_buttons }}</div>
+            {%- endif -%}
+          </div>
+        </aside>
+      </form>
+    {%- else -%}
+      <div class="empty-state">
+        <div class="cart-empty__orb" aria-hidden="true"></div>
+        <p class="h2 display">{{ 'cart.empty' | t }}</p>
+        <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary btn--lg">{{ 'cart.continue' | t }}</a>
+        {%- if shop.customer_accounts_enabled and customer == nil -%}
+          <p class="muted">{{ 'cart.login_html' | t: link: routes.account_login_url }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Cart",
+  "class": "section-main-cart",
+  "settings": [
+    { "type": "checkbox", "id": "show_note", "label": "Enable order note", "default": false },
+    { "type": "checkbox", "id": "show_dynamic", "label": "Show accelerated checkout buttons", "default": true }
+  ]
+}
+{% endschema %}

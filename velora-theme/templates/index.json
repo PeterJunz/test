@@ -1,0 +1,366 @@
+{
+  "sections": {
+    "hero": {
+      "type": "immersive-hero",
+      "blocks": {
+        "chip-1": {
+          "type": "chip",
+          "settings": {
+            "icon": "sparkle",
+            "title": "Ergonomic form",
+            "text": "Shaped to rest naturally",
+            "pos_x": 2,
+            "pos_y": 66,
+            "depth": 85,
+            "style": "glass"
+          }
+        },
+        "chip-2": {
+          "type": "chip",
+          "settings": {
+            "icon": "home",
+            "title": "Made for home",
+            "text": "Unwind on your schedule",
+            "pos_x": 70,
+            "pos_y": 72,
+            "depth": 70,
+            "style": "solid"
+          }
+        },
+        "chip-3": {
+          "type": "chip",
+          "settings": {
+            "icon": "feather",
+            "title": "Calm by design",
+            "text": "Quiet, considered details",
+            "pos_x": 74,
+            "pos_y": 12,
+            "depth": 45,
+            "style": "glass"
+          }
+        }
+      },
+      "block_order": [
+        "chip-1",
+        "chip-2",
+        "chip-3"
+      ],
+      "settings": {
+        "eyebrow": "The at-home wellness collection",
+        "heading": "Relaxation, <em>reimagined.</em>",
+        "button_label": "Shop Best Sellers",
+        "button_link": "shopify://collections/all",
+        "button_label_2": "Explore Our Technology",
+        "fallback_visual": "neck",
+        "backdrop_word": "CALM",
+        "color_scheme": "dark",
+        "layout": "split",
+        "height": "full",
+        "depth_intensity": 6
+      }
+    },
+    "trust": {
+      "type": "trust-bar",
+      "blocks": {
+        "t1": {
+          "type": "item",
+          "settings": {
+            "icon": "sparkle",
+            "title": "Designed for Everyday Comfort"
+          }
+        },
+        "t2": {
+          "type": "item",
+          "settings": {
+            "icon": "home",
+            "title": "Convenient At-Home Relaxation"
+          }
+        },
+        "t3": {
+          "type": "item",
+          "settings": {
+            "icon": "hand",
+            "title": "Thoughtful Product Design"
+          }
+        },
+        "t4": {
+          "type": "item",
+          "settings": {
+            "icon": "chat",
+            "title": "Support When You Need It"
+          }
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2",
+        "t3",
+        "t4"
+      ],
+      "settings": {
+        "color_scheme": "light"
+      }
+    },
+    "areas": {
+      "type": "body-areas",
+      "blocks": {
+        "a1": {
+          "type": "area",
+          "settings": {
+            "title": "Neck & Shoulders",
+            "text": "Unwind the areas that carry your day.",
+            "art": "neck"
+          }
+        },
+        "a2": {
+          "type": "area",
+          "settings": {
+            "title": "Back & Lumbar",
+            "text": "Support for long desk days and slow evenings.",
+            "art": "back"
+          }
+        },
+        "a3": {
+          "type": "area",
+          "settings": {
+            "title": "Feet & Legs",
+            "text": "A restful reset after time on your feet.",
+            "art": "feet"
+          }
+        },
+        "a4": {
+          "type": "area",
+          "settings": {
+            "title": "Full Body",
+            "text": "Cushions and seats for a complete wind-down.",
+            "art": "full"
+          }
+        },
+        "a5": {
+          "type": "area",
+          "settings": {
+            "title": "Portable Massage",
+            "text": "Compact comfort for home, office and travel.",
+            "art": "portable"
+          }
+        }
+      },
+      "block_order": [
+        "a1",
+        "a2",
+        "a3",
+        "a4",
+        "a5"
+      ],
+      "settings": {
+        "color_scheme": "light"
+      }
+    },
+    "best-sellers": {
+      "type": "featured-collection",
+      "settings": {
+        "limit": 4,
+        "columns": "4",
+        "color_scheme": "white"
+      }
+    },
+    "spotlight": {
+      "type": "product-spotlight",
+      "blocks": {
+        "f1": {
+          "type": "feature",
+          "settings": {
+            "icon": "wave",
+            "title": "Multiple massage modes",
+            "text": "Replace with this product's real specification."
+          }
+        },
+        "f2": {
+          "type": "feature",
+          "settings": {
+            "icon": "battery",
+            "title": "Cordless convenience",
+            "text": "Replace with this product's real specification."
+          }
+        },
+        "f3": {
+          "type": "feature",
+          "settings": {
+            "icon": "feather",
+            "title": "Considered ergonomics",
+            "text": "Replace with this product's real specification."
+          }
+        },
+        "h1": {
+          "type": "hotspot",
+          "settings": {
+            "title": "Interchangeable heads",
+            "pos_x": 84,
+            "pos_y": 36
+          }
+        },
+        "h2": {
+          "type": "hotspot",
+          "settings": {
+            "title": "Simple controls",
+            "pos_x": 36,
+            "pos_y": 37
+          }
+        }
+      },
+      "block_order": [
+        "f1",
+        "f2",
+        "f3",
+        "h1",
+        "h2"
+      ],
+      "settings": {
+        "fallback_visual": "gun",
+        "color_scheme": "dark"
+      }
+    },
+    "benefits": {
+      "type": "benefits",
+      "blocks": {
+        "b1": {
+          "type": "benefit",
+          "settings": {
+            "icon": "clock",
+            "title": "Comfort in Your Daily Routine",
+            "text": "<p>Easy to fit into mornings, work breaks and evenings.</p>"
+          }
+        },
+        "b2": {
+          "type": "benefit",
+          "settings": {
+            "icon": "home",
+            "title": "Relaxation at Home",
+            "text": "<p>A calming ritual on your own time, in your own space.</p>"
+          }
+        },
+        "b3": {
+          "type": "benefit",
+          "settings": {
+            "icon": "hand",
+            "title": "Thoughtful Ergonomic Design",
+            "text": "<p>Forms shaped around how people actually sit, rest and move.</p>"
+          }
+        },
+        "b4": {
+          "type": "benefit",
+          "settings": {
+            "icon": "feather",
+            "title": "Convenient Everyday Use",
+            "text": "<p>Intuitive controls and simple care, so comfort is effortless.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4"
+      ],
+      "settings": {
+        "color_scheme": "sage"
+      }
+    },
+    "story": {
+      "type": "brand-story",
+      "settings": {
+        "heading": "Make space <em>for comfort.</em>",
+        "color_scheme": "light"
+      }
+    },
+    "compare": {
+      "type": "comparison",
+      "settings": {
+        "color_scheme": "white"
+      }
+    },
+    "reviews": {
+      "type": "testimonials",
+      "settings": {
+        "color_scheme": "light"
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "How do I use my massager?",
+            "answer": "<p>Add usage guidance from the product manual, including recommended session length.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "Is it right for me?",
+            "answer": "<p>Share who the product is designed for. Recommend consulting a healthcare professional if customers are pregnant, have a medical condition or use an implanted device.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "How do I clean and care for it?",
+            "answer": "<p>Add care instructions from the manufacturer.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "When will my order ship?",
+            "answer": "<p>Summarize your shipping policy and link to the full policy.</p>"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "<p>Summarize your refund policy and link to the full policy.</p>"
+          }
+        },
+        "q6": {
+          "type": "question",
+          "settings": {
+            "question": "Is there a warranty?",
+            "answer": "<p>Describe the warranty only if one is offered by you or the manufacturer.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5",
+        "q6"
+      ],
+      "settings": {
+        "color_scheme": "white"
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "color_scheme": "sage"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "trust",
+    "areas",
+    "best-sellers",
+    "spotlight",
+    "benefits",
+    "story",
+    "compare",
+    "reviews",
+    "faq",
+    "newsletter"
+  ]
+}

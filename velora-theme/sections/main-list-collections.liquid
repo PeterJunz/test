@@ -1,0 +1,39 @@
+<div class="section list-collections">
+  <div class="page-width page-width--wide">
+    {% render 'section-heading', eyebrow: section.settings.eyebrow, heading: section.settings.heading, tag: 'h1' %}
+    {%- paginate collections by 24 -%}
+      <ul class="areas__grid areas__grid--3" role="list">
+        {%- for c in collections -%}
+          <li class="area-card" data-reveal style="--i: {{ forloop.index0 | modulo: 3 }};">
+            <div class="area-card__inner" data-tilt>
+              <div class="area-card__media">
+                {%- if c.featured_image -%}
+                  {{ c.featured_image | image_url: width: 1000 | image_tag: widths: '400, 600, 800, 1000', sizes: '(min-width: 990px) 33vw, 90vw', loading: 'lazy', alt: c.featured_image.alt | default: c.title }}
+                {%- else -%}
+                  <div class="area-card__art">{% render 'body-area-art', area: 'full' %}</div>
+                {%- endif -%}
+              </div>
+              <div class="area-card__body">
+                <h2 class="h3 area-card__title"><a href="{{ c.url }}" class="stretched-link">{{ c.title | escape }}</a></h2>
+                <p class="area-card__text">{{ 'collections.product_count' | t: count: c.products_count }}</p>
+                <span class="area-card__cta" aria-hidden="true">{% render 'icon', name: 'arrow-up-right', size: 20 %}</span>
+              </div>
+            </div>
+          </li>
+        {%- endfor -%}
+      </ul>
+      {% render 'pagination', paginate: paginate %}
+    {%- endpaginate -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Collections list",
+  "class": "section-list-collections",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Browse" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "All <em>collections</em>" }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,56 @@
+{%- if predictive_search.performed -%}
+  <div class="predictive__results" data-results-count="{{ predictive_search.resources.products.size | plus: predictive_search.resources.collections.size | plus: predictive_search.resources.pages.size }}">
+    {%- if predictive_search.resources.queries.size > 0 -%}
+      <div class="predictive__group">
+        <p class="eyebrow">{{ 'search.suggestions' | t }}</p>
+        <ul role="listbox" class="predictive__queries">
+          {%- for q in predictive_search.resources.queries -%}
+            <li role="option"><a href="{{ q.url }}">{{ q.styled_text }}</a></li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+    {%- if predictive_search.resources.products.size > 0 -%}
+      <div class="predictive__group">
+        <p class="eyebrow">{{ 'search.products' | t }}</p>
+        <ul role="listbox" class="predictive__products">
+          {%- for p in predictive_search.resources.products limit: 6 -%}
+            <li role="option">
+              <a href="{{ p.url }}" class="mini-product">
+                {%- if p.featured_media -%}
+                  {{ p.featured_media.preview_image | image_url: width: 160 | image_tag: loading: 'lazy', alt: '' }}
+                {%- endif -%}
+                <span>{{ p.title | escape }}</span>
+                {% render 'price', product: p, show_from: true %}
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+    {%- if predictive_search.resources.collections.size > 0 or predictive_search.resources.pages.size > 0 -%}
+      <div class="predictive__group">
+        <p class="eyebrow">{{ 'search.pages' | t }}</p>
+        <ul role="listbox" class="predictive__queries">
+          {%- for c in predictive_search.resources.collections limit: 4 -%}
+            <li role="option"><a href="{{ c.url }}">{{ c.title | escape }}</a></li>
+          {%- endfor -%}
+          {%- for pg in predictive_search.resources.pages limit: 4 -%}
+            <li role="option"><a href="{{ pg.url }}">{{ pg.title | escape }}</a></li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+    <a href="{{ routes.search_url }}?q={{ predictive_search.terms | url_encode }}&options%5Bprefix%5D=last" class="btn btn--ghost btn--block predictive__all">
+      {%- assign safe_terms = predictive_search.terms | escape -%}
+      {{ 'search.view_all' | t: terms: safe_terms }}
+    </a>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Predictive search",
+  "settings": []
+}
+{% endschema %}

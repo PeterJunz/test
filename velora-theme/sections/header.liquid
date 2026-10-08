@@ -1,0 +1,150 @@
+{%- liquid
+  assign menu = section.settings.menu
+  assign transparent = false
+  if section.settings.transparent_on_home and request.page_type == 'index'
+    assign transparent = true
+  endif
+-%}
+<header-component
+  class="header-wrap{% if section.settings.sticky %} header-wrap--sticky{% endif %}{% if transparent %} header-wrap--transparent{% endif %}"
+  data-sticky="{{ section.settings.sticky }}"
+>
+  <header class="header page-width page-width--wide">
+    <div class="header__start">
+      <button type="button" class="icon-btn header__menu-btn" aria-controls="MenuDrawer" aria-expanded="false" data-menu-open>
+        {% render 'icon', name: 'menu', size: 24 %}
+        <span class="visually-hidden">{{ 'header.menu' | t }}</span>
+      </button>
+
+      <div class="header__brand">
+        <a href="{{ routes.root_url }}" class="header__logo" style="--logo-w: {{ settings.logo_width }}px;">
+          {%- if settings.logo != blank -%}
+            {%- assign logo_alt = settings.logo.alt | default: shop.name -%}
+            {%- assign logo_sizes = settings.logo_width | append: 'px' -%}
+            {{ settings.logo | image_url: width: 520 | image_tag: class: 'header__logo-img header__logo-img--default', alt: logo_alt, widths: '260, 520', sizes: logo_sizes, loading: 'eager' }}
+            {%- if settings.logo_inverse != blank -%}
+              {{ settings.logo_inverse | image_url: width: 520 | image_tag: class: 'header__logo-img header__logo-img--inverse', alt: logo_alt, widths: '260, 520', sizes: logo_sizes, loading: 'eager' }}
+            {%- endif -%}
+          {%- else -%}
+            <span class="wordmark">{{ settings.brand_wordmark | default: shop.name | escape }}</span>
+            <span class="visually-hidden">{{ shop.name }}</span>
+          {%- endif -%}
+        </a>
+      </div>
+    </div>
+
+    <nav class="header__nav" aria-label="{{ 'header.primary' | t }}">
+      <ul class="nav" role="list">
+        {%- for link in menu.links -%}
+          <li class="nav__item">
+            {%- if link.links.size > 0 -%}
+              <details class="nav__dropdown" data-dropdown>
+                <summary class="nav__link{% if link.child_active %} is-active{% endif %}">
+                  {{ link.title | escape }} {% render 'icon', name: 'chevron-down', size: 14 %}
+                </summary>
+                <div class="nav__panel">
+                  <ul role="list" class="nav__panel-list">
+                    {%- for child in link.links -%}
+                      <li>
+                        <a href="{{ child.url }}" class="nav__panel-link"{% if child.current %} aria-current="page"{% endif %}>
+                          <span>{{ child.title | escape }}</span>
+                          {% render 'icon', name: 'arrow-up-right', size: 16 %}
+                        </a>
+                        {%- if child.links.size > 0 -%}
+                          <ul role="list" class="nav__sub">
+                            {%- for grandchild in child.links -%}
+                              <li><a href="{{ grandchild.url }}"{% if grandchild.current %} aria-current="page"{% endif %}>{{ grandchild.title | escape }}</a></li>
+                            {%- endfor -%}
+                          </ul>
+                        {%- endif -%}
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                  {%- if section.settings.menu_image != blank -%}
+                    <a href="{{ link.url }}" class="nav__feature">
+                      {{ section.settings.menu_image | image_url: width: 640 | image_tag: loading: 'lazy', widths: '320, 640', sizes: '320px', alt: section.settings.menu_image.alt | default: link.title }}
+                      <span>{{ 'header.view_all' | t }} {{ link.title | escape }}</span>
+                    </a>
+                  {%- endif -%}
+                </div>
+              </details>
+            {%- else -%}
+              <a href="{{ link.url }}" class="nav__link{% if link.active %} is-active{% endif %}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </nav>
+
+    <div class="header__end">
+      <a href="{{ routes.search_url }}" class="icon-btn" data-search-open>
+        {% render 'icon', name: 'search', size: 22 %}
+        <span class="visually-hidden">{{ 'search.title' | t }}</span>
+      </a>
+      {%- if shop.customer_accounts_enabled -%}
+        <a href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}" class="icon-btn header__account">
+          {% render 'icon', name: 'account', size: 22 %}
+          <span class="visually-hidden">{% if customer %}{{ 'customer.account.title' | t }}{% else %}{{ 'customer.login.title' | t }}{% endif %}</span>
+        </a>
+      {%- endif -%}
+      <a href="{{ routes.cart_url }}" class="icon-btn header__cart" data-cart-open aria-haspopup="dialog">
+        {% render 'icon', name: 'cart', size: 22 %}
+        <span class="visually-hidden">{{ 'cart.title' | t }}</span>
+        <span class="cart-count{% if cart.item_count == 0 %} is-empty{% endif %}" data-cart-count aria-hidden="true">{{ cart.item_count }}</span>
+        <span class="visually-hidden" data-cart-count-label>{{ 'cart.item_count' | t: count: cart.item_count }}</span>
+      </a>
+    </div>
+  </header>
+</header-component>
+
+<dialog class="drawer drawer--left menu-drawer" id="MenuDrawer" aria-label="{{ 'header.menu' | t }}" data-drawer>
+  <div class="drawer__inner">
+    <div class="drawer__head">
+      <span class="wordmark">{{ settings.brand_wordmark | default: shop.name | escape }}</span>
+      <button type="button" class="icon-btn" data-drawer-close aria-label="{{ 'general.close' | t }}">{% render 'icon', name: 'close' %}</button>
+    </div>
+    <nav class="drawer__body menu-drawer__nav" aria-label="{{ 'header.mobile' | t }}">
+      <ul role="list">
+        {%- for link in menu.links -%}
+          <li>
+            {%- if link.links.size > 0 -%}
+              <details class="menu-drawer__group">
+                <summary>{{ link.title | escape }} {% render 'icon', name: 'plus', size: 18 %}</summary>
+                <ul role="list">
+                  <li><a href="{{ link.url }}">{{ 'header.view_all' | t }} {{ link.title | escape }}</a></li>
+                  {%- for child in link.links -%}
+                    <li><a href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title | escape }}</a></li>
+                  {%- endfor -%}
+                </ul>
+              </details>
+            {%- else -%}
+              <a href="{{ link.url }}" class="menu-drawer__link"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </nav>
+    <div class="drawer__foot">
+      {%- if shop.customer_accounts_enabled -%}
+        <a href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}" class="btn btn--ghost btn--block">
+          {% render 'icon', name: 'account', size: 18 %}
+          {% if customer %}{{ 'customer.account.title' | t }}{% else %}{{ 'customer.login.title' | t }}{% endif %}
+        </a>
+      {%- endif -%}
+      {% render 'social-icons' %}
+    </div>
+  </div>
+</dialog>
+
+{% schema %}
+{
+  "name": "Header",
+  "class": "section-header",
+  "settings": [
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu", "info": "Recommended: Shop, Shop by Body Area, Best Sellers, Our Technology, Our Story." },
+    { "type": "image_picker", "id": "menu_image", "label": "Dropdown feature image", "info": "Optional image shown in desktop dropdown menus." },
+    { "type": "checkbox", "id": "sticky", "label": "Sticky header", "default": true },
+    { "type": "checkbox", "id": "transparent_on_home", "label": "Transparent over the homepage hero", "default": true, "info": "Becomes solid when the visitor scrolls. Upload a light 'Logo on dark backgrounds' for best results." }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,16 @@
+<section class="section notfound scheme-dark">
+  <div class="hero__ambient" aria-hidden="true"><span class="orb orb--a"></span><span class="orb orb--b"></span></div>
+  <div class="page-width page-width--narrow notfound__inner">
+    <p class="notfound__code display" aria-hidden="true">404</p>
+    <h1 class="h2 display">{{ 'general.404.title' | t }}</h1>
+    <p class="muted">{{ 'general.404.text' | t }}</p>
+    <div class="hero__ctas">
+      <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary btn--lg">{{ 'cart.continue' | t }}</a>
+      <a href="{{ routes.search_url }}" class="btn btn--glass btn--lg">{{ 'search.title' | t }}</a>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{ "name": "404", "class": "section-404", "settings": [] }
+{% endschema %}

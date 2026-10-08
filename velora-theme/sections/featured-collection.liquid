@@ -1,0 +1,61 @@
+{%- liquid
+  assign c = section.settings.collection
+  if c == blank
+    assign c = collections.all
+  endif
+  assign limit = section.settings.limit
+-%}
+<section class="section featured scheme-{{ section.settings.color_scheme }}">
+  <div class="page-width page-width--wide">
+    {%- assign link_url = section.settings.link_url | default: c.url -%}
+    {% render 'section-heading',
+      eyebrow: section.settings.eyebrow,
+      heading: section.settings.heading,
+      text: section.settings.text,
+      link_label: section.settings.link_label,
+      link_url: link_url
+    %}
+    {%- if c != blank and c.products_count > 0 -%}
+      <ul class="product-grid product-grid--{{ section.settings.columns }}{% if section.settings.mobile_scroll %} product-grid--scroll{% endif %}" role="list">
+        {%- for product in c.products limit: limit -%}
+          <li class="product-grid__item" data-reveal style="--i: {{ forloop.index0 | modulo: 4 }};">
+            {%- capture card_uid -%}{{ section.id }}-{{ product.id }}{%- endcapture -%}
+            {% render 'product-card', product: product, uid: card_uid %}
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- else -%}
+      <div class="empty-note">
+        <p>{{ 'sections.featured.empty' | t }}</p>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Featured best sellers",
+  "class": "section-featured",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Best sellers" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "The pieces our customers <em>reach for</em>" },
+    { "type": "richtext", "id": "text", "label": "Text" },
+    { "type": "collection", "id": "collection", "label": "Collection", "info": "Defaults to all products until a collection is selected." },
+    { "type": "range", "id": "limit", "label": "Products to show", "min": 2, "max": 12, "step": 1, "default": 4 },
+    { "type": "select", "id": "columns", "label": "Desktop columns", "default": "4", "options": [
+      { "value": "3", "label": "3" },
+      { "value": "4", "label": "4" }
+    ] },
+    { "type": "checkbox", "id": "mobile_scroll", "label": "Swipe carousel on mobile", "default": true },
+    { "type": "text", "id": "link_label", "label": "Link label", "default": "Shop all" },
+    { "type": "url", "id": "link_url", "label": "Link override" },
+    { "type": "select", "id": "color_scheme", "label": "Color scheme", "default": "white", "options": [
+      { "value": "light", "label": "Ivory" },
+      { "value": "white", "label": "White" },
+      { "value": "sage", "label": "Sage" },
+      { "value": "dark", "label": "Midnight" }
+    ] }
+  ],
+  "presets": [{ "name": "Featured best sellers" }]
+}
+{% endschema %}

@@ -62,3 +62,14 @@ There is no Shopify store or Shopify CLI login here, so these need a check in a 
 3. Add your store policies. Then replace the placeholder FAQ answers, feature text and spotlight copy with real information.
 4. Upload a logo, a transparent hero product image and product photos.
 5. Optional: create the `custom.*` product metafields for specifications and comparison, install a review app (for ratings and review blocks), and add GLB models to product media.
+
+## Update: Clinic style and particle helix hero
+
+- Added `sections/helix-hero.liquid`, `assets/helix.js` (WebGL particles), a *Floating pills* header style with a CTA, and *Clinic* / *Midnight* style presets. The homepage now uses the helix hero by default.
+- Re-ran every check after this change:
+  - Theme Check: **0 offenses**.
+  - Interaction tests: **29/29 passed**. The first run caught a CSS rule that hid the search button on phones; it was fixed before release.
+  - axe-core: **0 violations** on 5 pages.
+  - Horizontal overflow at 1440/820/390/320 px: **none**. The pills header overflowed on tablet and mobile at first; this was fixed by hiding the desktop nav below 1100 px, collapsing the CTA label, and hiding the CTA under 360 px.
+  - The WebGL helix renders in Chromium (SwiftShader) with no JS errors.
+- Not verified: GPU performance on real low-end phones. The particle count is lowered automatically on small screens, and the density setting can reduce it further.

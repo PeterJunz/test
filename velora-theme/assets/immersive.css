@@ -516,3 +516,102 @@ html.no-js .facets__panel-head, html.no-js .facets__done, html.no-js .facets__to
   .pdp__buy-row .qty__input { width: 2.2rem; }
   .pdp__add { padding-inline: 1rem; }
 }
+
+/* ==========================================================================
+   Particle helix hero ("clinic" light style)
+   ========================================================================== */
+.helix-hero {
+  position: relative; overflow: hidden; isolation: isolate;
+  min-height: 100svh; display: flex;
+  background: var(--hx-bg); color: var(--hx-fg);
+  padding-top: calc(var(--header-h) + clamp(2rem, 10vh, 7rem));
+  padding-bottom: clamp(1.5rem, 4vh, 2.75rem);
+}
+.helix-hero__canvas { position: absolute; inset: 0; z-index: -1; display: block; }
+.helix-hero__canvas canvas { width: 100%; height: 100%; display: block; opacity: 0; transition: opacity 1.6s var(--ease-out); }
+.helix-hero__canvas.is-ready canvas { opacity: 1; }
+.helix-hero__fallback-img { display: none; }
+.helix-hero__canvas.is-fallback { background: radial-gradient(40% 55% at 72% 45%, color-mix(in srgb, var(--hx-btn) 22%, transparent), transparent 70%), radial-gradient(30% 40% at 60% 80%, color-mix(in srgb, var(--hx-btn2) 70%, transparent), transparent 70%); }
+.helix-hero__canvas.is-fallback .helix-hero__fallback-img { display: block; position: absolute; right: 0; top: 0; width: 60%; height: 100%; object-fit: cover; }
+.helix-hero__inner { display: flex; flex-direction: column; justify-content: space-between; gap: 3rem; width: 100%; pointer-events: none; }
+.helix-hero__inner a, .helix-hero__inner button { pointer-events: auto; }
+.helix-hero__copy { max-width: 760px; }
+.helix-hero__eyebrow { font-size: var(--fs-small); font-weight: 500; letter-spacing: .02em; color: var(--hx-accent); text-transform: uppercase; margin-bottom: 1.75rem; }
+.helix-hero__title {
+  font-family: var(--font-heading); font-weight: 400; text-transform: none;
+  font-size: calc(clamp(2.4rem, 5.2vw, 4.75rem) * var(--font-heading-scale));
+  line-height: 1.08; letter-spacing: -.025em; max-width: 15ch;
+}
+.helix-hero__title em { font-family: var(--font-accent); font-style: italic; color: var(--hx-accent); }
+.helix-hero__text { margin-top: clamp(1.75rem, 6vh, 4rem); max-width: 44ch; font-size: clamp(.95rem, 1.1vw, 1.05rem); line-height: 1.5; }
+.helix-hero__foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 2rem; padding-top: clamp(1.25rem, 4vh, 3.5rem); border-top: 1px solid color-mix(in srgb, var(--hx-fg) 14%, transparent); }
+.helix-hero__trust { display: flex; align-items: center; gap: 1rem; color: var(--hx-accent); font-size: var(--fs-small); margin-bottom: 1.75rem; }
+.helix-hero__trust span { width: 52px; height: 1px; background: currentColor; }
+.helix-hero__ctas { display: flex; flex-wrap: wrap; gap: .75rem; }
+.hx-btn {
+  display: inline-flex; align-items: center; justify-content: center; min-height: 50px; padding: .75rem 2.1rem; border-radius: 999px;
+  font-size: 1.05rem; letter-spacing: -.01em; border: 1px solid transparent;
+  transition: transform var(--dur-1) var(--ease-out), box-shadow var(--dur-2) var(--ease-out), filter var(--dur-2);
+}
+.hx-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 28px -14px rgba(16, 40, 30, .55); }
+.hx-btn:active { transform: scale(.98); }
+.hx-btn--primary { background: var(--hx-btn); color: #F4F8F2; }
+.hx-btn--soft { background: var(--hx-btn2); color: var(--hx-fg); border-color: color-mix(in srgb, var(--hx-fg) 8%, transparent); }
+.helix-hero__chips { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .45rem; max-width: 520px; }
+.hx-chip {
+  display: inline-flex; align-items: center; min-height: 44px; padding: .55rem 1.6rem; border-radius: 999px;
+  background: color-mix(in srgb, #fff 62%, transparent); border: 1px solid color-mix(in srgb, var(--hx-fg) 10%, transparent);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  font-size: var(--fs-small); color: var(--hx-fg); transition: background-color var(--dur-1), border-color var(--dur-1);
+}
+a.hx-chip:hover { background: #fff; border-color: var(--hx-accent); }
+@media (max-width: 749px) {
+  .helix-hero { padding-top: calc(var(--header-h) + 2.5rem); }
+  .helix-hero__title { max-width: 13ch; }
+  .helix-hero__text { margin-top: 1.25rem; }
+  .helix-hero__foot { flex-direction: column; align-items: stretch; }
+  .helix-hero__chips { justify-content: flex-start; }
+  .hx-chip { min-height: 40px; padding: .45rem 1.1rem; }
+  .hx-btn { flex: 1; padding-inline: 1.25rem; }
+}
+
+/* ---------- Floating "pills" header style ---------- */
+.header-wrap--pills { background: transparent !important; border-color: transparent !important; box-shadow: none !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; color: var(--c-charcoal) !important; --fg: var(--c-charcoal) !important; --fg-rgb: var(--c-charcoal-rgb) !important; }
+.header-wrap--pills .header { padding-top: 14px; }
+.template-index .section-header:has(.header-wrap--pills) { margin-bottom: calc(var(--header-h) * -1 - 14px); }
+.header-wrap--pills .header__start, .header-wrap--pills .header__end { gap: .5rem; }
+.pill-box { display: inline-flex; align-items: center; min-height: 54px; padding: 0 .5rem; border-radius: 14px; background: rgba(255, 255, 255, .78); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: 0 1px 0 rgba(255, 255, 255, .6) inset, 0 8px 24px -16px rgba(16, 40, 30, .35); }
+.header-wrap--pills .header__brand { padding: 0 1.1rem 0 .4rem; gap: .75rem; }
+.header-wrap--pills .header__logo { gap: .75rem; }
+.logo-badge { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 8px; background: var(--c-btn); color: var(--c-btn-text); flex: none; }
+.header-wrap--pills .wordmark { font-family: var(--font-body); letter-spacing: -.01em; text-transform: none; font-weight: 500; font-size: 1.15rem; }
+.header-wrap--pills .header__nav .nav { padding: 0 .75rem; }
+.header-wrap--pills .nav__link { font-size: .95rem; font-weight: 400; }
+.header-wrap--pills .header__nav { justify-self: start; }
+@media (min-width: 1100px) { .header-wrap--pills .header { grid-template-columns: auto 1fr auto; gap: .5rem; } }
+.header-cta { display: inline-flex; align-items: center; gap: 1rem; min-height: 54px; padding: 0 .4rem 0 1.6rem; border-radius: 999px; background: var(--c-btn); color: var(--c-btn-text); font-size: 1.05rem; transition: transform var(--dur-1) var(--ease-out), box-shadow var(--dur-2); }
+.header-cta:hover { transform: translateY(-1px); box-shadow: 0 14px 28px -14px rgba(16, 40, 30, .6); }
+.header-cta__arrow { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: #F2F7A8; color: var(--c-btn); transition: transform var(--dur-2) var(--ease-out); }
+.header-cta:hover .header-cta__arrow { transform: rotate(45deg); }
+.header-wrap--pills .header__end .icon-btn { width: 46px; height: 46px; }
+@media (max-width: 749px) {
+  .header-cta { padding: 0 .3rem; min-height: 46px; }
+  .header-cta__label { display: none; }
+  .header-cta__arrow { width: 38px; height: 38px; }
+  .pill-box { min-height: 46px; }
+  .logo-badge { width: 32px; height: 32px; }
+}
+.header-wrap--pills .header__nav { display: none; }
+@media (min-width: 1100px) { .header-wrap--pills .header__nav { display: inline-flex; } }
+@media (max-width: 1099px) {
+  .header-cta { padding: 0 .3rem; }
+  .header-cta__label { display: none; }
+  .header-wrap--pills .header__menu-btn { background: rgba(255, 255, 255, .78); border-radius: 14px; width: 46px; height: 46px; -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+}
+@media (max-width: 420px) { .header-wrap--pills .header__brand { padding-right: .7rem; } .header-wrap--pills .header__end .icon-btn { width: 40px; } .header-wrap--pills .wordmark { font-size: 1rem; } }
+@media (max-width: 359px) { .header-cta { display: none; } }
+@media (max-width: 749px) {
+  .helix-hero__canvas.is-ready canvas { opacity: .6; }
+  .helix-hero::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(100deg, var(--hx-bg) 18%, color-mix(in srgb, var(--hx-bg) 55%, transparent) 60%, transparent 90%); }
+  .hx-btn { font-size: .95rem; white-space: nowrap; min-height: 48px; }
+}

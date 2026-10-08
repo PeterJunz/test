@@ -1,5 +1,48 @@
 {
   "sections": {
+    "helix": {
+      "type": "helix-hero",
+      "blocks": {
+        "c1": {
+          "type": "chip",
+          "settings": {
+            "label": "Neck & Shoulders"
+          }
+        },
+        "c2": {
+          "type": "chip",
+          "settings": {
+            "label": "Back & Lumbar"
+          }
+        },
+        "c3": {
+          "type": "chip",
+          "settings": {
+            "label": "Feet & Legs"
+          }
+        },
+        "c4": {
+          "type": "chip",
+          "settings": {
+            "label": "Massage Guns"
+          }
+        },
+        "c5": {
+          "type": "chip",
+          "settings": {
+            "label": "Heat Therapy"
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2",
+        "c3",
+        "c4",
+        "c5"
+      ],
+      "settings": {}
+    },
     "hero": {
       "type": "immersive-hero",
       "blocks": {
@@ -57,7 +100,8 @@
         "layout": "split",
         "height": "full",
         "depth_intensity": 6
-      }
+      },
+      "disabled": true
     },
     "trust": {
       "type": "trust-bar",
@@ -351,6 +395,7 @@
     }
   },
   "order": [
+    "helix",
     "hero",
     "trust",
     "areas",

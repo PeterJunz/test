@@ -4,9 +4,13 @@
   if section.settings.transparent_on_home and request.page_type == 'index'
     assign transparent = true
   endif
+  assign pills = false
+  if section.settings.style == 'pills'
+    assign pills = true
+  endif
 -%}
 <header-component
-  class="header-wrap{% if section.settings.sticky %} header-wrap--sticky{% endif %}{% if transparent %} header-wrap--transparent{% endif %}"
+  class="header-wrap{% if section.settings.sticky %} header-wrap--sticky{% endif %}{% if transparent %} header-wrap--transparent{% endif %}{% if pills %} header-wrap--pills{% endif %}"
   data-sticky="{{ section.settings.sticky }}"
 >
   <header class="header page-width page-width--wide">
@@ -16,8 +20,11 @@
         <span class="visually-hidden">{{ 'header.menu' | t }}</span>
       </button>
 
-      <div class="header__brand">
+      <div class="header__brand{% if pills %} pill-box{% endif %}">
         <a href="{{ routes.root_url }}" class="header__logo" style="--logo-w: {{ settings.logo_width }}px;">
+          {%- if pills and section.settings.logo_badge -%}
+            <span class="logo-badge" aria-hidden="true">{% render 'icon', name: 'sparkle', size: 20 %}</span>
+          {%- endif -%}
           {%- if settings.logo != blank -%}
             {%- assign logo_alt = settings.logo.alt | default: shop.name -%}
             {%- assign logo_sizes = settings.logo_width | append: 'px' -%}
@@ -33,7 +40,7 @@
       </div>
     </div>
 
-    <nav class="header__nav" aria-label="{{ 'header.primary' | t }}">
+    <nav class="header__nav{% if pills %} pill-box{% endif %}" aria-label="{{ 'header.primary' | t }}">
       <ul class="nav" role="list">
         {%- for link in menu.links -%}
           <li class="nav__item">
@@ -77,6 +84,7 @@
     </nav>
 
     <div class="header__end">
+      {%- if pills -%}<div class="pill-box">{%- endif -%}
       <a href="{{ routes.search_url }}" class="icon-btn" data-search-open>
         {% render 'icon', name: 'search', size: 22 %}
         <span class="visually-hidden">{{ 'search.title' | t }}</span>
@@ -93,6 +101,13 @@
         <span class="cart-count{% if cart.item_count == 0 %} is-empty{% endif %}" data-cart-count aria-hidden="true">{{ cart.item_count }}</span>
         <span class="visually-hidden" data-cart-count-label>{{ 'cart.item_count' | t: count: cart.item_count }}</span>
       </a>
+      {%- if pills -%}</div>{%- endif -%}
+      {%- if section.settings.cta_label != blank and section.settings.cta_link != blank -%}
+        <a href="{{ section.settings.cta_link }}" class="header-cta" aria-label="{{ section.settings.cta_label | escape }}">
+          <span class="header-cta__label">{{ section.settings.cta_label | escape }}</span>
+          <span class="header-cta__arrow" aria-hidden="true">{% render 'icon', name: 'arrow-up-right', size: 20 %}</span>
+        </a>
+      {%- endif -%}
     </div>
   </header>
 </header-component>
@@ -143,6 +158,13 @@
   "settings": [
     { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu", "info": "Recommended: Shop, Shop by Body Area, Best Sellers, Our Technology, Our Story." },
     { "type": "image_picker", "id": "menu_image", "label": "Dropdown feature image", "info": "Optional image shown in desktop dropdown menus." },
+    { "type": "select", "id": "style", "label": "Header style", "default": "classic", "options": [
+      { "value": "classic", "label": "Classic bar" },
+      { "value": "pills", "label": "Floating pills" }
+    ] },
+    { "type": "checkbox", "id": "logo_badge", "label": "Show logo badge (floating pills)", "default": true },
+    { "type": "text", "id": "cta_label", "label": "Call-to-action button label", "info": "Optional pill button, e.g. Contact us." },
+    { "type": "url", "id": "cta_link", "label": "Call-to-action button link" },
     { "type": "checkbox", "id": "sticky", "label": "Sticky header", "default": true },
     { "type": "checkbox", "id": "transparent_on_home", "label": "Transparent over the homepage hero", "default": true, "info": "Becomes solid when the visitor scrolls. Upload a light 'Logo on dark backgrounds' for best results." }
   ]

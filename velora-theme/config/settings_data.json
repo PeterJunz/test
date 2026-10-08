@@ -1,6 +1,22 @@
 {
-  "current": "Default",
+  "current": "Clinic",
   "presets": {
-    "Default": {}
+    "Clinic": {
+      "color_midnight": "#12261F",
+      "color_ivory": "#EDF2EE",
+      "color_charcoal": "#161B18",
+      "color_white": "#FFFFFF",
+      "color_green": "#9CC2A4",
+      "color_sage": "#DCE7DF",
+      "color_champagne": "#D4E86A",
+      "color_button": "#1F5A45",
+      "color_button_text": "#F4F8F2",
+      "heading_uppercase": false,
+      "heading_weight": 400,
+      "button_style": "pill",
+      "radius_card": 18,
+      "radius_media": 18
+    },
+    "Midnight": {}
   }
 }

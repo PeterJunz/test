@@ -4,7 +4,7 @@ const OUT = path.resolve('out');
 const server = http.createServer((req, res) => { let p = req.url.split('?')[0]; const f = path.join(OUT, p); if (!fs.existsSync(f)) { res.writeHead(404); return res.end(); } res.writeHead(200, {'Content-Type': {'.html':'text/html','.css':'text/css','.js':'text/javascript','.svg':'image/svg+xml'}[path.extname(f)]}); fs.createReadStream(f).pipe(res); }).listen(8771);
 const axeSrc = fs.readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
 (async () => {
-  const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome' });
+  const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome', args: ['--enable-unsafe-swiftshader', '--use-angle=swiftshader'] });
   for (const name of ['index', 'product', 'collection', 'cart', '404']) {
     const p = await b.newPage({ viewport: { width: 1280, height: 900 } });
     await p.emulateMedia({ reducedMotion: 'reduce' });

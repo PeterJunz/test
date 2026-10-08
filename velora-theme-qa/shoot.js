@@ -10,7 +10,7 @@ const server = http.createServer((req, res) => {
   fs.createReadStream(f).pipe(res);
 }).listen(8765);
 (async () => {
-  const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome' });
+  const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome', args: ['--enable-unsafe-swiftshader', '--use-angle=swiftshader'] });
   const pages = (process.argv[2] || 'index,product,collection,cart,404').split(',');
   const sizes = [['desktop', 1440, 900], ['tablet', 820, 1180], ['mobile', 390, 844], ['small', 320, 640]];
   fs.mkdirSync('shots', { recursive: true });

@@ -17,6 +17,7 @@ velora-theme/
 ├── assets/
 │   ├── base.css          Design tokens, color schemes, type, buttons, forms, header, drawers, cards, footer
 │   ├── immersive.css     Hero / 3D depth / motion, homepage sections, PDP, collection, cart, blog, 404, password
+│   ├── helix.js          WebGL particle helix (loaded only by the helix hero)
 │   └── global.js         Cart API, cart drawer, variant picker, gallery, depth scene, reveal, filters, search
 ├── config/
 │   ├── settings_schema.json   Global theme settings (brand, colors, typography, layout, buttons, motion, cards, cart, social)
@@ -36,7 +37,7 @@ velora-theme/
 |---|---------|------|
 | 1 | Announcement bar (static or marquee, with links and colors) | `announcement-bar.liquid` |
 | 2 | Header (sticky, transparent over the hero, dropdowns, mobile drawer) | `header.liquid` |
-| 3 | Immersive hero (layered 3D stage, floating callouts, ambient light) | `immersive-hero.liquid` |
+| 3 | Particle helix hero (WebGL, default) / Immersive hero (CSS 3D, disabled) | `helix-hero.liquid` / `immersive-hero.liquid` |
 | 4 | Trust indicators | `trust-bar.liquid` |
 | 5 | Shop by body area | `body-areas.liquid` |
 | 6 | Featured best sellers (real collection products, quick add) | `featured-collection.liquid` |
@@ -62,6 +63,18 @@ The hero is built in this order, from most to least reliable:
 If no image is uploaded, an original vector "render" of a neck massager, massage gun or cushion is shown, so the store looks finished from day one.
 
 Pointer effects turn off automatically on touch devices, when the **Motion** settings disable them, and when visitors have `prefers-reduced-motion` turned on. Ambient animations pause while their section is off screen.
+
+
+### Particle helix hero and the "Clinic" style (default)
+
+The default homepage uses the **Particle helix hero** (`sections/helix-hero.liquid` + `assets/helix.js`). The style is inspired by light, clinical health-science sites: a mint background, light sentence-case headlines, forest-green and pale-lime pill buttons, category chips, and a floating "pills" header with a *Contact us* button.
+
+- The helix is an original WebGL renderer (~34k particles on desktop, ~14k on mobile). It runs entirely on the GPU, reacts to the cursor, pauses when off screen or when the tab is hidden, and draws a single static frame when the visitor prefers reduced motion. Devices without WebGL get a CSS gradient or an optional fallback image.
+- Editable settings: text, buttons, colors, particle colors, helix path, density, particle size, twists, rotation speed, cursor interaction and category chips (each with its own link).
+- `helix.js` loads only on pages that contain this section.
+- **Theme styles:** `config/settings_data.json` ships two presets. *Clinic* (mint and forest green) is the default; *Midnight* is the original dark/ivory look. To change styles, go to **Theme settings**. The original **Immersive hero** is still in the homepage template but disabled. Turn it on in the editor if you prefer it.
+- **Header style:** *Floating pills* or *Classic bar* (Header section). The CTA button links to `/pages/contact`; Shopify creates that page on new stores. If yours doesn't have one, change the link.
+- **Chip links:** set a link on each category chip to point it at your collections.
 
 ---
 

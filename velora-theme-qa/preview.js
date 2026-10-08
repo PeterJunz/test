@@ -70,6 +70,11 @@ const settings = {};
 for (const group of JSON.parse(fs.readFileSync(path.join(THEME, 'config/settings_schema.json'), 'utf8'))) {
   for (const s of group.settings || []) if ('default' in s) settings[s.id] = s.default;
 }
+{
+  const sd = JSON.parse(fs.readFileSync(path.join(THEME, 'config/settings_data.json'), 'utf8'));
+  const cur = typeof sd.current === 'string' ? (sd.presets || {})[sd.current] : sd.current;
+  Object.assign(settings, cur || {});
+}
 for (const k of Object.keys(settings)) if (/^color_/.test(k)) settings[k] = color(settings[k]);
 settings.type_heading_font = font('"Inter"', 'system-ui, sans-serif');
 settings.type_body_font = font('"Inter"', 'system-ui, sans-serif');
@@ -212,7 +217,7 @@ const sectionHTML = async (type, id, data, extraScope) => {
 const renderGroup = async (name, scope) => {
   const g = JSON.parse(fs.readFileSync(path.join(THEME, 'sections', name + '.json'), 'utf8'));
   let out = '';
-  for (const id of g.order) out += await sectionHTML(g.sections[id].type, id, g.sections[id], scope);
+  for (const id of g.order) if (!g.sections[id].disabled) out += await sectionHTML(g.sections[id].type, id, g.sections[id], scope);
   return out;
 };
 
@@ -236,7 +241,7 @@ const page = async (template, out, pageType, extra = {}) => {
   engine.options.globals = globals;
   const tpl = JSON.parse(fs.readFileSync(path.join(THEME, 'templates', template + '.json'), 'utf8'));
   let content = '';
-  for (const id of tpl.order) content += await sectionHTML(tpl.sections[id].type, id, tpl.sections[id], globals);
+  for (const id of tpl.order) if (!tpl.sections[id].disabled) content += await sectionHTML(tpl.sections[id].type, id, tpl.sections[id], globals);
   const layout = fs.readFileSync(path.join(THEME, 'layout/theme.liquid'), 'utf8');
   const html = await engine.parseAndRender(layout, { ...globals, content_for_layout: content, content_for_header: '' });
   fs.writeFileSync(path.join(OUT, out), html.replace(/<script>\s*document\.documentElement/, '<script>window.Shopify={};document.documentElement'));

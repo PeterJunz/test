@@ -1,0 +1,138 @@
+{%- liquid
+  assign s = section.settings
+  assign heading_tag = 'h2'
+  if s.heading_is_h1
+    assign heading_tag = 'h1'
+  endif
+  assign uid = 'helix-' | append: section.id
+-%}
+<section
+  class="helix-hero"
+  style="--hx-bg: {{ s.background }}; --hx-fg: {{ s.text_color }}; --hx-accent: {{ s.accent_color }}; --hx-btn: {{ s.button_color }}; --hx-btn2: {{ s.button_2_color }};"
+  aria-labelledby="{{ uid }}-title"
+>
+  <particle-helix
+    class="helix-hero__canvas"
+    data-color-a="{{ s.particle_color_a }}"
+    data-color-b="{{ s.particle_color_b }}"
+    data-density="{{ s.density | divided_by: 100.0 }}"
+    data-speed="{{ s.speed | divided_by: 100.0 }}"
+    data-turns="{{ s.turns | divided_by: 10.0 }}"
+    data-size="{{ s.particle_size | divided_by: 10.0 }}"
+    data-force="{% if s.interactive %}1{% else %}0{% endif %}"
+    data-path="{{ s.path }}"
+    aria-hidden="true"
+  >
+    <canvas></canvas>
+    {%- if s.fallback_image != blank -%}
+      {{ s.fallback_image | image_url: width: 1800 | image_tag: widths: '750, 1200, 1800', sizes: '60vw', loading: 'eager', class: 'helix-hero__fallback-img', alt: '' }}
+    {%- endif -%}
+  </particle-helix>
+
+  <div class="page-width page-width--wide helix-hero__inner">
+    <div class="helix-hero__copy">
+      {%- if s.eyebrow != blank -%}
+        <p class="helix-hero__eyebrow anim-rise" style="--delay: .05s;">{{ s.eyebrow | escape }}</p>
+      {%- endif -%}
+      <{{ heading_tag }} id="{{ uid }}-title" class="helix-hero__title anim-rise" style="--delay: .15s;">{{ s.heading }}</{{ heading_tag }}>
+      {%- if s.text != blank -%}
+        <div class="helix-hero__text anim-rise" style="--delay: .3s;">{{ s.text }}</div>
+      {%- endif -%}
+    </div>
+
+    <div class="helix-hero__foot anim-rise" style="--delay: .45s;">
+      <div class="helix-hero__left">
+        {%- if s.trust_text != blank -%}
+          <p class="helix-hero__trust">{{ s.trust_text | escape }}<span aria-hidden="true"></span></p>
+        {%- endif -%}
+        <div class="helix-hero__ctas">
+          {%- if s.button_label != blank and s.button_link != blank -%}
+            <a href="{{ s.button_link }}" class="hx-btn hx-btn--primary">{{ s.button_label | escape }}</a>
+          {%- endif -%}
+          {%- if s.button_label_2 != blank and s.button_link_2 != blank -%}
+            <a href="{{ s.button_link_2 }}" class="hx-btn hx-btn--soft">{{ s.button_label_2 | escape }}</a>
+          {%- endif -%}
+        </div>
+      </div>
+
+      {%- if section.blocks.size > 0 -%}
+        <ul class="helix-hero__chips" role="list">
+          {%- for block in section.blocks -%}
+            <li {{ block.shopify_attributes }}>
+              {%- if block.settings.link != blank -%}
+                <a href="{{ block.settings.link }}" class="hx-chip">{{ block.settings.label | escape }}</a>
+              {%- else -%}
+                <span class="hx-chip">{{ block.settings.label | escape }}</span>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+<script src="{{ 'helix.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "Particle helix hero",
+  "tag": "div",
+  "class": "section-helix-hero",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "header", "content": "Content" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "ABOUT VELORA" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Recovery that starts with understanding your body" },
+    { "type": "checkbox", "id": "heading_is_h1", "label": "Use heading as the page's main H1", "default": true },
+    { "type": "richtext", "id": "text", "label": "Supporting text", "default": "<p>Thoughtfully engineered massagers for your neck, back and feet — designed to bring calm, everyday comfort into your home.</p>" },
+    { "type": "text", "id": "trust_text", "label": "Trust line", "default": "Designed for everyday comfort at home", "info": "Only state facts you can support, e.g. real customer counts or years in business." },
+    { "type": "text", "id": "button_label", "label": "Primary button label", "default": "Shop best sellers" },
+    { "type": "url", "id": "button_link", "label": "Primary button link", "default": "/collections/all" },
+    { "type": "text", "id": "button_label_2", "label": "Secondary button label", "default": "All collections" },
+    { "type": "url", "id": "button_link_2", "label": "Secondary button link", "default": "/collections" },
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "background", "label": "Background", "default": "#E9EFEB" },
+    { "type": "color", "id": "text_color", "label": "Text", "default": "#161B18" },
+    { "type": "color", "id": "accent_color", "label": "Eyebrow & trust line", "default": "#1F5A45" },
+    { "type": "color", "id": "button_color", "label": "Primary button", "default": "#1F5A45" },
+    { "type": "color", "id": "button_2_color", "label": "Secondary button", "default": "#F2F7A8" },
+    { "type": "header", "content": "Particle helix" },
+    { "type": "color", "id": "particle_color_a", "label": "Particle color (deep)", "default": "#1F5A45" },
+    { "type": "color", "id": "particle_color_b", "label": "Particle color (light)", "default": "#B9D95A" },
+    { "type": "select", "id": "path", "label": "Helix path", "default": "right", "options": [
+      { "value": "right", "label": "Sweeping right" },
+      { "value": "center", "label": "Through the center" },
+      { "value": "diagonal", "label": "Diagonal" }
+    ] },
+    { "type": "range", "id": "density", "label": "Particle density", "min": 40, "max": 150, "step": 10, "unit": "%", "default": 100 },
+    { "type": "range", "id": "particle_size", "label": "Particle size", "min": 10, "max": 50, "step": 1, "default": 30 },
+    { "type": "range", "id": "turns", "label": "Twists", "min": 10, "max": 40, "step": 1, "default": 22 },
+    { "type": "range", "id": "speed", "label": "Rotation speed", "min": 0, "max": 200, "step": 10, "unit": "%", "default": 100 },
+    { "type": "checkbox", "id": "interactive", "label": "Particles react to the cursor", "default": true },
+    { "type": "image_picker", "id": "fallback_image", "label": "Fallback image", "info": "Shown only on devices without WebGL." }
+  ],
+  "blocks": [
+    {
+      "type": "chip",
+      "name": "Category chip",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label", "default": "Neck & Shoulders" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Particle helix hero",
+      "blocks": [
+        { "type": "chip", "settings": { "label": "Neck & Shoulders" } },
+        { "type": "chip", "settings": { "label": "Back & Lumbar" } },
+        { "type": "chip", "settings": { "label": "Feet & Legs" } },
+        { "type": "chip", "settings": { "label": "Massage Guns" } },
+        { "type": "chip", "settings": { "label": "Heat Therapy" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

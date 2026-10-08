@@ -5,15 +5,38 @@
     "announcement": {
       "type": "announcement-bar",
       "blocks": {
-        "msg-1": { "type": "message", "settings": { "text": "COMFORT THAT FITS YOUR EVERYDAY LIFE — EXPLORE OUR COLLECTION", "link": "shopify://collections/all" } }
+        "msg-1": {
+          "type": "message",
+          "settings": {
+            "text": "COMFORT THAT FITS YOUR EVERYDAY LIFE \u2014 EXPLORE OUR COLLECTION",
+            "link": "shopify://collections/all"
+          }
+        }
       },
-      "block_order": ["msg-1"],
-      "settings": { "scrolling": false, "background": "#101820", "text_color": "#F7F5F0" }
+      "block_order": [
+        "msg-1"
+      ],
+      "settings": {
+        "scrolling": false,
+        "background": "#1F5A45",
+        "text_color": "#F4F8F2"
+      }
     },
     "header": {
       "type": "header",
-      "settings": { "menu": "main-menu", "sticky": true, "transparent_on_home": true }
+      "settings": {
+        "menu": "main-menu",
+        "sticky": true,
+        "transparent_on_home": true,
+        "style": "pills",
+        "logo_badge": true,
+        "cta_label": "Contact us",
+        "cta_link": "shopify://pages/contact"
+      }
     }
   },
-  "order": ["announcement", "header"]
+  "order": [
+    "announcement",
+    "header"
+  ]
 }

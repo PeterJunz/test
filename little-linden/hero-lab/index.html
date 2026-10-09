@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Little Linden — Hero lab: 10 concepts for approval</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
+  <link rel="stylesheet" href="shared/tokens.css">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-body); line-height: var(--lh-body); -webkit-font-smoothing: antialiased; }
+    header, main { max-width: var(--page-max); margin: 0 auto; padding-inline: var(--gutter); }
+    header { padding-top: clamp(32px, 6vw, 72px); padding-bottom: 20px; }
+    .eyebrow { font-size: var(--fs-xs); letter-spacing: var(--tracking-eyebrow); text-transform: uppercase; color: var(--accent-2); font-weight: 500; }
+    h1 { font-family: var(--font-display); font-weight: 400; font-size: clamp(2.4rem, 5vw, 4.4rem); line-height: 1; letter-spacing: var(--tracking-display); margin: .6rem 0 1rem; }
+    h1 em { color: var(--accent); }
+    .lede { max-width: 72ch; color: var(--fg-muted); margin: 0; }
+    .notes { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1rem; padding: 0; list-style: none; }
+    .notes li { padding: .45rem .85rem; border: 1px dashed var(--line); border-radius: 12px; font-size: var(--fs-sm); color: var(--fg-muted); }
+    main { padding-bottom: 80px; display: grid; gap: 22px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr)); }
+    .demo { display: grid; gap: 12px; padding: 12px; border-radius: var(--r-lg); background: var(--surface); border: 1px solid var(--line); color: inherit; text-decoration: none; transition: transform var(--dur-base) var(--ease-out), box-shadow var(--dur-base); }
+    .demo:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); }
+    .shots { position: relative; border-radius: var(--r-md); overflow: hidden; aspect-ratio: 16 / 10; background: var(--bg-alt); }
+    .shots img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .shots img.m { position: absolute; right: 10px; bottom: 10px; width: 22%; height: auto; border-radius: 10px; border: 2px solid #fff; box-shadow: var(--shadow-soft); }
+    .meta { display: flex; align-items: baseline; gap: .7rem; padding: 0 4px; }
+    .num { font-family: var(--font-display); font-style: italic; color: var(--accent); font-size: 1.4rem; }
+    .name { font-family: var(--font-display); font-size: 1.45rem; }
+    .tech { padding: 0 4px 4px; margin: 0; color: var(--fg-muted); font-size: var(--fs-sm); }
+    :focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+  </style>
+</head>
+<body>
+  <header>
+    <p class="eyebrow">Little Linden (provisional brand) · Phase 3 · Hero lab</p>
+    <h1>Ten hero concepts, <em>awaiting your pick</em></h1>
+    <p class="lede">Each card opens an isolated, working demo built with Three.js (WebGL / GLSL) and GSAP. Only one WebGL scene is ever loaded at a time. Each demo has cursor tilt, a spotlight and foil product card, an animated conic CTA border, parallax depth, blur-to-clear reveals, and animated icons with a neutral counter. Inside a demo, use the bar at the bottom to switch between concepts.</p>
+    <ul class="notes">
+      <li>Prototype only — not integrated into a Shopify theme yet</li>
+      <li>All copy, products and props are DEMO placeholders</li>
+      <li>Thumbnails captured in headless Chromium (software GPU)</li>
+    </ul>
+  </header>
+  <main id="grid" aria-label="Hero demos"></main>
+  <script type="module">
+    import { DEMOS } from './shared/demos.js';
+    document.getElementById('grid').innerHTML = DEMOS.map((d, i) => `
+      <a class="demo" href="demos/${d.slug}/">
+        <span class="shots">
+          <img src="docs/thumbs/${d.slug}.jpg" alt="Desktop preview of ${d.name}" loading="lazy" width="720" height="450">
+          <img class="m" src="docs/thumbs/${d.slug}-m.jpg" alt="Mobile preview of ${d.name}" loading="lazy" width="195" height="422">
+        </span>
+        <span class="meta"><span class="num">${String(i + 1).padStart(2, '0')}</span><span class="name">${d.name}</span></span>
+        <p class="tech">${d.technique}</p>
+      </a>`).join('');
+  </script>
+</body>
+</html>

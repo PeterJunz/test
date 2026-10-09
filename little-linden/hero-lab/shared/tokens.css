@@ -1,0 +1,74 @@
+/* ==========================================================================
+   Little Linden — design tokens (single source of truth)
+   In the Shopify theme these become editable Theme Settings that output the
+   same custom properties (see docs/02-design-system.md).
+   ========================================================================== */
+:root {
+  /* ---- Brand palette (decorative surfaces) ---- */
+  --ll-ivory: #FAF7F2;
+  --ll-cream: #F1E8DC;
+  --ll-sage: #A9B5A0;
+  --ll-rose: #D9B2AE;
+  --ll-taupe: #B7A99A;
+  --ll-charcoal: #282826;
+
+  /* ---- Accessible "ink" companions (text/icons on ivory & cream, ≥ 4.5:1) ---- */
+  --ll-sage-ink: #55624F;   /* 6.05:1 on ivory, 5.33:1 on cream */
+  --ll-rose-ink: #8A524D;   /* 5.79:1 on ivory, 5.10:1 on cream */
+  --ll-taupe-ink: #6E6155;  /* 5.61:1 on ivory, 4.94:1 on cream */
+  --ll-muted: #6B6660;      /* body-secondary, 5.32:1 on ivory */
+
+  /* ---- Semantic roles ---- */
+  --bg: var(--ll-ivory);
+  --bg-alt: var(--ll-cream);
+  --surface: #FFFFFF;
+  --fg: var(--ll-charcoal);
+  --fg-muted: var(--ll-muted);
+  --accent: var(--ll-rose-ink);
+  --accent-2: var(--ll-sage-ink);
+  --line: rgba(40, 40, 38, .12);
+  --focus: #8A524D;
+  --btn-bg: var(--ll-charcoal);
+  --btn-fg: var(--ll-ivory);
+  --sale: #8A524D;           /* sale prices use ink rose — never bright red urgency */
+
+  /* ---- Typography ---- */
+  --font-display: "Instrument Serif", "Cormorant Garamond", Georgia, serif;   /* editorial headlines */
+  --font-body: "DM Sans", "Helvetica Neue", Arial, system-ui, sans-serif;    /* UI, body, buttons */
+  --fs-xs: .75rem;      /* 12 — eyebrows, legal */
+  --fs-sm: .875rem;     /* 14 — meta, buttons */
+  --fs-base: 1rem;      /* 16 — body (never smaller on mobile) */
+  --fs-lg: 1.125rem;    /* 18 — lede */
+  --fs-h4: clamp(1.25rem, 1.6vw, 1.5rem);
+  --fs-h3: clamp(1.6rem, 2.4vw, 2.25rem);
+  --fs-h2: clamp(2.2rem, 4vw, 3.6rem);
+  --fs-h1: clamp(2.8rem, 6.4vw, 6rem);
+  --lh-tight: 1.0;
+  --lh-heading: 1.08;
+  --lh-body: 1.6;
+  --tracking-display: -0.02em;
+  --tracking-eyebrow: 0.18em;
+
+  /* ---- Spacing (4px base, fluid section rhythm) ---- */
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px; --sp-5: 24px;
+  --sp-6: 32px; --sp-7: 48px; --sp-8: 64px; --sp-9: 96px;
+  --section-y: clamp(56px, 9vw, 120px);
+  --gutter: clamp(18px, 4vw, 56px);
+  --page-max: 1440px;
+
+  /* ---- Shape & depth ---- */
+  --r-sm: 10px; --r-md: 18px; --r-lg: 28px; --r-pill: 999px;
+  --shadow-soft: 0 1px 2px rgba(40, 40, 38, .04), 0 18px 40px -24px rgba(40, 40, 38, .25);
+  --shadow-lift: 0 2px 6px rgba(40, 40, 38, .05), 0 32px 60px -28px rgba(40, 40, 38, .35);
+
+  /* ---- Motion ---- */
+  --ease-out: cubic-bezier(.16, 1, .3, 1);
+  --ease-soft: cubic-bezier(.33, 0, .2, 1);
+  --dur-fast: .2s; --dur-base: .45s; --dur-slow: .9s;
+
+  /* ---- Breakpoints (reference — used in media queries) ----
+     sm 480 · md 750 · lg 990 · xl 1200 · xxl 1440 */
+}
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-fast: .001s; --dur-base: .001s; --dur-slow: .001s; }
+}

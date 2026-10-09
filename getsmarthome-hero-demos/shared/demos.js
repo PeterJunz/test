@@ -9,5 +9,6 @@ export const DEMOS = [
   { slug: '07-window-light', name: 'Window Light', technique: 'Projected blinds + leaf-shadow gobo shader with drifting sunbeams' },
   { slug: '08-turntable', name: 'Turntable', technique: 'Three-product turntable carousel with mirrored floor, GSAP step timeline' },
   { slug: '09-ripple-glaze', name: 'Ripple Glaze', technique: 'Render-to-texture + ping-pong height-field ripple simulation following the cursor' },
-  { slug: '10-wood-mosaic', name: 'Wood Mosaic', technique: 'InstancedMesh tile field with GPU wave + cursor bump, cascading intro' }
+  { slug: '10-wood-mosaic', name: 'Wood Mosaic', technique: 'InstancedMesh tile field with GPU wave + cursor bump, cascading intro' },
+  { slug: '11-architectural-grid', name: 'Architectural Grid', technique: 'Infinite anti-aliased GLSL perspective grid, glowing light-ribbon walls, horizon bloom, cursor spotlight' }
 ];

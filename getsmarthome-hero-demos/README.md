@@ -1,4 +1,4 @@
-# GetSmartHome — 10 bản demo Hero Banner 3D (Warm Premium)
+# GetSmartHome — 11 bản demo Hero Banner 3D (Warm Premium)
 
 Đây là 10 bản **prototype hero banner 3D** để chọn cho getsmarthome.net, theo phong cách Warm Premium cho sản phẩm Home & Lifestyle. Mỗi demo là một trang chạy thật, viết bằng **Three.js (WebGL/GLSL) + GSAP**, có responsive cho desktop và mobile.
 
@@ -35,8 +35,8 @@ getsmarthome-hero-demos/
 │   └── 10-wood-mosaic/
 ├── vendor/                    three@0.170.0 (MIT), gsap@3.12.5 (Standard "no charge" license)
 ├── shopify/
-│   ├── sections/gsh-hero-3d.liquid   Section OS 2.0, có setting chọn 1 trong 10 kiểu
-│   └── assets/                       gsh-hero.css + gsh-hero-01.js … gsh-hero-10.js (bản build)
+│   ├── sections/gsh-hero-3d.liquid   Section OS 2.0, có setting chọn 1 trong 11 kiểu
+│   └── assets/                       gsh-hero.css + gsh-hero-01.js … gsh-hero-11.js (bản build)
 ├── tools/
 │   ├── make-pages.mjs         Sinh demos/*/index.html từ một template chung
 │   ├── check.mjs              Kiểm thử headless (Playwright): lỗi console, tràn ngang, reveal, ảnh chụp
@@ -44,7 +44,7 @@ getsmarthome-hero-demos/
 └── docs/screens, docs/thumbs  Ảnh chụp desktop (1440×900) + mobile (390×844)
 ```
 
-## 3. Mười demo
+## 3. Mười một demo
 
 Mọi demo đều có chung các hiệu ứng: **tilt theo chuột** (cảnh 3D và thẻ sản phẩm), **spotlight + foil** (vệt sáng theo con trỏ cùng lớp foil ánh champagne trên thẻ, kèm nguồn sáng trong cảnh 3D đi theo chuột), **parallax** (theo chuột và theo cuộn trang) và **reveal blur** (chữ và canvas hiện dần từ mờ sang nét bằng GSAP).
 
@@ -60,6 +60,7 @@ Mọi demo đều có chung các hiệu ứng: **tilt theo chuột** (cảnh 3D 
 | 08 | Turntable | Bàn xoay 3 sản phẩm trên sàn phản chiếu thật (Reflector); GSAP xoay 120° mỗi 4,2 giây (hoặc bấm vào cảnh / phím ←→); thẻ đổi tên sản phẩm |
 | 09 | Ripple Glaze | Render cảnh vào render target, mô phỏng sóng bằng phương trình sóng ping-pong trên GPU; rê chuột tạo gợn khúc xạ cảnh như men gốm ướt; trên mobile có giọt tự rơi |
 | 10 | Wood Mosaic | Một InstancedMesh khoảng 960 ô gỗ (1 draw call); sóng chạy trên GPU, ô nhô lên dưới con trỏ, intro dạng thác lan toả; rê chuột lên thẻ phát ra một vòng sóng |
+| 11 | Architectural Grid | Lưới phối cảnh vô tận viết bằng GLSL (khử răng cưa bằng `fwidth`, mờ dần vào đường chân trời), hai dải tường ánh sáng cong có vệt sáng phát quang, quầng sáng chân trời, hồ phản chiếu hình elip; camera nghiêng theo chuột, spotlight chạy trên lưới; GSAP vẽ lưới từ chân trời và nâng các dải sáng |
 
 ### Responsive, hiệu năng và khả năng tiếp cận
 - **Mobile:** sản phẩm 3D đặt ở nửa trên màn hình, chữ ở nửa dưới, có gradient nền để chữ dễ đọc. Số hạt, độ chi tiết lưới, độ phân giải render target và DPR (tối đa 1,5) đều được giảm. Trên thiết bị cảm ứng, tilt và parallax tự "trôi" nhẹ vì không có chuột.
@@ -74,9 +75,9 @@ Mọi demo đều có chung các hiệu ứng: **tilt theo chuột** (cảnh 3D 
 
 | Bộ kiểm tra | Kết quả |
 |---|---|
-| Bình thường: 10 demo × (desktop 1440×900 + mobile 390×844) | **20/20 PASS**: WebGL khởi tạo được, không lỗi JS/console/404, không tràn ngang, toàn bộ chữ reveal xong |
-| `MODE=reduced` (prefers-reduced-motion) | **20/20 PASS** |
-| `MODE=nowebgl` (tắt WebGL) | **20/20 PASS**: fallback hoạt động, chữ hiển thị đủ |
+| Bình thường: 11 demo × (desktop 1440×900 + mobile 390×844) | **22/22 PASS**: WebGL khởi tạo được, không lỗi JS/console/404, không tràn ngang, toàn bộ chữ reveal xong |
+| `MODE=reduced` (prefers-reduced-motion) | **22/22 PASS** |
+| `MODE=nowebgl` (tắt WebGL) | **22/22 PASS**: fallback hoạt động, chữ hiển thị đủ |
 | Shopify section `gsh-hero-3d.liquid` (Shopify Theme Check) | 0 lỗi, 3 cảnh báo `RemoteAsset` cho Google Fonts tuỳ chọn (mặc định tắt) |
 | Bundle Shopify 01 / 05 / 09 chạy trong trang mô phỏng section | WebGL chạy, không lỗi JS, không hiện thanh chuyển demo, CSS không ảnh hưởng ra ngoài section |
 

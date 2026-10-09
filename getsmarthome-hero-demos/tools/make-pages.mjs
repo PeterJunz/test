@@ -28,6 +28,7 @@ const PAGES = {
   '07-window-light': { theme: '', eyebrow: 'Kitchen & table', title: 'Slow light. <em>Slow living.</em>', lede: 'Stoneware, wood and warm details for unhurried mornings at home.', kicker: 'Kitchen', product: 'Stoneware Mug', icon: 'mug' },
   '08-turntable': { theme: '', eyebrow: 'Best of the season', title: 'Made for the <em>way you live.</em>', lede: 'A rotating edit of our most-loved pieces for living, dining and unwinding.', kicker: 'Featured', product: 'Arc Table Lamp', icon: 'lamp' },
   '09-ripple-glaze': { theme: '', eyebrow: 'Studio ceramics', title: 'Glazed, poured, <em>perfected.</em>', lede: 'Glossy finishes and organic forms — move your cursor to ripple the glaze.', kicker: 'Ceramics', product: 'Glazed Vase', icon: 'vase' },
+  '11-architectural-grid': { theme: '', eyebrow: 'Spaces that breathe', title: 'Designed for <em>open spaces.</em>', lede: 'Clean lines, warm light and smart essentials that bring calm structure to every room.', kicker: 'Audio', product: 'Smart Speaker', icon: 'speaker' },
   '10-wood-mosaic': { theme: 'theme-dark', eyebrow: 'Natural materials', title: 'Crafted from <em>warm materials.</em>', lede: 'Walnut, linen and brass, brought together in pieces made to last.', kicker: 'Wellness', product: 'Aroma Diffuser', icon: 'diffuser' }
 };
 

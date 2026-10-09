@@ -1,0 +1,121 @@
+{%- comment -%}
+  GetSmartHome — 3D hero banner (Online Store 2.0 section)
+  Requires assets: gsh-hero.css + gsh-hero-XX.js (built with tools/build-shopify.mjs).
+  Only ONE 3D hero per page is supported (the script binds to the first .gsh-hero).
+{%- endcomment -%}
+{%- liquid
+  assign demo = section.settings.demo | default: '01'
+  assign script_name = 'gsh-hero-' | append: demo | append: '.js'
+  assign scheme_class = ''
+  if section.settings.color_scheme == 'dark'
+    assign scheme_class = 'theme-dark'
+  endif
+-%}
+
+{{ 'gsh-hero.css' | asset_url | stylesheet_tag }}
+{%- if section.settings.load_fonts -%}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Inter:wght@400;500&display=swap">
+{%- endif -%}
+
+<section
+  class="gsh-hero {{ scheme_class }}"
+  aria-labelledby="GshHeroTitle-{{ section.id }}"
+  style="min-height: {{ section.settings.height }}svh; --gsh-header-offset: {{ section.settings.top_offset }}px; padding-top: calc({{ section.settings.top_offset }}px + 32px);"
+>
+  <canvas class="gsh-hero__canvas" aria-hidden="true"></canvas>
+  <div class="gsh-hero__fallback" aria-hidden="true"></div>
+  <div class="gsh-hero__grain" aria-hidden="true"></div>
+  <div class="gsh-hero__vignette" aria-hidden="true"></div>
+
+  <div class="gsh-hero__grid">
+    <div class="gsh-hero__copy" data-depth="0.25">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="gsh-eyebrow" data-reveal>{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+      <h1 id="GshHeroTitle-{{ section.id }}" class="gsh-title" data-reveal>{{ section.settings.heading }}</h1>
+      {%- if section.settings.text != blank -%}
+        <p class="gsh-lede" data-reveal>{{ section.settings.text | escape }}</p>
+      {%- endif -%}
+      <div class="gsh-ctas" data-reveal>
+        {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
+          <a class="gsh-btn gsh-btn--primary" href="{{ section.settings.button_link }}">{{ section.settings.button_label | escape }} <span aria-hidden="true">→</span></a>
+        {%- endif -%}
+        {%- if section.settings.button_label_2 != blank and section.settings.button_link_2 != blank -%}
+          <a class="gsh-btn gsh-btn--ghost" href="{{ section.settings.button_link_2 }}">{{ section.settings.button_label_2 | escape }}</a>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- if section.settings.card_name != blank -%}
+      <div class="gsh-hero__side" data-depth="0.6">
+        <div data-reveal>
+          <a class="foil-card" href="{{ section.settings.card_link | default: '#' }}" data-card>
+            <span class="foil-card__media" aria-hidden="true">
+              {%- if section.settings.card_image != blank -%}
+                {{ section.settings.card_image | image_url: width: 640 | image_tag: loading: 'lazy', widths: '320, 640', sizes: '320px', alt: '' }}
+              {%- else -%}
+                <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M50 14c3 20 10 27 30 30-20 3-27 10-30 30-3-20-10-27-30-30 20-3 27-10 30-30z"/></svg>
+              {%- endif -%}
+            </span>
+            <span class="foil-card__row">
+              <span>
+                <span class="foil-card__kicker" data-card-kicker>{{ section.settings.card_kicker | escape }}</span>
+                <span class="foil-card__name" data-card-name style="display:block">{{ section.settings.card_name | escape }}</span>
+              </span>
+              <span class="foil-card__go" aria-hidden="true">↗</span>
+            </span>
+          </a>
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+<noscript><style>.gsh-hero [data-reveal]{opacity:1!important}</style></noscript>
+<script src="{{ script_name | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "3D hero banner",
+  "tag": "div",
+  "class": "section-gsh-hero",
+  "limit": 1,
+  "settings": [
+    { "type": "select", "id": "demo", "label": "3D style", "default": "01", "options": [
+      { "value": "01", "label": "01 Golden Hour Studio" },
+      { "value": "02", "label": "02 Silk Flow" },
+      { "value": "03", "label": "03 Particle Morph" },
+      { "value": "04", "label": "04 Glass & Light" },
+      { "value": "05", "label": "05 Liquid Brass" },
+      { "value": "06", "label": "06 Paper Arches" },
+      { "value": "07", "label": "07 Window Light" },
+      { "value": "08", "label": "08 Turntable" },
+      { "value": "09", "label": "09 Ripple Glaze" },
+      { "value": "10", "label": "10 Wood Mosaic" }
+    ], "info": "Upload only the matching gsh-hero-XX.js asset for the style you use." },
+    { "type": "select", "id": "color_scheme", "label": "Color scheme", "default": "light", "options": [
+      { "value": "light", "label": "Warm light" },
+      { "value": "dark", "label": "Espresso dark" }
+    ], "info": "Recommended dark for 03, 05 and 10." },
+    { "type": "range", "id": "height", "label": "Height", "min": 60, "max": 100, "step": 5, "unit": "%", "default": 100 },
+    { "type": "range", "id": "top_offset", "label": "Space for transparent header", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 80 },
+    { "type": "checkbox", "id": "load_fonts", "label": "Load Fraunces + Inter from Google Fonts", "default": false, "info": "Leave off to use your theme's fonts." },
+    { "type": "header", "content": "Content" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "New season · Living room" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Light that feels like <em>home.</em>" },
+    { "type": "text", "id": "text", "label": "Text", "default": "Warm lighting, tactile ceramics and quiet smart tech — curated for slow evenings in." },
+    { "type": "text", "id": "button_label", "label": "Primary button label", "default": "Shop the collection" },
+    { "type": "url", "id": "button_link", "label": "Primary button link", "default": "/collections/all" },
+    { "type": "text", "id": "button_label_2", "label": "Secondary button label", "default": "Explore rooms" },
+    { "type": "url", "id": "button_link_2", "label": "Secondary button link" },
+    { "type": "header", "content": "Product card (spotlight + foil)" },
+    { "type": "text", "id": "card_kicker", "label": "Kicker", "default": "Lighting" },
+    { "type": "text", "id": "card_name", "label": "Product name", "default": "Arc Table Lamp", "info": "Leave empty to hide the card." },
+    { "type": "url", "id": "card_link", "label": "Product link" },
+    { "type": "image_picker", "id": "card_image", "label": "Product image" }
+  ],
+  "presets": [{ "name": "3D hero banner" }]
+}
+{% endschema %}

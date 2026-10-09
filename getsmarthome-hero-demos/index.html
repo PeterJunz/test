@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GetSmartHome — 10 Hero Banner 3D (bản demo để chọn)</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Inter:wght@400;500&display=swap">
+  <style>
+    :root { --cream: #F6EEE3; --ink: #2B211B; --muted: rgba(43,33,27,.66); --line: rgba(43,33,27,.14); --terracotta: #B4613F; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--cream); color: var(--ink); font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    header { padding: clamp(32px, 6vw, 72px) clamp(18px, 4vw, 56px) 24px; max-width: 1440px; margin: 0 auto; }
+    .eyebrow { font-size: .78rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+    h1 { font-family: Fraunces, Georgia, serif; font-weight: 400; font-size: clamp(2.2rem, 5vw, 4.2rem); line-height: 1; letter-spacing: -.03em; margin: .6rem 0 1rem; }
+    h1 em { color: var(--terracotta); }
+    p.lede { max-width: 70ch; color: var(--muted); line-height: 1.6; margin: 0; }
+    .note { margin-top: 1rem; display: inline-block; padding: .55rem .9rem; border: 1px dashed var(--line); border-radius: 12px; font-size: .85rem; color: var(--muted); }
+    main { max-width: 1440px; margin: 0 auto; padding: 16px clamp(18px, 4vw, 56px) 80px; display: grid; gap: 22px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr)); }
+    .demo { position: relative; display: grid; gap: 12px; padding: 12px; border-radius: 22px; background: #fff8ef; border: 1px solid var(--line); text-decoration: none; color: inherit; transition: transform .5s cubic-bezier(.16,1,.3,1), box-shadow .5s; }
+    .demo:hover { transform: translateY(-4px); box-shadow: 0 30px 60px -30px rgba(29,21,17,.4); }
+    .shots { position: relative; border-radius: 14px; overflow: hidden; aspect-ratio: 16/10; background: #e9dccb; }
+    .shots img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .shots img.m { position: absolute; right: 10px; bottom: 10px; width: 22%; height: auto; border-radius: 10px; box-shadow: 0 10px 24px -8px rgba(0,0,0,.45); border: 2px solid #fff; }
+    .meta { display: flex; align-items: baseline; gap: .7rem; padding: 0 4px; }
+    .num { font-family: Fraunces, Georgia, serif; font-style: italic; color: var(--terracotta); font-size: 1.3rem; }
+    .name { font-family: Fraunces, Georgia, serif; font-size: 1.35rem; }
+    .tech { padding: 0 4px 4px; margin: 0; color: var(--muted); font-size: .9rem; line-height: 1.5; }
+    :focus-visible { outline: 2px solid var(--terracotta); outline-offset: 3px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="eyebrow">getsmarthome.net · Hero banner 3D · Warm Premium</div>
+    <h1>10 bản demo để <em>chọn</em></h1>
+    <p class="lede">Mỗi demo là một hero banner chạy thật bằng Three.js (WebGL / GLSL) và GSAP, với kỹ thuật nền/chuyển động riêng. Tất cả đều có tilt theo chuột, spotlight + foil trên thẻ sản phẩm, parallax và reveal blur. Bấm vào một demo để xem toàn màn hình; dùng thanh dưới cùng để chuyển qua lại.</p>
+    <span class="note">Đây là bản prototype độc lập — chưa được ghép vào website getsmarthome.net. Ảnh thumbnail được chụp bằng trình duyệt headless (GPU giả lập).</span>
+  </header>
+  <main id="grid"></main>
+  <script type="module">
+    import { DEMOS } from './shared/demos.js';
+    const grid = document.getElementById('grid');
+    grid.innerHTML = DEMOS.map((d, i) => `
+      <a class="demo" href="demos/${d.slug}/">
+        <span class="shots">
+          <img src="docs/thumbs/${d.slug}.jpg" alt="Ảnh chụp desktop demo ${d.name}" loading="lazy" width="720" height="450">
+          <img class="m" src="docs/thumbs/${d.slug}-m.jpg" alt="Ảnh chụp mobile demo ${d.name}" loading="lazy" width="195" height="422">
+        </span>
+        <span class="meta"><span class="num">${String(i + 1).padStart(2, '0')}</span><span class="name">${d.name}</span></span>
+        <p class="tech">${d.technique}</p>
+      </a>`).join('');
+  </script>
+</body>
+</html>

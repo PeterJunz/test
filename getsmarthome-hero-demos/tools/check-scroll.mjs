@@ -58,7 +58,7 @@ for (const [vp, viewport] of Object.entries(VIEWPORTS)) {
       const arrived = await page.waitForFunction((i) => window.__tour && Math.abs(window.__tour.f - i) < 0.02, i, { timeout: 40000 }).then(() => true, () => false);
       check(`${vp} stop ${i}: camera arrives`, arrived, arrived ? '' : `f=${await page.evaluate(() => window.__tour.f.toFixed(3))}`);
     }
-    await page.waitForTimeout(MODE === 'nowebgl' ? 300 : 900);
+    await page.waitForTimeout(1200); // card reveal is scrubbed with 0.6 s smoothing
     const state = await page.evaluate((i) => {
       const cur = document.querySelector('[aria-current="step"]');
       const card = document.querySelector(`[data-stop="${i}"] .sn-reveal, [data-stop="${i}"] .sn-copy`);

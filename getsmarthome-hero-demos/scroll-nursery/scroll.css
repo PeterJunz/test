@@ -69,7 +69,7 @@ html, body { height: auto; }
   .sn-progress { right: 10px; }
   .sn-progress a span { display: none; }
   .sn-stop, .sn-stop--left { justify-items: stretch; align-items: end; padding: 90px calc(var(--gutter) + 24px) 28px var(--gutter); }
-  .sn-card { width: 100%; padding: 20px; }
+  .sn-card { display: block; width: 100%; padding: 20px; } /* undo hero.css's compact mobile grid for .foil-card */
   .sn-card__title { font-size: 1.6rem; }
   .sn-card__text { font-size: .95rem; margin-bottom: 1rem; }
   .sn-stop--intro .gsh-title, .sn-stop--end .gsh-title { font-size: clamp(2.3rem, 10vw, 3.2rem); }

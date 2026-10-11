@@ -156,6 +156,16 @@ Mở `http://localhost:5173/scroll-nursery/` (hoặc bấm link trên trang tổ
 - Chữ và sản phẩm đều là bản demo, đồ vật được dựng bằng code chứ không phải sản phẩm thật. Không có tuyên bố về sức khoẻ, an toàn hay chứng nhận.
 - Cảnh chỉ mang tính trang trí, không dựng nôi/cũi hay khu vực ngủ của em bé.
 
+**Kết quả kiểm thử** (`tools/check-scroll.mjs`, Chromium headless, GPU giả lập): desktop 1440×900 và mobile 390×844, cuộn lần lượt tới cả 6 điểm dừng.
+
+| Chế độ | Kết quả |
+|---|---|
+| Bình thường | **56/56 PASS**: camera tới đúng từng điểm dừng, thanh tiến trình đánh dấu đúng, thẻ hiện rõ hoàn toàn trong khung hình, không tràn ngang, link trên thanh tiến trình dùng bàn phím được, dọn bộ nhớ về 0 geometry / 0 texture, không lỗi JS |
+| Giảm chuyển động | **56/56 PASS** |
+| Tắt WebGL | **42/42 PASS**: trang hiển thị như trang bài viết thường |
+
+Chưa kiểm chứng: FPS trên máy thật, Safari/Firefox, Lighthouse. Cảnh có đổ bóng thật nên nặng hơn các hero; cần thử trên điện thoại tầm trung.
+
 Kiểm thử:
 ```bash
 CHROMIUM=/đường/dẫn/chrome node tools/check-scroll.mjs

@@ -1,6 +1,6 @@
 # GetSmartHome — 11 bản demo Hero Banner 3D (Warm Premium)
 
-Đây là 10 bản **prototype hero banner 3D** để chọn cho getsmarthome.net, theo phong cách Warm Premium cho sản phẩm Home & Lifestyle. Mỗi demo là một trang chạy thật, viết bằng **Three.js (WebGL/GLSL) + GSAP**, có responsive cho desktop và mobile.
+Đây là 11 bản **prototype hero banner 3D** để chọn cho getsmarthome.net, theo phong cách Warm Premium cho sản phẩm Home & Lifestyle. Mỗi demo là một trang chạy thật, viết bằng **Three.js (WebGL/GLSL) + GSAP**, có responsive cho desktop và mobile.
 
 > ⚠️ **Trạng thái:** đây là các bản demo độc lập để chọn. Chưa demo nào được ghép vào website getsmarthome.net hay đưa lên store Shopify. Phần tích hợp Shopify bên dưới chỉ là hướng dẫn và mã nguồn chuẩn bị sẵn.
 
@@ -33,13 +33,15 @@ getsmarthome-hero-demos/
 │   ├── 01-golden-hour/        index.html + main.js (mỗi demo một thư mục)
 │   ├── …
 │   └── 10-wood-mosaic/
-├── vendor/                    three@0.170.0 (MIT), gsap@3.12.5 (Standard "no charge" license)
+├── scroll-nursery/            Demo web cuộn 3D "Nursery Room Tour" (index.html, main.js, scroll.css), xem mục 7
+├── vendor/                    three@0.170.0 (MIT), gsap@3.12.5 + ScrollTrigger (Standard "no charge" license)
 ├── shopify/
 │   ├── sections/gsh-hero-3d.liquid   Section OS 2.0, có setting chọn 1 trong 11 kiểu
 │   └── assets/                       gsh-hero.css + gsh-hero-01.js … gsh-hero-11.js (bản build)
 ├── tools/
 │   ├── make-pages.mjs         Sinh demos/*/index.html từ một template chung
 │   ├── check.mjs              Kiểm thử headless (Playwright): lỗi console, tràn ngang, reveal, ảnh chụp
+│   ├── check-scroll.mjs       Kiểm thử demo web cuộn 3D: camera tới từng điểm dừng, thanh tiến trình, dọn bộ nhớ
 │   └── build-shopify.mjs      Đóng gói từng demo thành 1 file IIFE cho Shopify (esbuild)
 └── docs/screens, docs/thumbs  Ảnh chụp desktop (1440×900) + mobile (390×844)
 ```
@@ -126,3 +128,39 @@ group.add(gltf.scene);
 ```
 
 Riêng demo 03 lấy mẫu hạt từ bất kỳ mesh nào, nên có thể dùng chính file GLB của sản phẩm. Nên tối ưu GLB (Draco/meshopt, texture KTX2) xuống dưới khoảng 1–2 MB.
+
+## 7. Demo web cuộn 3D: "Nursery Room Tour"
+
+Mở `http://localhost:5173/scroll-nursery/` (hoặc bấm link trên trang tổng hợp). Khi bạn cuộn trang, camera đi qua một phòng em bé dựng bằng 3D, và mỗi góc phòng giới thiệu một danh mục:
+
+| Điểm dừng | Góc phòng | Danh mục |
+|---|---|---|
+| 0 | Toàn cảnh căn phòng (kiểu nhà búp bê) | Mở đầu |
+| 1 | Tủ ngăn kéo, đèn bàn, đèn ngủ hình mây | Soft lighting |
+| 2 | Bàn nhỏ dưới cửa sổ, máy tạo ẩm, máy lọc không khí | Air & comfort |
+| 3 | Kệ treo tường, giỏ đan, khối đồ chơi | Storage & play |
+| 4 | Ghế bành, đèn cây, gối, chăn | Textiles & reading nook |
+| 5 | Toàn cảnh từ trên cao và nút mua hàng | Shop |
+
+**Cách hoạt động**
+- Trang là một tài liệu HTML dài bình thường, mỗi điểm dừng là một `<section data-stop>` cao bằng một màn hình. Canvas WebGL chỉ là nền trang trí cố định (`aria-hidden`), toàn bộ chữ và nút đều là HTML thật nên vẫn đọc được và SEO được.
+- Vị trí cuộn được quy đổi sang "không gian điểm dừng" (0 → 5) dựa trên vị trí thật của từng section. Camera đứng yên khi bạn đang đọc thẻ và chỉ di chuyển ở khoảng giữa hai điểm dừng.
+- Camera chạy trên một đường cong Catmull-Rom đi qua các vị trí camera; một đường cong thứ hai đi qua các điểm camera nhìn vào. Chuyển động được làm mượt theo thời gian thực.
+- **GSAP ScrollTrigger** lo hiệu ứng thẻ hiện từ mờ sang rõ, snap về điểm dừng (chỉ với chuột/trackpad, không áp dụng trên cảm ứng) và tính lại khi đổi kích thước.
+- Góc đang được giới thiệu có quầng sáng ấm toả ra. Nắng chiếu qua cửa sổ có đổ bóng thật, kèm luồng sáng và bụi bay; máy tạo ẩm có hơi nước bốc lên.
+- Thanh tiến trình bên phải là danh sách link thật (`aria-current="step"`), bấm hoặc dùng bàn phím để nhảy tới từng góc.
+- **Giảm chuyển động** (`prefers-reduced-motion`): camera không bay mà chuyển thẳng sang góc tương ứng, không có hiệu ứng nền và không làm mờ chữ. **Không có WebGL**: trang hiển thị như một trang bài viết bình thường.
+- Khi rời trang (`pagehide`): huỷ vòng lặp, ScrollTrigger, toàn bộ geometry, material, texture, shadow map và renderer.
+
+**Lưu ý nội dung**
+- Chữ và sản phẩm đều là bản demo, đồ vật được dựng bằng code chứ không phải sản phẩm thật. Không có tuyên bố về sức khoẻ, an toàn hay chứng nhận.
+- Cảnh chỉ mang tính trang trí, không dựng nôi/cũi hay khu vực ngủ của em bé.
+
+Kiểm thử:
+```bash
+CHROMIUM=/đường/dẫn/chrome node tools/check-scroll.mjs
+MODE=reduced node tools/check-scroll.mjs && MODE=nowebgl node tools/check-scroll.mjs
+```
+Ảnh chụp từng điểm dừng được lưu trong `docs/screens/scroll-nursery/`.
+
+**Đưa lên Shopify:** bản này hiện chỉ là demo độc lập, chưa có section Shopify. Khi bạn duyệt hướng này, có thể đóng gói thành section `gsh-room-tour.liquid` với mỗi điểm dừng là một block (tiêu đề, mô tả, link collection), dùng cùng cách build IIFE như các hero.

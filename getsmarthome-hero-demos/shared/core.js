@@ -241,7 +241,12 @@ export function boot({ slug, setup, renderer: rendererOpts = {} }) {
 /** Image-based lighting so metals (brass) and glazes get believable reflections. */
 export function addEnvironment(renderer, scene, intensity = 0.6) {
   const pmrem = new THREE.PMREMGenerator(renderer);
-  const env = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  const room = new RoomEnvironment();
+  const target = pmrem.fromScene(room, 0.04);
+  const env = target.texture;
+  // The env map lives in a render target: disposing only the texture would leave it on the GPU.
+  env.dispose = () => target.dispose();
+  room.dispose();   // frees the generator scene's geometry/materials
   scene.environment = env;
   if ('environmentIntensity' in scene) scene.environmentIntensity = intensity;
   pmrem.dispose();

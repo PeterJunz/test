@@ -1,0 +1,84 @@
+/* ==========================================================================
+   Scroll-driven 3D room tour (prototype). Builds on ../shared/hero.css tokens.
+   The canvas is a fixed backdrop; every stop is a normal, readable HTML section.
+   ========================================================================== */
+html { scroll-behavior: smooth; }
+html, body { height: auto; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+.sn-skip { position: fixed; left: 12px; top: -60px; z-index: 50; padding: .7rem 1rem; border-radius: 12px; background: var(--ink); color: var(--cream); }
+.sn-skip:focus { top: 12px; }
+
+.sn-header { position: fixed; }
+
+/* ---------- Stage ---------- */
+.sn-stage { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+.sn-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.sn-fallback { position: absolute; inset: 0; z-index: -1; background:
+  radial-gradient(40% 50% at 30% 30%, #FFF4E2, transparent 70%),
+  radial-gradient(60% 60% at 75% 70%, #E9CFB0, transparent 70%),
+  linear-gradient(180deg, #F3E7D8, #E4D0B9); }
+.sn-vignette { position: absolute; inset: 0; background:
+  radial-gradient(130% 90% at 50% 120%, rgba(246, 238, 227, .55), transparent 55%); }
+
+/* ---------- Progress rail ---------- */
+.sn-progress { position: fixed; z-index: 20; right: var(--gutter); top: 50%; transform: translateY(-50%); }
+.sn-progress ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.sn-progress a { display: flex; align-items: center; justify-content: flex-end; gap: .7rem; min-height: 28px; font-size: .78rem; letter-spacing: .04em; color: var(--fg-muted); }
+.sn-progress a::after { content: ""; width: 8px; height: 8px; border-radius: 50%; border: 1px solid currentColor; transition: transform .5s var(--ease), background .5s; }
+.sn-progress a span { opacity: 0; transform: translateX(6px); transition: opacity .4s, transform .4s var(--ease); background: var(--glass); padding: .2rem .6rem; border-radius: 999px; }
+.sn-progress a:hover span, .sn-progress a:focus-visible span, .sn-progress a[aria-current="step"] span { opacity: 1; transform: none; }
+.sn-progress a[aria-current="step"] { color: var(--ink); }
+.sn-progress a[aria-current="step"]::after { background: var(--terracotta); border-color: var(--terracotta); transform: scale(1.5); }
+
+/* ---------- Stops ---------- */
+.sn-track { position: relative; z-index: 1; }
+.sn-stop {
+  min-height: 100vh; min-height: 100svh;
+  display: grid; align-items: center; justify-items: end;
+  padding: 110px calc(var(--gutter) + 120px) 60px var(--gutter);
+  pointer-events: none;
+}
+.sn-stop a, .sn-stop button { pointer-events: auto; }
+.sn-stop--left { justify-items: start; }
+.sn-stop--intro, .sn-stop--end { justify-items: start; align-items: end; padding-bottom: clamp(40px, 10vh, 110px); }
+
+.sn-copy { max-width: 760px; padding: 28px 30px 24px 0; border-radius: 28px; }
+.sn-stop--intro .gsh-title { max-width: 12ch; }
+.sn-cue { display: inline-flex; align-items: center; gap: .7rem; margin-top: 2rem; font-size: .78rem; letter-spacing: .2em; text-transform: uppercase; color: var(--fg-muted); }
+.sn-cue span { width: 1px; height: 36px; background: linear-gradient(var(--ink), transparent); animation: sn-cue 1.8s var(--ease) infinite; transform-origin: top; }
+@keyframes sn-cue { 0% { transform: scaleY(0); } 60% { transform: scaleY(1); } 100% { transform: scaleY(1); opacity: 0; } }
+
+.sn-card { width: min(400px, 100%); padding: 26px 26px 24px; pointer-events: auto; }
+.sn-card__kicker { display: flex; align-items: center; gap: .7rem; margin: 0; font-size: .74rem; letter-spacing: .18em; text-transform: uppercase; color: var(--fg-muted); }
+.sn-card__kicker b { font-family: var(--font-display); font-style: italic; font-weight: 400; font-size: 1.3rem; letter-spacing: 0; color: var(--terracotta); }
+.sn-card__title { font-family: var(--font-display); font-weight: 400; font-size: clamp(1.7rem, 2.6vw, 2.4rem); line-height: 1.05; letter-spacing: -.02em; margin: .8rem 0 .7rem; text-wrap: balance; }
+.sn-card__text { margin: 0 0 1.4rem; color: var(--fg-muted); }
+.sn-note { margin-top: 1.6rem; font-size: .8rem; color: var(--fg-muted); max-width: 52ch; }
+
+/* Readable backing for the big intro / outro copy */
+.sn-stop--intro .sn-copy, .sn-stop--end .sn-copy {
+  padding: 28px 32px; margin-left: -32px;
+  background: radial-gradient(120% 120% at 0% 100%, rgba(246, 238, 227, .82), rgba(246, 238, 227, .35) 70%, transparent);
+}
+
+/* No WebGL: the page reads as a normal long-form page */
+.no-webgl .sn-canvas { display: none; }
+
+@media (max-width: 899px) {
+  .sn-progress { right: 10px; }
+  .sn-progress a span { display: none; }
+  .sn-stop, .sn-stop--left { justify-items: stretch; align-items: end; padding: 90px calc(var(--gutter) + 24px) 28px var(--gutter); }
+  .sn-card { width: 100%; padding: 20px; }
+  .sn-card__title { font-size: 1.6rem; }
+  .sn-card__text { font-size: .95rem; margin-bottom: 1rem; }
+  .sn-stop--intro .gsh-title, .sn-stop--end .gsh-title { font-size: clamp(2.3rem, 10vw, 3.2rem); }
+  .sn-stop--intro .sn-copy, .sn-stop--end .sn-copy { margin-left: -16px; padding: 20px 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sn-cue span { animation: none; }
+  .sn-progress a::after, .sn-progress a span { transition: none; }
+}
+
+.sn-reveal { width: min(400px, 100%); }
+@media (max-width: 899px) { .sn-reveal { width: 100%; } }

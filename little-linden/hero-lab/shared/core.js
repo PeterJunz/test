@@ -292,7 +292,10 @@ export function disposeScene(root) {
 export function addEnvironment(renderer, scene, intensity = 0.6) {
   const pmrem = new THREE.PMREMGenerator(renderer);
   const room = new RoomEnvironment();
-  const env = pmrem.fromScene(room, 0.04).texture;
+  const target = pmrem.fromScene(room, 0.04);
+  const env = target.texture;
+  // The env map lives in a render target: disposing only the texture would leave it on the GPU.
+  env.dispose = () => target.dispose();
   room.dispose();                                  // free the temporary room geometry
   scene.environment = env;
   if ('environmentIntensity' in scene) scene.environmentIntensity = intensity;

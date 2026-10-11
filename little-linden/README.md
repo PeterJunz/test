@@ -29,7 +29,7 @@
 Manual alternative:
 
 ```bash
-cd hero-lab && python3 -m http.server 5173
+cd hero-lab && python3 serve.py   # forces correct .js MIME types, picks a free port, opens the browser
 ```
 
 Do **not** open `index.html` by double-clicking. ES modules and WebGL need an `http://` URL.

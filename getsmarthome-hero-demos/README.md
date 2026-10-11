@@ -10,9 +10,11 @@
 
 Các demo dùng ES modules nên cần mở qua một web server (mở file trực tiếp bằng `file://` sẽ không chạy):
 
+Cách nhanh nhất: bấm đúp `CHAY-DEMO-WINDOWS.bat` (Windows) hoặc `CHAY-DEMO-MAC.command` (Mac). Launcher chạy `serve.py`; script này luôn trả đúng kiểu file `.js` (trên một số máy Windows, `python -m http.server` trả sai kiểu nên trang 3D trắng), chỉ mở trình duyệt khi server đã sẵn sàng và tự đổi cổng nếu 5173 đang bận. Địa chỉ thật được in trong cửa sổ đen.
+
 ```bash
 cd getsmarthome-hero-demos
-npx http-server . -p 5173 -c-1      # hoặc: python3 -m http.server 5173
+python3 serve.py                   # hoặc: npx http-server . -p 5173 -c-1
 # mở http://localhost:5173/  → trang gallery chọn demo
 ```
 

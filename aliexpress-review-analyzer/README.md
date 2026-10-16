@@ -12,7 +12,15 @@ React 19 · TypeScript · Vite · Tailwind CSS v4 · Lucide · Recharts · proxy
 2. **Bấm đúp** để mở bằng Chrome, Edge hoặc Firefox. Không cần cài Node.js, không cần mạng.
 3. Dùng ngay: nạp demo, nhập CSV/JSON, lọc, xem biểu đồ, phân tích theo quy tắc, xuất CSV/JSON/XLSX/PDF, chuyển VI/EN. Dữ liệu được lưu trong trình duyệt (gắn với vị trí của file; nếu chuyển file sang thư mục khác thì sẽ bắt đầu với dữ liệu trống).
 
-Chỉ có hai tính năng cần chạy thêm proxy (mục 4): **lấy review qua API của nhà cung cấp** và **phân tích AI**. Lý do: API key không được để lộ trong trình duyệt.
+### Dán link → tự lấy toàn bộ đánh giá (SocialCrawl)
+
+1. Tạo tài khoản miễn phí tại https://www.socialcrawl.dev (tặng 100 credit, không cần thẻ; 5 credit / trang 20 đánh giá ≈ 400 đánh giá miễn phí).
+2. Trong app: **Cài đặt → Nguồn dữ liệu → SocialCrawl API**, dán API key (`sc_…`). Dòng trạng thái chuyển xanh khi key hợp lệ (kiểm tra bằng `dry_run`, không tốn credit).
+3. Dán link sản phẩm vào ô trên cùng → **Phân tích đánh giá**. App lấy trang 1, cho biết tổng số đánh giá và số credit cần, rồi hỏi bạn: lấy toàn bộ / chỉ N trang / dừng. Khi lấy đủ, dataset được đánh dấu *đầy đủ (complete)*.
+
+Gọi trực tiếp từ trình duyệt (API cho phép CORS), chạy được ngay trong file HTML, không cần server. Key chỉ lưu trong trình duyệt và chỉ gửi tới `api.socialcrawl.dev`. Tên/ảnh đại diện người đánh giá bị loại bỏ trước khi lưu. SocialCrawl là dịch vụ bên thứ ba có tính phí — hãy đọc điều khoản của họ; app không xác nhận hay bảo đảm dữ liệu của nhà cung cấp.
+
+Chỉ **nhà cung cấp khác** và **phân tích AI** mới cần chạy proxy (mục 4), vì các API đó không cho gọi trực tiếp hoặc key không nên để trong trình duyệt.
 
 Tạo lại file này từ mã nguồn: `npm run build:standalone`.
 
@@ -70,7 +78,7 @@ npm run preview    # phục vụ dist/ tại http://localhost:4173
 ```bash
 npm run lint       # ESLint (cấm innerHTML, quy tắc React hooks)
 npm run typecheck  # tsc --noEmit cho app + server
-npm test           # Vitest: 116 test cho normalizer, filter, sentiment, import/export, proxy, i18n
+npm test           # Vitest: 121 test cho normalizer, filter, sentiment, import/export, proxy, i18n
 npm run build
 ```
 

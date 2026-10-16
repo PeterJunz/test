@@ -21,6 +21,14 @@ export function useConnectionMessage(): string {
       return t('conn.unreachable', { detail: connection.message });
     case 'unsupported':
       return t('conn.unsupported');
+    case 'sc-connected':
+      return t('conn.scConnected');
+    case 'sc-missing-key':
+      return t('conn.scMissingKey');
+    case 'sc-invalid-key':
+      return t('conn.scInvalidKey', { detail: connection.message });
+    case 'sc-error':
+      return t('conn.scError', { detail: connection.message });
     default:
       return connection.message;
   }

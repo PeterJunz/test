@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { CircleAlert, CircleCheck, CircleDashed, FileUp, Link2, RefreshCw, Search, Settings2, ShieldAlert } from 'lucide-react';
 import { useApp } from '../hooks/appContext';
-import { useAnalyze } from '../hooks/useAnalyze';
+import { useAnalyze, type FetchPlan } from '../hooks/useAnalyze';
 import { useI18n } from '../i18n/context';
 import type { MessageKey } from '../i18n/en';
 import type { ConnectionState } from '../services/data-providers/types';
@@ -24,13 +24,18 @@ export function Header() {
   const { connection, checkingConnection, recheckConnection, navigate, notify, setPendingProductId, activeDataset, view } = useApp();
   const { t } = useI18n();
   const connectionMessage = useConnectionMessage();
-  const { analyze, progress, cancel } = useAnalyze();
+  const { analyze, progress, cancel, lastCredits } = useAnalyze();
   const [input, setInput] = useState('');
   // The error belongs to the page it was raised on and disappears when the user navigates.
   const [errorState, setErrorState] = useState<{ message: string; view: string } | null>(null);
   const error = errorState?.view === view ? errorState.message : undefined;
   const setError = (message: string | undefined) => setErrorState(message ? { message, view } : null);
   const [noSource, setNoSource] = useState<{ productId: string; productUrl: string } | null>(null);
+  const [plan, setPlan] = useState<{ plan: FetchPlan; resolve(pages: number): void } | null>(null);
+  const choose = (pages: number) => {
+    plan?.resolve(pages);
+    setPlan(null);
+  };
 
   const status = STATUS[checkingConnection ? 'checking' : connection?.state ?? 'none'];
   const StatusIcon = status.icon;
@@ -38,7 +43,7 @@ export function Header() {
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError(undefined);
-    const outcome = await analyze(input);
+    const outcome = await analyze(input, (p) => new Promise<number>((resolve) => setPlan({ plan: p, resolve })));
     switch (outcome.kind) {
       case 'error':
         setError(outcome.message);
@@ -51,7 +56,12 @@ export function Header() {
         navigate('overview');
         break;
       case 'fetched':
-        notify('success', t('analyze.fetched', { count: outcome.dataset.reviews.length }));
+        notify(
+          'success',
+          `${t(outcome.dataset.completeness === 'complete' ? 'analyze.fetchedAll' : 'analyze.fetched', { count: outcome.dataset.reviews.length })}${
+            lastCredits.current !== undefined ? ` ${t('analyze.creditsLeft', { count: lastCredits.current })}` : ''
+          }`,
+        );
         navigate('overview');
         break;
       case 'cancelled':
@@ -93,7 +103,11 @@ export function Header() {
         </div>
         {progress ? (
           <>
-            <span className="tabular whitespace-nowrap text-xs text-ink-2">{t('header.progress', { page: progress.page, max: progress.maxPages, count: progress.fetched })}</span>
+            <span className="tabular whitespace-nowrap text-xs text-ink-2">
+              {progress.total !== undefined
+                ? t('header.progressTotal', { page: progress.page, max: progress.maxPages, count: progress.fetched, total: progress.total })
+                : t('header.progress', { page: progress.page, max: progress.maxPages, count: progress.fetched })}
+            </span>
             <Button onClick={cancel}>{t('common.cancel')}</Button>
           </>
         ) : (
@@ -118,6 +132,40 @@ export function Header() {
       <LanguageSwitch />
 
       <Modal
+        open={Boolean(plan)}
+        onClose={() => choose(1)}
+        title={t('plan.title')}
+        footer={
+          plan && (
+            <>
+              <Button onClick={() => choose(1)}>{t('plan.stop')}</Button>
+              {plan.plan.pageLimit < plan.plan.totalPages && (
+                <Button onClick={() => choose(plan.plan.pageLimit)}>
+                  {t('plan.limit', { pages: plan.plan.pageLimit, reviews: Math.min(plan.plan.total, plan.plan.pageLimit * 20), credits: (plan.plan.pageLimit - 1) * plan.plan.creditsPerPage })}
+                </Button>
+              )}
+              <Button variant="primary" onClick={() => choose(plan.plan.totalPages)}>
+                {t('plan.all', { reviews: plan.plan.total, credits: (plan.plan.totalPages - 1) * plan.plan.creditsPerPage })}
+              </Button>
+            </>
+          )
+        }
+      >
+        {plan && (
+          <div className="space-y-3 text-sm text-ink-2">
+            <p>{t('plan.body', { total: plan.plan.total, pages: plan.plan.totalPages, credits: (plan.plan.totalPages - 1) * plan.plan.creditsPerPage })}</p>
+            {plan.plan.creditsRemaining !== undefined && (
+              <p className={plan.plan.creditsRemaining < (plan.plan.totalPages - 1) * plan.plan.creditsPerPage ? 'font-medium text-neg' : ''}>
+                {t('plan.balance', { count: plan.plan.creditsRemaining })}
+                {plan.plan.creditsRemaining < (plan.plan.totalPages - 1) * plan.plan.creditsPerPage && ` ${t('plan.notEnough')}`}
+              </p>
+            )}
+            <p className="text-xs text-ink-3">{t('plan.note')}</p>
+          </div>
+        )}
+      </Modal>
+
+      <Modal
         open={Boolean(noSource)}
         onClose={() => setNoSource(null)}
         title={t('noSource.title')}
@@ -130,7 +178,7 @@ export function Header() {
                 navigate('settings');
               }}
             >
-              {t('noSource.configure')}
+              {t('noSource.enterKey')}
             </Button>
             <Button
               variant="primary"
@@ -151,6 +199,7 @@ export function Header() {
           <p>{t('noSource.explain')}</p>
           <ul className="list-disc space-y-1 pl-5">
             <li>{t('noSource.optionImport')}</li>
+            <li>{t('noSource.optionSocialcrawl')}</li>
             <li>{t('noSource.optionProvider')}</li>
           </ul>
           <p className="text-xs text-ink-3">{t('noSource.proxyStatus', { message: connection ? connectionMessage : t('status.none') })}</p>

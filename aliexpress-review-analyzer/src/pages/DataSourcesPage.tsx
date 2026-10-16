@@ -1,4 +1,4 @@
-import { CircleCheck, CircleDashed, CircleSlash, FileSpreadsheet, FlaskConical, Plug, Trash2 } from 'lucide-react';
+import { CircleCheck, CircleDashed, CircleSlash, FileSpreadsheet, FlaskConical, Plug, Trash2, Zap } from 'lucide-react';
 import { useState } from 'react';
 import { useApp } from '../hooks/appContext';
 import { Badge, Button, Card, Modal } from '../components/ui';
@@ -8,13 +8,25 @@ import { useI18n } from '../i18n/context';
 import { useConnectionMessage } from '../hooks/useConnectionMessage';
 
 export function DataSourcesPage() {
-  const { datasets, activeDataset, setActiveDataset, removeDataset, connection, navigate, notify } = useApp();
+  const { datasets, activeDataset, setActiveDataset, removeDataset, connection, navigate, notify, settings } = useApp();
   const { t } = useI18n();
   const connectionMessage = useConnectionMessage();
   const loadDemo = useLoadDemo();
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
 
   const sources = [
+    {
+      icon: Zap,
+      name: t('sources.scName'),
+      status:
+        settings.dataSource === 'socialcrawl' && connection?.state === 'connected' ? (
+          <Badge tone="pos"><CircleCheck className="size-3" /> {t('sources.connected')}</Badge>
+        ) : (
+          <Badge tone="warn"><CircleDashed className="size-3" /> {t('sources.needsConfig')}</Badge>
+        ),
+      body: t('sources.scBody'),
+      action: <Button size="sm" onClick={() => navigate('settings')}>{t('sources.configure')}</Button>,
+    },
     {
       icon: FileSpreadsheet,
       name: t('sources.fileName'),
@@ -25,12 +37,12 @@ export function DataSourcesPage() {
       icon: Plug,
       name: t('sources.providerName'),
       status:
-        connection?.state === 'connected' ? (
+        settings.dataSource === 'proxy' && connection?.state === 'connected' ? (
           <Badge tone="pos"><CircleCheck className="size-3" /> {t('sources.connected')}</Badge>
         ) : (
-          <Badge tone="warn"><CircleDashed className="size-3" /> {t(connection?.state === 'unreachable' ? 'status.unreachable' : 'sources.needsConfig')}</Badge>
+          <Badge tone="warn"><CircleDashed className="size-3" /> {t(settings.dataSource === 'proxy' && connection?.state === 'unreachable' ? 'status.unreachable' : 'sources.needsConfig')}</Badge>
         ),
-      body: connection ? connectionMessage : t('sources.providerBody'),
+      body: settings.dataSource === 'proxy' && connection ? connectionMessage : t('sources.providerBody'),
       action: <Button size="sm" onClick={() => navigate('settings')}>{t('sources.configure')}</Button>,
     },
     {
@@ -57,7 +69,7 @@ export function DataSourcesPage() {
         <p className="text-sm text-ink-3">{t('sources.subtitle')}</p>
       </div>
 
-      <div className="grid gap-3 md:grid-cols-2 2xl:grid-cols-4">
+      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
         {sources.map(({ icon: Icon, name, status, body, action }) => (
           <div key={name} className="flex flex-col rounded-xl border border-line bg-surface p-4">
             <div className="flex items-start justify-between gap-2">

@@ -24,7 +24,21 @@ export interface AnalyzeProgress {
   page: number;
   maxPages: number;
   fetched: number;
+  /** Total reviews the provider reports for the product, once known. */
+  total?: number;
 }
+
+/** What fetching every page would take; shown to the user before spending credits. */
+export interface FetchPlan {
+  total: number;
+  totalPages: number;
+  pageLimit: number;
+  creditsPerPage: number;
+  creditsRemaining?: number;
+}
+
+/** Resolves to the number of pages to fetch in total (1 = stop after the first page). */
+export type ConfirmPlan = (plan: FetchPlan) => Promise<number>;
 
 export type AnalyzeOutcome =
   | { kind: 'error'; message: string }
@@ -42,11 +56,13 @@ export function useAnalyze() {
   const { t } = useI18n();
   const [progress, setProgress] = useState<AnalyzeProgress | null>(null);
   const abortRef = useRef<AbortController | null>(null);
+  /** Credits left after the last run, for the success message. */
+  const lastCredits = useRef<number | undefined>(undefined);
 
   const cancel = useCallback(() => abortRef.current?.abort(), []);
 
   const analyze = useCallback(
-    async (input: string): Promise<AnalyzeOutcome> => {
+    async (input: string, confirmPlan?: ConfirmPlan): Promise<AnalyzeOutcome> => {
       const parsed = parseProductInput(input);
       if ('error' in parsed) return { kind: 'error', message: productInputErrorText(parsed, t) };
       const { productId, canonicalUrl } = parsed;
@@ -69,10 +85,14 @@ export function useAnalyze() {
       let skipped = 0;
       let hasMore = false;
       let total: number | undefined;
+      let creditsUsed = 0;
+      let creditsRemaining: number | undefined;
       let page = 1;
+      let pageLimit = settings.maxPages;
+      let totalPages: number | undefined;
       try {
-        for (; page <= settings.maxPages; page++) {
-          setProgress({ productId, page, maxPages: settings.maxPages, fetched: reviews.length });
+        for (; page <= pageLimit; page++) {
+          setProgress({ productId, page, maxPages: totalPages !== undefined ? Math.min(pageLimit, totalPages) : pageLimit, fetched: reviews.length, total });
           const result = await provider.fetchReviews(productId, page, { datasetId, signal: controller.signal });
           skipped += result.report.skipped;
           for (const r of result.reviews) {
@@ -82,7 +102,24 @@ export function useAnalyze() {
           }
           hasMore = result.pagination.hasMore;
           total = result.pagination.totalReviews ?? total;
+          creditsUsed += result.creditsUsed ?? 0;
+          creditsRemaining = result.creditsRemaining ?? creditsRemaining;
+          totalPages = result.pagination.totalPages ?? totalPages;
           if (!hasMore || result.reviews.length === 0) break;
+          // After the first page the total is known: let the user decide how many credits to spend.
+          // Small products (≤ 5 pages ≈ 25 credits) are fetched without asking.
+          if (page === 1 && confirmPlan && total !== undefined && totalPages !== undefined && totalPages > 5) {
+            setProgress(null);
+            const chosen = await confirmPlan({
+              total,
+              totalPages,
+              pageLimit: Math.min(settings.maxPages, totalPages),
+              creditsPerPage: result.creditsUsed ?? 5,
+              creditsRemaining,
+            });
+            if (controller.signal.aborted) throw new DOMException('Aborted', 'AbortError');
+            pageLimit = Math.max(1, Math.min(chosen, totalPages));
+          }
         }
       } catch (e) {
         if ((e as Error).name === 'AbortError') {
@@ -100,10 +137,11 @@ export function useAnalyze() {
       }
       setProgress(null);
 
-      const pagesFetched = Math.min(page, settings.maxPages);
+      const pagesFetched = Math.min(page, pageLimit);
       if (hasMore) notes.push(t('note.pageLimit', { pages: pagesFetched }));
       if (skipped) notes.push(t('note.skippedRows', { count: skipped }));
       if (total !== undefined) notes.push(t('note.providerTotal', { total, fetched: reviews.length }));
+      if (creditsUsed || creditsRemaining !== undefined) notes.push(t('note.credits', { used: creditsUsed, remaining: creditsRemaining ?? '?' }));
       const completeness: Dataset['completeness'] = hasMore ? 'partial' : total !== undefined && reviews.length >= total ? 'complete' : 'unknown';
       if (completeness !== 'complete') {
         notes.push(t('note.subset'));
@@ -124,6 +162,7 @@ export function useAnalyze() {
         notes,
       };
       if (!reviews.length) return { kind: 'error', message: t('analyze.noReviews') };
+      lastCredits.current = creditsRemaining;
       await saveDataset(dataset);
       setActiveDataset(dataset.id);
       return { kind: 'fetched', dataset };
@@ -131,5 +170,5 @@ export function useAnalyze() {
     [connection, provider, settings.maxPages, datasets, saveDataset, setActiveDataset, t],
   );
 
-  return { analyze, progress, cancel };
+  return { analyze, progress, cancel, lastCredits };
 }

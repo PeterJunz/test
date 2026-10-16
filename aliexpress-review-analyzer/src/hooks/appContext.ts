@@ -1,8 +1,7 @@
 import { createContext, useContext } from 'react';
 import type { ReviewFilters, SortState } from '../types/filters';
 import type { Dataset } from '../types/review';
-import type { ConnectionStatus } from '../services/data-providers/types';
-import type { ProxyApiProvider } from '../services/data-providers/proxyApiProvider';
+import type { ConnectionStatus, ReviewProvider } from '../services/data-providers/types';
 import type { AppSettings, Secrets } from '../services/storage/settings';
 
 export type View =
@@ -40,7 +39,7 @@ export interface AppContextValue {
   secrets: Secrets;
   updateSecrets(patch: Partial<Secrets>): void;
 
-  provider: ProxyApiProvider;
+  provider: ReviewProvider;
   connection: ConnectionStatus | null;
   checkingConnection: boolean;
   recheckConnection(): void;

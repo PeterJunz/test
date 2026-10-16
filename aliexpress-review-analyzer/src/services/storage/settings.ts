@@ -1,7 +1,12 @@
 import type { FieldMapping } from '../review-normalizer/fields';
 import type { DateOrder } from '../../utils/date';
+import type { SocialCrawlLanguage } from '../data-providers/socialCrawlProvider';
 
 export interface AppSettings {
+  /** Where "Analyze Reviews" gets data: SocialCrawl directly from the browser, or the local proxy. */
+  dataSource: 'socialcrawl' | 'proxy';
+  socialcrawlLanguage: SocialCrawlLanguage;
+  socialcrawlSort: 'default' | 'newest';
   proxyUrl: string;
   /** Dot path to the review array in the provider response (blank = auto). */
   reviewsPath: string;
@@ -20,26 +25,33 @@ export interface AppSettings {
 }
 
 export interface Secrets {
+  socialcrawlKey: string;
   accessToken: string;
   providerKey: string;
   anthropicKey: string;
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
+  dataSource: 'socialcrawl',
+  socialcrawlLanguage: 'EN',
+  socialcrawlSort: 'newest',
   proxyUrl: 'http://localhost:8787',
   reviewsPath: '',
   totalPath: '',
   apiMapping: {},
   ratingScale: 'auto',
   dateOrder: 'MDY',
-  maxPages: 5,
+  maxPages: 25,
   aiEnabled: false,
   aiConsent: false,
   aiLanguage: 'en',
   rememberSecrets: false,
 };
 
-export const EMPTY_SECRETS: Secrets = { accessToken: '', providerKey: '', anthropicKey: '' };
+export const EMPTY_SECRETS: Secrets = { socialcrawlKey: '', accessToken: '', providerKey: '', anthropicKey: '' };
+
+/** Hard cap on pages per run (500 pages = 10,000 reviews) so a typo cannot drain a quota. */
+export const MAX_PAGES_LIMIT = 500;
 
 const SETTINGS_KEY = 'aerap.settings.v1';
 const SECRETS_KEY = 'aerap.secrets.v1';
@@ -69,7 +81,7 @@ export function loadSettings(): AppSettings {
   if (!raw) return DEFAULT_SETTINGS;
   try {
     const parsed = JSON.parse(raw) as Partial<AppSettings>;
-    return { ...DEFAULT_SETTINGS, ...parsed, maxPages: Math.min(50, Math.max(1, Number(parsed.maxPages) || DEFAULT_SETTINGS.maxPages)) };
+    return { ...DEFAULT_SETTINGS, ...parsed, maxPages: Math.min(MAX_PAGES_LIMIT, Math.max(1, Number(parsed.maxPages) || DEFAULT_SETTINGS.maxPages)) };
   } catch {
     return DEFAULT_SETTINGS;
   }

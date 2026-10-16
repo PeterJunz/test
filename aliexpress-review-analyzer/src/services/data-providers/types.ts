@@ -10,7 +10,11 @@ export type ConnectionCode =
   | 'connected'
   | 'unauthorized'
   | 'unreachable'
-  | 'unsupported';
+  | 'unsupported'
+  | 'sc-connected'
+  | 'sc-missing-key'
+  | 'sc-invalid-key'
+  | 'sc-error';
 
 export interface ConnectionStatus {
   state: ConnectionState;
@@ -60,6 +64,9 @@ export interface FetchReviewsResult {
   reviews: Review[];
   pagination: PaginationInfo;
   report: ImportReport;
+  /** Credits the provider charged for this page, and the balance left, when it reports them. */
+  creditsUsed?: number;
+  creditsRemaining?: number;
 }
 
 /**

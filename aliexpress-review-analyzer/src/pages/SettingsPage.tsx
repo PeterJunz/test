@@ -1,10 +1,11 @@
-import { Eye, EyeOff, KeyRound, Languages, RefreshCw, ShieldCheck, Trash2 } from 'lucide-react';
+import { ExternalLink, Eye, EyeOff, KeyRound, Languages, Plug, RefreshCw, ShieldCheck, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useApp } from '../hooks/appContext';
 import { useConnectionMessage } from '../hooks/useConnectionMessage';
 import { useI18n, type Lang } from '../i18n/context';
 import { CANONICAL_FIELDS, type CanonicalField } from '../services/review-normalizer/fields';
-import { EMPTY_SECRETS } from '../services/storage/settings';
+import { EMPTY_SECRETS, MAX_PAGES_LIMIT } from '../services/storage/settings';
+import { estimateCredits, SOCIALCRAWL_LANGUAGES, SOCIALCRAWL_SIGNUP_URL, SOCIALCRAWL_PAGE_SIZE, type SocialCrawlLanguage } from '../services/data-providers/socialCrawlProvider';
 import { Button, Card, Field, inputClass, Modal, Toggle } from '../components/ui';
 import type { DateOrder } from '../utils/date';
 
@@ -62,8 +63,8 @@ export function SettingsPage() {
       </Card>
 
       <Card
-        title={t('settings.providerTitle')}
-        subtitle={t('settings.providerSub')}
+        title={<span className="inline-flex items-center gap-2"><Plug className="size-4" /> {t('settings.sourceTitle')}</span>}
+        subtitle={t('settings.sourceSub')}
         actions={
           <Button size="sm" loading={checkingConnection} icon={<RefreshCw className="size-3.5" />} onClick={recheckConnection}>
             {t('settings.test')}
@@ -71,9 +72,82 @@ export function SettingsPage() {
         }
       >
         <div className="space-y-4">
+          <div className="grid gap-2 md:grid-cols-2" role="radiogroup" aria-label={t('settings.sourceTitle')}>
+            {(['socialcrawl', 'proxy'] as const).map((src) => (
+              <label key={src} className={`flex cursor-pointer items-start gap-2.5 rounded-lg border p-3 text-sm ${settings.dataSource === src ? 'border-brand bg-brand-soft/50' : 'border-line hover:border-line-strong'}`}>
+                <input type="radio" name="data-source" className="mt-0.5 accent-[var(--brand)]" checked={settings.dataSource === src} onChange={() => updateSettings({ dataSource: src })} />
+                <span>
+                  <span className="block font-medium text-ink">{t(src === 'socialcrawl' ? 'settings.srcSocialcrawl' : 'settings.srcProxy')}</span>
+                  <span className="mt-0.5 block text-xs text-ink-3">{t(src === 'socialcrawl' ? 'settings.srcSocialcrawlHint' : 'settings.srcProxyHint')}</span>
+                </span>
+              </label>
+            ))}
+          </div>
           <p className={`rounded-lg px-3 py-2 text-sm ${connection?.state === 'connected' ? 'bg-pos-soft text-pos' : 'bg-surface-2 text-ink-2'}`} role="status">
             {checkingConnection ? t('status.checking') : connection ? connectionMessage : t('settings.notChecked')}
           </p>
+
+          {settings.dataSource === 'socialcrawl' && (
+            <div className="space-y-4">
+              <ol className="list-decimal space-y-1 rounded-lg bg-surface-2 py-2.5 pl-8 pr-3 text-sm text-ink-2">
+                <li>
+                  {t('settings.scStep1')}{' '}
+                  <a href={SOCIALCRAWL_SIGNUP_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-medium text-brand-ink hover:underline">
+                    socialcrawl.dev <ExternalLink className="size-3" />
+                  </a>
+                </li>
+                <li>{t('settings.scStep2')}</li>
+                <li>{t('settings.scStep3')}</li>
+              </ol>
+              <div className="grid gap-4 md:grid-cols-2">
+                <Field label={t('settings.scKey')} hint={t('settings.scKeyHint')}>
+                  <SecretInput label={t('settings.scKey')} value={secrets.socialcrawlKey} onChange={(v) => updateSecrets({ socialcrawlKey: v })} placeholder="sc_…" />
+                </Field>
+                <Field label={t('settings.scLanguage')} hint={t('settings.scLanguageHint')}>
+                  <select className={inputClass} value={settings.socialcrawlLanguage} onChange={(e) => updateSettings({ socialcrawlLanguage: e.target.value as SocialCrawlLanguage })}>
+                    {SOCIALCRAWL_LANGUAGES.map((l) => (
+                      <option key={l} value={l}>
+                        {l}
+                      </option>
+                    ))}
+                  </select>
+                </Field>
+                <Field label={t('settings.scSort')}>
+                  <select className={inputClass} value={settings.socialcrawlSort} onChange={(e) => updateSettings({ socialcrawlSort: e.target.value as 'default' | 'newest' })}>
+                    <option value="newest">{t('sort.newest')}</option>
+                    <option value="default">{t('settings.scSortDefault')}</option>
+                  </select>
+                </Field>
+              </div>
+              <Toggle checked={settings.rememberSecrets} onChange={(v) => updateSettings({ rememberSecrets: v })} label={t('settings.remember')} description={t('settings.rememberHint')} />
+            </div>
+          )}
+
+          <Field
+            label={t('settings.maxPages')}
+            hint={t('settings.maxPagesEstimate', {
+              reviews: settings.maxPages * SOCIALCRAWL_PAGE_SIZE,
+              credits: estimateCredits(settings.maxPages * SOCIALCRAWL_PAGE_SIZE).credits,
+            })}
+          >
+            <input
+              type="number"
+              min={1}
+              max={MAX_PAGES_LIMIT}
+              className={`${inputClass} max-w-40`}
+              value={settings.maxPages}
+              onChange={(e) => updateSettings({ maxPages: Math.min(MAX_PAGES_LIMIT, Math.max(1, Number(e.target.value) || 1)) })}
+            />
+          </Field>
+        </div>
+      </Card>
+
+      {settings.dataSource === 'proxy' && (
+      <Card
+        title={t('settings.providerTitle')}
+        subtitle={t('settings.providerSub')}
+      >
+        <div className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2">
             <Field label={t('settings.proxyUrl')} hint={t('settings.proxyUrlHint')}>
               <input className={inputClass} value={settings.proxyUrl} onChange={(e) => updateSettings({ proxyUrl: e.target.value.trim() })} placeholder="http://localhost:8787" />
@@ -83,9 +157,6 @@ export function SettingsPage() {
             </Field>
             <Field label={t('settings.providerKey')} hint={t('settings.providerKeyHint')}>
               <SecretInput label={t('settings.providerKey')} value={secrets.providerKey} onChange={(v) => updateSecrets({ providerKey: v })} placeholder={t('settings.useServerKey')} />
-            </Field>
-            <Field label={t('settings.maxPages')} hint={t('settings.maxPagesHint')}>
-              <input type="number" min={1} max={50} className={inputClass} value={settings.maxPages} onChange={(e) => updateSettings({ maxPages: Math.min(50, Math.max(1, Number(e.target.value) || 1)) })} />
             </Field>
           </div>
 
@@ -124,6 +195,7 @@ export function SettingsPage() {
           </details>
         </div>
       </Card>
+      )}
 
       <Card title={t('settings.aiTitle')} subtitle={t('settings.aiSub')}>
         <div className="space-y-4">

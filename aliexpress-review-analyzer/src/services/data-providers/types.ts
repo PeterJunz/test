@@ -3,8 +3,19 @@ import type { ImportReport } from '../review-normalizer/normalize';
 
 export type ConnectionState = 'connected' | 'not-configured' | 'unreachable' | 'unauthorized' | 'unsupported' | 'local';
 
+export type ConnectionCode =
+  | 'missing-settings'
+  | 'no-provider'
+  | 'no-key'
+  | 'connected'
+  | 'unauthorized'
+  | 'unreachable'
+  | 'unsupported';
+
 export interface ConnectionStatus {
   state: ConnectionState;
+  /** Stable code the UI translates; `message` is the English fallback / technical detail. */
+  code?: ConnectionCode;
   message: string;
   checkedAt: string;
   /** Capabilities confirmed by the source during validation (may be narrower than declared). */

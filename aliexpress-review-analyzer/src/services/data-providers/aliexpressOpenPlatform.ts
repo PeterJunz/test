@@ -28,6 +28,7 @@ export class AliExpressOpenPlatformProvider implements ReviewProvider {
   async validateConnection(): Promise<ConnectionStatus> {
     return {
       state: 'unsupported',
+      code: 'unsupported',
       message:
         'Not available: AliExpress does not document a public review API for third-party apps. Use a licensed data provider through the proxy, or import an export file.',
       checkedAt: new Date().toISOString(),

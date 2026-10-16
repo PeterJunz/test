@@ -2,25 +2,34 @@ import { useState, type FormEvent } from 'react';
 import { CircleAlert, CircleCheck, CircleDashed, FileUp, Link2, RefreshCw, Search, Settings2, ShieldAlert } from 'lucide-react';
 import { useApp } from '../hooks/appContext';
 import { useAnalyze } from '../hooks/useAnalyze';
+import { useI18n } from '../i18n/context';
+import type { MessageKey } from '../i18n/en';
 import type { ConnectionState } from '../services/data-providers/types';
+import { useConnectionMessage } from '../hooks/useConnectionMessage';
 import { Button, Modal } from './ui';
+import { LanguageSwitch } from './LanguageSwitch';
 
-const STATUS: Record<ConnectionState | 'checking' | 'none', { label: string; tone: string; icon: typeof CircleCheck }> = {
-  connected: { label: 'Provider connected', tone: 'text-ok', icon: CircleCheck },
-  'not-configured': { label: 'No live source', tone: 'text-ink-3', icon: CircleDashed },
-  unreachable: { label: 'Proxy unreachable', tone: 'text-neg', icon: CircleAlert },
-  unauthorized: { label: 'Proxy auth failed', tone: 'text-neg', icon: ShieldAlert },
-  unsupported: { label: 'Unsupported', tone: 'text-ink-3', icon: CircleDashed },
-  local: { label: 'Local files', tone: 'text-ink-2', icon: CircleCheck },
-  checking: { label: 'Checking…', tone: 'text-ink-3', icon: RefreshCw },
-  none: { label: 'Not checked', tone: 'text-ink-3', icon: CircleDashed },
+const STATUS: Record<ConnectionState | 'checking' | 'none', { label: MessageKey; tone: string; icon: typeof CircleCheck }> = {
+  connected: { label: 'status.connected', tone: 'text-ok', icon: CircleCheck },
+  'not-configured': { label: 'status.notConfigured', tone: 'text-ink-3', icon: CircleDashed },
+  unreachable: { label: 'status.unreachable', tone: 'text-neg', icon: CircleAlert },
+  unauthorized: { label: 'status.unauthorized', tone: 'text-neg', icon: ShieldAlert },
+  unsupported: { label: 'status.unsupported', tone: 'text-ink-3', icon: CircleDashed },
+  local: { label: 'status.local', tone: 'text-ink-2', icon: CircleCheck },
+  checking: { label: 'status.checking', tone: 'text-ink-3', icon: RefreshCw },
+  none: { label: 'status.none', tone: 'text-ink-3', icon: CircleDashed },
 };
 
 export function Header() {
-  const { connection, checkingConnection, recheckConnection, navigate, notify, setPendingProductId, activeDataset } = useApp();
+  const { connection, checkingConnection, recheckConnection, navigate, notify, setPendingProductId, activeDataset, view } = useApp();
+  const { t } = useI18n();
+  const connectionMessage = useConnectionMessage();
   const { analyze, progress, cancel } = useAnalyze();
   const [input, setInput] = useState('');
-  const [error, setError] = useState<string>();
+  // The error belongs to the page it was raised on and disappears when the user navigates.
+  const [errorState, setErrorState] = useState<{ message: string; view: string } | null>(null);
+  const error = errorState?.view === view ? errorState.message : undefined;
+  const setError = (message: string | undefined) => setErrorState(message ? { message, view } : null);
   const [noSource, setNoSource] = useState<{ productId: string; productUrl: string } | null>(null);
 
   const status = STATUS[checkingConnection ? 'checking' : connection?.state ?? 'none'];
@@ -38,22 +47,22 @@ export function Header() {
         setNoSource(outcome);
         break;
       case 'existing':
-        notify('info', `Opened the saved dataset for product ${outcome.dataset.productId}.`);
+        notify('info', t('analyze.openedExisting', { id: outcome.dataset.productId ?? '' }));
         navigate('overview');
         break;
       case 'fetched':
-        notify('success', `Fetched ${outcome.dataset.reviews.length.toLocaleString()} reviews.`);
+        notify('success', t('analyze.fetched', { count: outcome.dataset.reviews.length }));
         navigate('overview');
         break;
       case 'cancelled':
-        notify('info', 'Fetching cancelled.');
+        notify('info', t('analyze.cancelled'));
         break;
     }
   };
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-line bg-surface/95 px-5 backdrop-blur">
-      <a href="#/overview" className="flex shrink-0 items-center gap-2.5" aria-label="AliExpress Review Analyzer Pro — overview">
+      <a href="#/overview" className="flex shrink-0 items-center gap-2.5" aria-label={t('header.homeAria')}>
         <span className="flex size-8 items-center justify-center rounded-lg bg-brand text-sm font-bold text-white">AR</span>
         <span className="hidden leading-tight lg:block">
           <span className="block text-sm font-semibold">AliExpress Review Analyzer</span>
@@ -62,7 +71,7 @@ export function Header() {
       </a>
 
       <form onSubmit={onSubmit} className="flex min-w-0 flex-1 items-center gap-2">
-        <div className="relative min-w-0 flex-1 max-w-2xl">
+        <div className="relative min-w-0 max-w-2xl flex-1">
           <Link2 className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-3" aria-hidden />
           <input
             value={input}
@@ -70,8 +79,8 @@ export function Header() {
               setInput(e.target.value);
               setError(undefined);
             }}
-            placeholder="Paste an AliExpress product URL or product ID…"
-            aria-label="AliExpress product URL or ID"
+            placeholder={t('header.placeholder')}
+            aria-label={t('header.inputAria')}
             aria-invalid={Boolean(error)}
             aria-describedby={error ? 'analyze-error' : undefined}
             className={`h-10 w-full rounded-lg border bg-surface-2 pl-9 pr-3 text-sm placeholder:text-ink-3 focus:bg-surface focus:outline-none ${error ? 'border-neg' : 'border-line-strong focus:border-brand'}`}
@@ -84,14 +93,12 @@ export function Header() {
         </div>
         {progress ? (
           <>
-            <span className="tabular whitespace-nowrap text-xs text-ink-2">
-              Page {progress.page}/{progress.maxPages} · {progress.fetched} reviews
-            </span>
-            <Button onClick={cancel}>Cancel</Button>
+            <span className="tabular whitespace-nowrap text-xs text-ink-2">{t('header.progress', { page: progress.page, max: progress.maxPages, count: progress.fetched })}</span>
+            <Button onClick={cancel}>{t('common.cancel')}</Button>
           </>
         ) : (
           <Button type="submit" variant="primary" icon={<Search className="size-4" />} disabled={!input.trim()}>
-            Analyze Reviews
+            {t('header.analyze')}
           </Button>
         )}
       </form>
@@ -99,20 +106,21 @@ export function Header() {
       <button
         type="button"
         onClick={recheckConnection}
-        title={connection ? `${connection.message}\nChecked ${new Date(connection.checkedAt).toLocaleTimeString()} — click to re-check` : 'Check connection'}
+        title={connection ? t('header.statusTitle', { message: connectionMessage, time: new Date(connection.checkedAt).toLocaleTimeString() }) : t('header.checkConnection')}
         className={`hidden shrink-0 items-center gap-1.5 rounded-full border border-line px-3 py-1.5 text-xs font-medium hover:bg-surface-2 md:inline-flex ${status.tone}`}
       >
         <StatusIcon className={`size-3.5 ${checkingConnection ? 'animate-spin' : ''}`} aria-hidden />
-        {status.label}
+        {t(status.label)}
       </button>
       {activeDataset?.origin === 'demo' && (
-        <span className="hidden shrink-0 rounded-md bg-warn-soft px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-warn-ink xl:inline">Demo data</span>
+        <span className="hidden shrink-0 rounded-md bg-warn-soft px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-warn-ink xl:inline">{t('header.demoBadge')}</span>
       )}
+      <LanguageSwitch />
 
       <Modal
         open={Boolean(noSource)}
         onClose={() => setNoSource(null)}
-        title="No live data source connected"
+        title={t('noSource.title')}
         footer={
           <>
             <Button
@@ -122,7 +130,7 @@ export function Header() {
                 navigate('settings');
               }}
             >
-              Configure a data provider
+              {t('noSource.configure')}
             </Button>
             <Button
               variant="primary"
@@ -133,23 +141,19 @@ export function Header() {
                 navigate('sources');
               }}
             >
-              Import a review file
+              {t('noSource.import')}
             </Button>
           </>
         }
       >
         <div className="space-y-3 text-sm text-ink-2">
-          <p>
-            Product <strong className="text-ink">{noSource?.productId}</strong> was recognised, but there is no connected source to load its reviews from.
-          </p>
-          <p>
-            AliExpress does not offer a public review API for third-party tools, and this app does not scrape the site. To analyse this product, either:
-          </p>
+          <p>{t('noSource.recognised', { id: noSource?.productId ?? '' })}</p>
+          <p>{t('noSource.explain')}</p>
           <ul className="list-disc space-y-1 pl-5">
-            <li>import a CSV/JSON export of its reviews that you are allowed to use, or</li>
-            <li>connect a licensed review-data provider through the bundled proxy server.</li>
+            <li>{t('noSource.optionImport')}</li>
+            <li>{t('noSource.optionProvider')}</li>
           </ul>
-          <p className="text-xs text-ink-3">Proxy status: {connection?.message ?? 'not checked yet'}</p>
+          <p className="text-xs text-ink-3">{t('noSource.proxyStatus', { message: connection ? connectionMessage : t('status.none') })}</p>
         </div>
       </Modal>
     </header>

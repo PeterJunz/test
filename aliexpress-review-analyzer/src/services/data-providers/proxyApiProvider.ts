@@ -93,19 +93,20 @@ export class ProxyApiProvider implements ReviewProvider {
   async validateConnection(signal?: AbortSignal): Promise<ConnectionStatus> {
     const checkedAt = new Date().toISOString();
     if (!this.config.baseUrl || !this.config.accessToken) {
-      return { state: 'not-configured', message: 'Set the proxy URL and access token in Settings → Data sources.', checkedAt };
+      return { state: 'not-configured', code: 'missing-settings', message: 'Set the proxy URL and access token in Settings → Data sources.', checkedAt };
     }
     try {
       const status = await this.request<ProxyStatus>('/api/status', { signal });
       if (!status.provider.configured) {
-        return { state: 'not-configured', message: 'Proxy is running, but no review provider is configured (REVIEW_API_URL_TEMPLATE).', checkedAt };
+        return { state: 'not-configured', code: 'no-provider', message: 'Proxy is running, but no review provider is configured (REVIEW_API_URL_TEMPLATE).', checkedAt };
       }
       if (status.provider.keySource === 'none') {
-        return { state: 'not-configured', message: 'Proxy has a provider URL but no API key (set REVIEW_API_KEY or enter one in Settings).', checkedAt };
+        return { state: 'not-configured', code: 'no-key', message: 'Proxy has a provider URL but no API key (set REVIEW_API_KEY or enter one in Settings).', checkedAt };
       }
       this.capabilities = { ...this.capabilities, productInfo: status.provider.productInfo };
       return {
         state: 'connected',
+        code: 'connected',
         message: `Proxy connected — provider: ${status.provider.name ?? 'unnamed'}. Connection to the provider itself is verified on the first request.`,
         checkedAt,
         providerName: status.provider.name ?? undefined,
@@ -113,10 +114,10 @@ export class ProxyApiProvider implements ReviewProvider {
       };
     } catch (e) {
       if (e instanceof ProviderError && (e.status === 401 || e.status === 403)) {
-        return { state: 'unauthorized', message: 'The proxy rejected the access token.', checkedAt };
+        return { state: 'unauthorized', code: 'unauthorized', message: 'The proxy rejected the access token.', checkedAt };
       }
       if ((e as Error).name === 'AbortError') throw e;
-      return { state: 'unreachable', message: (e as Error).message, checkedAt };
+      return { state: 'unreachable', code: 'unreachable', message: (e as Error).message, checkedAt };
     }
   }
 

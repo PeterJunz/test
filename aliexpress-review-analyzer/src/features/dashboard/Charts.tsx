@@ -1,5 +1,6 @@
 import { Bar, BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import type { DashboardStats, TrendPoint } from './stats';
+import { useI18n } from '../../i18n/context';
 
 const AXIS = { fontSize: 11, fill: 'var(--ink-3)' };
 
@@ -18,9 +19,10 @@ function TooltipBox({ title, rows }: { title: string; rows: Array<[string, strin
 }
 
 export function RatingDistributionChart({ stats }: { stats: DashboardStats }) {
+  const { t } = useI18n();
   const data = stats.distribution.map((d) => ({ ...d, label: `${d.stars} ★` }));
   return (
-    <div className="h-56" role="img" aria-label={`Star distribution: ${data.map((d) => `${d.stars} stars ${d.count}`).join(', ')}`}>
+    <div className="h-56" role="img" aria-label={t('chart.distAria', { list: data.map((d) => `${d.stars}★ ${d.count}`).join(', ') })}>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} layout="vertical" margin={{ top: 4, right: 56, bottom: 4, left: 4 }} barCategoryGap={6}>
           <CartesianGrid horizontal={false} stroke="var(--grid)" />
@@ -30,7 +32,7 @@ export function RatingDistributionChart({ stats }: { stats: DashboardStats }) {
             cursor={{ fill: 'var(--surface-3)' }}
             content={({ active, payload }) => {
               const p = active && payload?.[0]?.payload;
-              return p ? <TooltipBox title={`${p.stars}-star reviews`} rows={[['Reviews', p.count.toLocaleString()], ['Share', `${(p.share * 100).toFixed(1)}%`]]} /> : null;
+              return p ? <TooltipBox title={t('chart.starReviews', { stars: p.stars })} rows={[[t('chart.reviews'), p.count.toLocaleString()], [t('chart.share'), `${(p.share * 100).toFixed(1)}%`]]} /> : null;
             }}
           />
           <Bar
@@ -46,17 +48,18 @@ export function RatingDistributionChart({ stats }: { stats: DashboardStats }) {
   );
 }
 
-const monthLabel = (m: string) => {
+const monthLabel = (m: string, locale: string) => {
   const [y, mo] = m.split('-').map(Number);
-  return new Date(Date.UTC(y, mo - 1, 1)).toLocaleDateString('en-US', { month: 'short', year: '2-digit', timeZone: 'UTC' });
+  return new Date(Date.UTC(y, mo - 1, 1)).toLocaleDateString(locale, { month: 'short', year: '2-digit', timeZone: 'UTC' });
 };
 
 export function TrendCharts({ trend }: { trend: TrendPoint[] }) {
-  const data = trend.map((t) => ({ ...t, label: monthLabel(t.month), avg: Number.isNaN(t.averageRating) ? null : Number(t.averageRating.toFixed(2)) }));
+  const { t, locale } = useI18n();
+  const data = trend.map((p) => ({ ...p, label: monthLabel(p.month, locale), avg: Number.isNaN(p.averageRating) ? null : Number(p.averageRating.toFixed(2)) }));
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <figure>
-        <figcaption className="mb-2 text-xs font-medium text-ink-2">Reviews per month</figcaption>
+        <figcaption className="mb-2 text-xs font-medium text-ink-2">{t('chart.perMonth')}</figcaption>
         <div className="h-52">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data} margin={{ top: 4, right: 8, bottom: 0, left: -16 }}>
@@ -67,7 +70,7 @@ export function TrendCharts({ trend }: { trend: TrendPoint[] }) {
                 cursor={{ fill: 'var(--surface-3)' }}
                 content={({ active, payload }) => {
                   const p = active && payload?.[0]?.payload;
-                  return p ? <TooltipBox title={p.label} rows={[['Reviews', p.count.toLocaleString()], ['Avg rating', p.avg === null ? '—' : p.avg.toFixed(2)]]} /> : null;
+                  return p ? <TooltipBox title={p.label} rows={[[t('chart.reviews'), p.count.toLocaleString()], [t('chart.avgRating'), p.avg === null ? '—' : p.avg.toFixed(2)]]} /> : null;
                 }}
               />
               <Bar dataKey="count" fill="var(--pos)" radius={[4, 4, 0, 0]} isAnimationActive={false} />
@@ -76,7 +79,7 @@ export function TrendCharts({ trend }: { trend: TrendPoint[] }) {
         </div>
       </figure>
       <figure>
-        <figcaption className="mb-2 text-xs font-medium text-ink-2">Average rating per month</figcaption>
+        <figcaption className="mb-2 text-xs font-medium text-ink-2">{t('chart.avgPerMonth')}</figcaption>
         <div className="h-52">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={data} margin={{ top: 4, right: 8, bottom: 0, left: -16 }}>
@@ -87,7 +90,7 @@ export function TrendCharts({ trend }: { trend: TrendPoint[] }) {
                 cursor={{ stroke: 'var(--line-strong)' }}
                 content={({ active, payload }) => {
                   const p = active && payload?.[0]?.payload;
-                  return p ? <TooltipBox title={p.label} rows={[['Avg rating', p.avg === null ? 'no reviews' : p.avg.toFixed(2)], ['Reviews', p.count.toLocaleString()]]} /> : null;
+                  return p ? <TooltipBox title={p.label} rows={[[t('chart.avgRating'), p.avg === null ? t('chart.noReviews') : p.avg.toFixed(2)], [t('chart.reviews'), p.count.toLocaleString()]]} /> : null;
                 }}
               />
               <Line type="monotone" dataKey="avg" stroke="var(--brand)" strokeWidth={2} dot={{ r: 3, fill: 'var(--brand)', stroke: 'var(--surface)', strokeWidth: 2 }} activeDot={{ r: 5 }} connectNulls={false} isAnimationActive={false} />
@@ -100,11 +103,12 @@ export function TrendCharts({ trend }: { trend: TrendPoint[] }) {
 }
 
 export function SentimentBar({ stats }: { stats: DashboardStats }) {
+  const { t } = useI18n();
   const parts = [
-    { key: 'Positive', value: stats.positive, color: 'var(--pos)' },
-    { key: 'Neutral', value: stats.neutral, color: 'var(--neu)' },
-    { key: 'Negative', value: stats.negative, color: 'var(--neg)' },
-    { key: 'Uncertain', value: stats.uncertain, color: 'var(--unc)' },
+    { key: t('sentiment.positive'), value: stats.positive, color: 'var(--pos)' },
+    { key: t('sentiment.neutral'), value: stats.neutral, color: 'var(--neu)' },
+    { key: t('sentiment.negative'), value: stats.negative, color: 'var(--neg)' },
+    { key: t('sentiment.uncertain'), value: stats.uncertain, color: 'var(--unc)' },
   ];
   const total = stats.total || 1;
   return (

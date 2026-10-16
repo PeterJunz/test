@@ -13,7 +13,18 @@ export interface ParsedFile {
   truncated: boolean;
 }
 
-export class ImportError extends Error {}
+export type ImportErrorCode = 'invalid-json' | 'no-array' | 'no-header' | 'no-delimiter' | 'empty' | 'too-large' | 'bad-extension';
+
+/** `code` + `params` let the UI translate the message; `message` is the English text. */
+export class ImportError extends Error {
+  readonly code: ImportErrorCode;
+  readonly params: Record<string, string | number>;
+  constructor(code: ImportErrorCode, message: string, params: Record<string, string | number> = {}) {
+    super(message);
+    this.code = code;
+    this.params = params;
+  }
+}
 
 const ARRAY_KEYS = ['reviews', 'data', 'items', 'results', 'records', 'feedbacks', 'evaluations', 'list', 'rows'];
 
@@ -57,10 +68,10 @@ export function parseJsonText(text: string): ParsedFile {
   try {
     doc = JSON.parse(text);
   } catch (e) {
-    throw new ImportError(`The file is not valid JSON (${(e as Error).message}).`);
+    throw new ImportError('invalid-json', `The file is not valid JSON (${(e as Error).message}).`, { detail: (e as Error).message });
   }
   const records = findRecordArray(doc);
-  if (!records) throw new ImportError('No array of review objects was found in this JSON file.');
+  if (!records) throw new ImportError('no-array', 'No array of review objects was found in this JSON file.');
   const truncated = records.length > MAX_IMPORT_ROWS;
   const rows = records.slice(0, MAX_IMPORT_ROWS).map((r) => flattenRecord(r));
   return { format: 'json', rows, columns: columnsOf(rows), parseWarnings: [], truncated };
@@ -74,9 +85,9 @@ export function parseCsvText(text: string): ParsedFile {
     transformHeader: (h) => h.trim(),
   });
   const fields = (result.meta.fields ?? []).filter(Boolean);
-  if (!fields.length) throw new ImportError('The CSV file has no header row.');
+  if (!fields.length) throw new ImportError('no-header', 'The CSV file has no header row.');
   if (fields.length === 1 && result.data.length > 0 && !result.meta.delimiter) {
-    throw new ImportError('Could not detect the CSV delimiter.');
+    throw new ImportError('no-delimiter', 'Could not detect the CSV delimiter.');
   }
   const warnings = result.errors.slice(0, 20).map((e) => `Line ${e.row !== undefined ? e.row + 2 : '?'}: ${e.message}`);
   if (result.errors.length > 20) warnings.push(`…and ${result.errors.length - 20} more parser messages`);
@@ -94,11 +105,12 @@ export function parseImportText(text: string, fileName: string): ParsedFile {
 }
 
 export async function parseImportFile(file: File): Promise<ParsedFile> {
-  if (file.size === 0) throw new ImportError('The file is empty.');
+  if (file.size === 0) throw new ImportError('empty', 'The file is empty.');
   if (file.size > MAX_IMPORT_BYTES) {
-    throw new ImportError(`The file is ${(file.size / 1024 / 1024).toFixed(1)} MB; the limit is ${MAX_IMPORT_BYTES / 1024 / 1024} MB.`);
+    const size = (file.size / 1024 / 1024).toFixed(1);
+    throw new ImportError('too-large', `The file is ${size} MB; the limit is ${MAX_IMPORT_BYTES / 1024 / 1024} MB.`, { size, limit: MAX_IMPORT_BYTES / 1024 / 1024 });
   }
-  if (!/\.(csv|tsv|txt|json)$/i.test(file.name)) throw new ImportError('Only .csv and .json files are supported.');
+  if (!/\.(csv|tsv|txt|json)$/i.test(file.name)) throw new ImportError('bad-extension', 'Only .csv and .json files are supported.');
   const text = await file.text();
   return parseImportText(text, file.name);
 }

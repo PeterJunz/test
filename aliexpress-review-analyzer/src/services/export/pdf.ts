@@ -1,6 +1,12 @@
 import type { DashboardStats } from '../../features/dashboard/stats';
 import type { AspectInsight, RuleSummary, TagInsight } from '../../features/insights/insights';
 import type { AiAnalysis, DataOrigin } from '../../types/review';
+import { translate } from '../../i18n/translate';
+import type { TFunction } from '../../i18n/context';
+import { formatCaution, formatSummaryItem } from '../../features/insights/formatSummary';
+
+/** The PDF is always English: the built-in fonts cannot render Vietnamese diacritics. */
+const tEn: TFunction = (key, vars) => translate('en', key, vars);
 
 export interface ReportInput {
   datasetName: string;
@@ -104,12 +110,12 @@ export async function buildPdfReport(input: ReportInput): Promise<Blob> {
 
   heading('Rule-based summary (inference from keyword counts)');
   para('Strengths', 11, 30);
-  bullets(input.ruleSummary.strengths);
+  bullets(input.ruleSummary.strengths.map((i) => formatSummaryItem(i, tEn)));
   para('Complaints', 11, 30);
-  bullets(input.ruleSummary.complaints);
+  bullets(input.ruleSummary.complaints.map((i) => formatSummaryItem(i, tEn)));
   if (input.ruleSummary.cautions.length) {
     para('Caveats', 11, 30);
-    bullets(input.ruleSummary.cautions);
+    bullets(input.ruleSummary.cautions.map((c) => formatCaution(c, tEn)));
   }
 
   if (input.tags.length) {

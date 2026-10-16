@@ -10,13 +10,17 @@ import { DatasetBanner } from '../../components/DatasetBanner';
 import { FilterPanel } from '../filters/FilterPanel';
 import { describeFilters } from '../filters/describeFilters';
 import { countActiveFilters, facetCounts, filterReviews, sortReviews } from '../filters/filterReviews';
-import { applyScope, SCOPE_LABELS, SCOPE_LOCKS, type Scope } from '../filters/scope';
+import { applyScope, SCOPE_LOCKS, type Scope } from '../filters/scope';
+import { useI18n } from '../../i18n/context';
+import { translate } from '../../i18n/translate';
+import type { TFunction } from '../../i18n/context';
 import { exportReviews, type ExportFormat } from '../export/runExport';
-import { tagLabel } from '../insights/insights';
 import { ReviewDetail } from './ReviewDetail';
 import { Lightbox, Thumb } from './media';
 
 const PAGE_SIZES = [25, 50, 100];
+
+const tEn: TFunction = (key, vars) => translate('en', key, vars);
 
 function SortHeader({ field, label, className = '' }: { field: SortField; label: string; className?: string }) {
   const { sort, setSort } = useApp();
@@ -37,6 +41,7 @@ function SortHeader({ field, label, className = '' }: { field: SortField; label:
 
 export function ReviewsView({ dataset, scope }: { dataset: Dataset; scope: Scope }) {
   const { filters, setFilters, resetFilters, sort, setSort, selection, setSelection, notify } = useApp();
+  const { t, lang, locale } = useI18n();
   const [pageSize, setPageSize] = useState(25);
   const [detail, setDetail] = useState<Review | null>(null);
   const [lightbox, setLightbox] = useState<{ images: string[]; index: number; caption: string } | null>(null);
@@ -89,11 +94,12 @@ export function ReviewsView({ dataset, scope }: { dataset: Dataset; scope: Scope
     if (!list.length) return;
     setExporting(format);
     try {
-      const label = onlySelected ? `${list.length} selected` : `${SCOPE_LABELS[scope]}; ${describeFilters(effective)}`;
+      // Export metadata stays in English so files are consistent whatever the UI language.
+      const label = onlySelected ? tEn('export.selectedLabel', { count: list.length }) : `${tEn(`scope.${scope}`)}; ${describeFilters(effective, tEn)}`;
       await exportReviews(format, list, dataset, label);
-      notify('success', `Exported ${list.length.toLocaleString()} review${list.length === 1 ? '' : 's'} as ${format.toUpperCase()}.`);
+      notify('success', t('export.done', { count: list.length, format: format.toUpperCase() }));
     } catch (e) {
-      notify('error', `Export failed: ${(e as Error).message}`);
+      notify('error', t('export.failed', { detail: (e as Error).message }));
     } finally {
       setExporting(null);
     }
@@ -123,7 +129,7 @@ export function ReviewsView({ dataset, scope }: { dataset: Dataset; scope: Scope
           <div className="flex flex-wrap items-center gap-2 rounded-xl border border-line bg-surface p-2.5">
             {!showFilters && (
               <Button size="sm" icon={<PanelLeftOpen className="size-4" />} onClick={() => setShowFilters(true)}>
-                Filters{activeCount > 0 && ` (${activeCount})`}
+                {t('filters.title')}{activeCount > 0 && ` (${activeCount})`}
               </Button>
             )}
             <div className="relative min-w-56 flex-1">
@@ -131,18 +137,18 @@ export function ReviewsView({ dataset, scope }: { dataset: Dataset; scope: Scope
               <input
                 value={searchDraft}
                 onChange={(e) => setSearchDraft(e.target.value)}
-                placeholder='Search text… use "phrases" and -exclude'
-                aria-label="Search reviews"
+                placeholder={t('reviews.searchPlaceholder')}
+                aria-label={t('reviews.searchAria')}
                 className="h-9 w-full rounded-lg border border-line-strong bg-surface-2 pl-8 pr-8 text-sm focus:border-brand focus:bg-surface focus:outline-none"
               />
               {searchDraft && (
-                <button type="button" onClick={() => setSearchDraft('')} className="absolute right-2 top-1/2 -translate-y-1/2 text-ink-3 hover:text-ink" aria-label="Clear search">
+                <button type="button" onClick={() => setSearchDraft('')} className="absolute right-2 top-1/2 -translate-y-1/2 text-ink-3 hover:text-ink" aria-label={t('reviews.clearSearch')}>
                   <X className="size-4" />
                 </button>
               )}
             </div>
             <label className="flex items-center gap-1.5 text-xs text-ink-2">
-              Sort
+              {t('reviews.sort')}
               <select
                 value={`${sort.field}:${sort.direction}`}
                 onChange={(e) => {
@@ -151,24 +157,24 @@ export function ReviewsView({ dataset, scope }: { dataset: Dataset; scope: Scope
                 }}
                 className="h-9 rounded-lg border border-line-strong bg-surface px-2 text-[13px] text-ink"
               >
-                <option value="date:desc">Newest first</option>
-                <option value="date:asc">Oldest first</option>
-                <option value="rating:desc">Highest rating</option>
-                <option value="rating:asc">Lowest rating</option>
-                <option value="helpful:desc">Most helpful</option>
-                <option value="length:desc">Longest text</option>
+                <option value="date:desc">{t('sort.newest')}</option>
+                <option value="date:asc">{t('sort.oldest')}</option>
+                <option value="rating:desc">{t('sort.highest')}</option>
+                <option value="rating:asc">{t('sort.lowest')}</option>
+                <option value="helpful:desc">{t('sort.helpful')}</option>
+                <option value="length:desc">{t('sort.longest')}</option>
               </select>
             </label>
-            <div className="inline-flex rounded-lg border border-line p-0.5" role="radiogroup" aria-label="Layout">
-              <button type="button" role="radio" aria-checked={layout === 'table'} onClick={() => setLayout('table')} className={`rounded-md p-1.5 ${layout === 'table' ? 'bg-surface-3 text-ink' : 'text-ink-3'}`} aria-label="Table">
+            <div className="inline-flex rounded-lg border border-line p-0.5" role="radiogroup" aria-label={t('reviews.layout')}>
+              <button type="button" role="radio" aria-checked={layout === 'table'} onClick={() => setLayout('table')} className={`rounded-md p-1.5 ${layout === 'table' ? 'bg-surface-3 text-ink' : 'text-ink-3'}`} aria-label={t('reviews.table')}>
                 <Rows3 className="size-4" />
               </button>
-              <button type="button" role="radio" aria-checked={layout === 'grid'} onClick={() => setLayout('grid')} className={`rounded-md p-1.5 ${layout === 'grid' ? 'bg-surface-3 text-ink' : 'text-ink-3'}`} aria-label="Cards">
+              <button type="button" role="radio" aria-checked={layout === 'grid'} onClick={() => setLayout('grid')} className={`rounded-md p-1.5 ${layout === 'grid' ? 'bg-surface-3 text-ink' : 'text-ink-3'}`} aria-label={t('reviews.cards')}>
                 <LayoutGrid className="size-4" />
               </button>
             </div>
             <div className="flex items-center gap-1">
-              <span className="mr-1 text-xs text-ink-3">Export {selectedInResults.length ? 'selected' : 'results'}:</span>
+              <span className="mr-1 text-xs text-ink-3">{t(selectedInResults.length ? 'reviews.exportSelected' : 'reviews.exportResults')}</span>
               {(['csv', 'json', 'xlsx'] as ExportFormat[]).map((f) => (
                 <Button key={f} size="sm" loading={exporting === f} disabled={!results.length || exporting !== null} onClick={() => runExport(f, selectedInResults.length > 0)} icon={<Download className="size-3.5" />}>
                   {f.toUpperCase()}
@@ -179,25 +185,28 @@ export function ReviewsView({ dataset, scope }: { dataset: Dataset; scope: Scope
 
           <div className="flex flex-wrap items-center justify-between gap-2 px-1 text-sm">
             <p className="text-ink-2" aria-live="polite">
-              <strong className="tabular text-ink">{results.length.toLocaleString()}</strong> of {dataset.reviews.length.toLocaleString()} reviews
-              <span className="text-ink-3"> · {SCOPE_LABELS[scope]}</span>
+              <strong className="tabular text-ink">{results.length.toLocaleString()}</strong> {t('reviews.ofTotal', { total: dataset.reviews.length })}
+              <span className="text-ink-3"> · {t(`scope.${scope}`)}</span>
             </p>
             {selection.size > 0 ? (
               <p className="flex items-center gap-3 text-ink-2">
-                <span className="tabular">{selectedInResults.length.toLocaleString()} selected{hiddenSelection > 0 && ` (+${hiddenSelection} hidden by filters)`}</span>
+                <span className="tabular">
+                  {t('reviews.selected', { count: selectedInResults.length })}
+                  {hiddenSelection > 0 && ` ${t('reviews.hiddenSelected', { count: hiddenSelection })}`}
+                </span>
                 {!allResultsSelected && (
                   <button type="button" className="font-medium text-brand-ink hover:underline" onClick={() => setSelection(new Set([...selection, ...results.map((r) => r.id)]))}>
-                    Select all {results.length.toLocaleString()} filtered results
+                    {t('reviews.selectAll', { count: results.length })}
                   </button>
                 )}
                 <button type="button" className="text-ink-3 hover:text-ink" onClick={() => setSelection(new Set())}>
-                  Clear selection
+                  {t('reviews.clearSelection')}
                 </button>
               </p>
             ) : (
               results.length > 0 && (
                 <button type="button" className="text-xs font-medium text-brand-ink hover:underline" onClick={() => setSelection(new Set(results.map((r) => r.id)))}>
-                  Select all {results.length.toLocaleString()} filtered results
+                  {t('reviews.selectAll', { count: results.length })}
                 </button>
               )
             )}
@@ -206,10 +215,10 @@ export function ReviewsView({ dataset, scope }: { dataset: Dataset; scope: Scope
           {results.length === 0 ? (
             <div className="rounded-xl border border-dashed border-line-strong bg-surface px-6 py-12 text-center text-sm text-ink-2">
               {scope === 'videos' && counts.videos === 0
-                ? 'This dataset contains no video reviews. Video is only available when the data source provides video URLs.'
+                ? t('reviews.noVideos')
                 : scope === 'photos' && counts.photos === 0
-                  ? 'This dataset contains no reviews with photos, or the source did not include image URLs.'
-                  : 'No reviews match these filters.'}
+                  ? t('reviews.noPhotos')
+                  : t('reviews.noMatch')}
             </div>
           ) : layout === 'table' ? (
             <div className="overflow-x-auto rounded-xl border border-line bg-surface">
@@ -217,34 +226,34 @@ export function ReviewsView({ dataset, scope }: { dataset: Dataset; scope: Scope
                 <thead className="border-b border-line bg-surface-2 text-xs text-ink-3">
                   <tr>
                     <th scope="col" className="w-10 px-3 py-2.5">
-                      <input type="checkbox" aria-label="Select reviews on this page" className="size-4 accent-[var(--brand)]" checked={allVisibleSelected} onChange={toggleVisible} />
+                      <input type="checkbox" aria-label={t('reviews.selectPage')} className="size-4 accent-[var(--brand)]" checked={allVisibleSelected} onChange={toggleVisible} />
                     </th>
-                    <SortHeader field="rating" label="Rating" className="w-[92px]" />
-                    <th scope="col" className="px-3 py-2.5 text-left font-medium">Review</th>
-                    <th scope="col" className="w-[104px] px-3 py-2.5 text-left font-medium">Images</th>
-                    <th scope="col" className="w-[68px] px-3 py-2.5 text-left font-medium">Country</th>
-                    <SortHeader field="date" label="Date" className="w-[100px]" />
-                    <th scope="col" className="w-28 px-3 py-2.5 text-left font-medium">Variant</th>
-                    <th scope="col" className="w-[116px] px-2 py-2.5 text-left font-medium">Sentiment</th>
-                    <th scope="col" className="w-[56px] px-2 py-2.5 text-left font-medium">Source</th>
+                    <SortHeader field="rating" label={t('col.rating')} className="w-[92px] whitespace-nowrap" />
+                    <th scope="col" className="px-3 py-2.5 text-left font-medium">{t('col.review')}</th>
+                    <th scope="col" className="w-[104px] px-3 py-2.5 text-left font-medium">{t('col.images')}</th>
+                    <th scope="col" className="w-[84px] whitespace-nowrap px-3 py-2.5 text-left font-medium">{t('col.country')}</th>
+                    <SortHeader field="date" label={t('col.date')} className="w-[96px] whitespace-nowrap" />
+                    <th scope="col" className="w-28 px-3 py-2.5 text-left font-medium">{t('col.variant')}</th>
+                    <th scope="col" className="w-[116px] px-2 py-2.5 text-left font-medium">{t('col.sentiment')}</th>
+                    <th scope="col" className="w-[56px] px-2 py-2.5 text-left font-medium">{t('col.source')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-line">
                   {visible.map((r) => (
                     <tr key={r.id} className={`align-top hover:bg-surface-2 ${selection.has(r.id) ? 'bg-brand-soft/40' : ''}`}>
                       <td className="px-3 py-3">
-                        <input type="checkbox" aria-label="Select review" className="size-4 accent-[var(--brand)]" checked={selection.has(r.id)} onChange={() => toggleOne(r.id)} />
+                        <input type="checkbox" aria-label={t('reviews.selectOne')} className="size-4 accent-[var(--brand)]" checked={selection.has(r.id)} onChange={() => toggleOne(r.id)} />
                       </td>
                       <td className="px-3 py-3">
                         <Stars rating={r.rating} size={12} />
                       </td>
                       <td className="px-3 py-3">
                         <button type="button" onClick={() => setDetail(r)} className="block w-full text-left">
-                          {r.text ? <span className="line-clamp-3 text-ink">{r.text}</span> : <span className="italic text-ink-3">No text</span>}
+                          {r.text ? <span className="line-clamp-3 text-ink">{r.text}</span> : <span className="italic text-ink-3">{t('reviews.noText')}</span>}
                           {r.tags.length > 0 && (
                             <span className="mt-1.5 flex flex-wrap gap-1">
-                              {r.tags.slice(0, 3).map((t) => (
-                                <Badge key={t}>{tagLabel(t)}</Badge>
+                              {r.tags.slice(0, 3).map((tag) => (
+                                <Badge key={tag}>{t(`tag.${tag}`)}</Badge>
                               ))}
                               {r.tags.length > 3 && <Badge>+{r.tags.length - 3}</Badge>}
                             </span>
@@ -255,20 +264,20 @@ export function ReviewsView({ dataset, scope }: { dataset: Dataset; scope: Scope
                         {r.images.length ? (
                           <div className="flex gap-1">
                             {r.images.slice(0, 2).map((src, i) => (
-                              <Thumb key={src} src={src} alt={`Photo ${i + 1}`} size="sm" onClick={() => setLightbox({ images: r.images, index: i, caption: `${r.rating}★ review` })} />
+                              <Thumb key={src} src={src} alt={t('media.photoN', { n: i + 1 })} size="sm" onClick={() => setLightbox({ images: r.images, index: i, caption: t('media.caption', { rating: r.rating }) })} />
                             ))}
                             {r.images.length > 2 && <span className="self-center text-xs text-ink-3">+{r.images.length - 2}</span>}
                           </div>
                         ) : r.videos.length ? (
-                          <Badge tone="brand">Video</Badge>
+                          <Badge tone="brand">{t('filters.video')}</Badge>
                         ) : (
                           <span className="text-ink-3">—</span>
                         )}
                       </td>
-                      <td className="px-3 py-3" title={countryName(r.country)}>
+                      <td className="px-3 py-3" title={countryName(r.country, lang)}>
                         {r.country ? `${countryFlag(r.country)} ${r.country}` : <span className="text-ink-3">—</span>}
                       </td>
-                      <td className="tabular whitespace-nowrap px-3 py-3 text-ink-2">{formatShortDate(r.date)}</td>
+                      <td className="tabular whitespace-nowrap px-3 py-3 text-ink-2">{formatShortDate(r.date, locale)}</td>
                       <td className="px-3 py-3 text-ink-2">
                         <span className="line-clamp-2">{r.variant ?? '—'}</span>
                       </td>
@@ -277,7 +286,7 @@ export function ReviewsView({ dataset, scope }: { dataset: Dataset; scope: Scope
                       </td>
                       <td className="px-2 py-3">
                         {r.sourceUrl ? (
-                          <a href={r.sourceUrl} target="_blank" rel="noopener noreferrer nofollow" className="inline-flex text-ink-2 hover:text-brand-ink" aria-label="Open original review">
+                          <a href={r.sourceUrl} target="_blank" rel="noopener noreferrer nofollow" className="inline-flex text-ink-2 hover:text-brand-ink" aria-label={t('reviews.openOriginal')}>
                             <ExternalLink className="size-4" />
                           </a>
                         ) : (
@@ -296,38 +305,38 @@ export function ReviewsView({ dataset, scope }: { dataset: Dataset; scope: Scope
                   {r.images.length > 0 ? (
                     <div className="grid grid-cols-3 gap-1 p-2">
                       {r.images.slice(0, 3).map((src, i) => (
-                        <Thumb key={src} src={src} alt={`Photo ${i + 1}`} size="lg" onClick={() => setLightbox({ images: r.images, index: i, caption: `${r.rating}★ review` })} />
+                        <Thumb key={src} src={src} alt={t('media.photoN', { n: i + 1 })} size="lg" onClick={() => setLightbox({ images: r.images, index: i, caption: t('media.caption', { rating: r.rating }) })} />
                       ))}
                     </div>
                   ) : (
-                    <div className="m-2 rounded-md bg-surface-2 py-3 text-center text-xs text-ink-3">No photos attached</div>
+                    <div className="m-2 rounded-md bg-surface-2 py-3 text-center text-xs text-ink-3">{t('reviews.noPhotosAttached')}</div>
                   )}
                   <div className="flex flex-1 flex-col gap-2 px-3.5 pb-3.5">
                     <div className="flex items-center justify-between">
                       <Stars rating={r.rating} size={13} />
                       <label className="flex items-center gap-1.5 text-xs text-ink-3">
-                        <input type="checkbox" className="size-4 accent-[var(--brand)]" checked={selection.has(r.id)} onChange={() => toggleOne(r.id)} /> Select
+                        <input type="checkbox" className="size-4 accent-[var(--brand)]" checked={selection.has(r.id)} onChange={() => toggleOne(r.id)} /> {t('reviews.select')}
                       </label>
                     </div>
-                    {r.text ? <p className="line-clamp-4 text-[13px] text-ink">{r.text}</p> : <p className="text-[13px] italic text-ink-3">No text</p>}
+                    {r.text ? <p className="line-clamp-4 text-[13px] text-ink">{r.text}</p> : <p className="text-[13px] italic text-ink-3">{t('reviews.noText')}</p>}
                     <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-ink-3">
-                      <span>{formatDate(r.date)}</span>
-                      {r.country && <span>{countryFlag(r.country)} {countryName(r.country)}</span>}
+                      <span>{formatDate(r.date, locale)}</span>
+                      {r.country && <span>{countryFlag(r.country)} {countryName(r.country, lang)}</span>}
                       {r.variant && <span className="truncate">{r.variant}</span>}
                     </div>
                     <div className="flex items-center justify-between border-t border-line pt-2">
                       <SentimentBadge result={r.aiSentiment ?? r.sentiment} />
                       <div className="flex items-center gap-1">
                         {r.images.length > 0 && (
-                          <Button size="sm" variant="ghost" onClick={() => setLightbox({ images: r.images, index: 0, caption: `${r.rating}★ review` })}>
-                            View photos
+                          <Button size="sm" variant="ghost" onClick={() => setLightbox({ images: r.images, index: 0, caption: t('media.caption', { rating: r.rating }) })}>
+                            {t('reviews.viewPhotos')}
                           </Button>
                         )}
                         <Button size="sm" variant="ghost" onClick={() => setDetail(r)}>
-                          Details
+                          {t('reviews.details')}
                         </Button>
                         {r.sourceUrl && (
-                          <a href={r.sourceUrl} target="_blank" rel="noopener noreferrer nofollow" className="rounded-md p-1.5 text-ink-2 hover:bg-surface-3" aria-label="Open original review">
+                          <a href={r.sourceUrl} target="_blank" rel="noopener noreferrer nofollow" className="rounded-md p-1.5 text-ink-2 hover:bg-surface-3" aria-label={t('reviews.openOriginal')}>
                             <ExternalLink className="size-4" />
                           </a>
                         )}
@@ -340,9 +349,9 @@ export function ReviewsView({ dataset, scope }: { dataset: Dataset; scope: Scope
           )}
 
           {results.length > 0 && (
-            <nav className="flex items-center justify-between px-1 text-sm text-ink-2" aria-label="Pagination">
+            <nav className="flex items-center justify-between px-1 text-sm text-ink-2" aria-label={t('pager.aria')}>
               <label className="flex items-center gap-2 text-xs">
-                Rows per page
+                {t('pager.rows')}
                 <select value={pageSize} onChange={(e) => setPageSize(Number(e.target.value))} className="h-8 rounded-md border border-line-strong bg-surface px-1.5">
                   {PAGE_SIZES.map((n) => (
                     <option key={n}>{n}</option>
@@ -351,13 +360,13 @@ export function ReviewsView({ dataset, scope }: { dataset: Dataset; scope: Scope
               </label>
               <div className="flex items-center gap-2">
                 <span className="tabular text-xs">
-                  {((current - 1) * pageSize + 1).toLocaleString()}–{Math.min(current * pageSize, results.length).toLocaleString()} of {results.length.toLocaleString()}
+                  {t('pager.range', { from: (current - 1) * pageSize + 1, to: Math.min(current * pageSize, results.length), total: results.length })}
                 </span>
-                <Button size="sm" variant="ghost" disabled={current <= 1} onClick={() => setPage(current - 1)} aria-label="Previous page" icon={<ChevronLeft className="size-4" />} />
+                <Button size="sm" variant="ghost" disabled={current <= 1} onClick={() => setPage(current - 1)} aria-label={t('pager.prev')} icon={<ChevronLeft className="size-4" />} />
                 <span className="tabular text-xs">
-                  Page {current} / {pages}
+                  {t('pager.page', { current, pages })}
                 </span>
-                <Button size="sm" variant="ghost" disabled={current >= pages} onClick={() => setPage(current + 1)} aria-label="Next page" icon={<ChevronRight className="size-4" />} />
+                <Button size="sm" variant="ghost" disabled={current >= pages} onClick={() => setPage(current + 1)} aria-label={t('pager.next')} icon={<ChevronRight className="size-4" />} />
               </div>
             </nav>
           )}

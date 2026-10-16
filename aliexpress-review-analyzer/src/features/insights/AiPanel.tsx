@@ -4,28 +4,31 @@ import { useApp } from '../../hooks/appContext';
 import type { AiAnalysis, AiEvidencePoint, Dataset, Review } from '../../types/review';
 import { requestAiAnalysis, selectReviewsForAi } from '../../services/sentiment-analysis/aiClient';
 import { Badge, Button, Card } from '../../components/ui';
+import { useI18n } from '../../i18n/context';
+import type { MessageKey } from '../../i18n/en';
 
-const SECTIONS: Array<[keyof AiAnalysis, string, string]> = [
-  ['commonPositives', 'Common positive feedback', 'Phản hồi tích cực phổ biến'],
-  ['commonComplaints', 'Common complaints', 'Phàn nàn phổ biến'],
-  ['recurringDefects', 'Recurring defects', 'Lỗi sản phẩm lặp lại'],
-  ['materialIssues', 'Material issues', 'Vấn đề chất liệu'],
-  ['packagingShippingIssues', 'Packaging & shipping', 'Đóng gói & vận chuyển'],
-  ['unmetExpectations', 'Unmet expectations', 'Kỳ vọng không được đáp ứng'],
-  ['highlyValued', 'What customers value most', 'Điều khách hàng đánh giá cao'],
+const SECTIONS: Array<[keyof AiAnalysis, MessageKey]> = [
+  ['commonPositives', 'ai.commonPositives'],
+  ['commonComplaints', 'ai.commonComplaints'],
+  ['recurringDefects', 'ai.recurringDefects'],
+  ['materialIssues', 'ai.materialIssues'],
+  ['packagingShippingIssues', 'ai.packaging'],
+  ['unmetExpectations', 'ai.unmet'],
+  ['highlyValued', 'ai.valued'],
 ];
 
 function Evidence({ point, byId, onOpen }: { point: AiEvidencePoint; byId: Map<string, Review>; onOpen(r: Review): void }) {
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const reviews = point.reviewIds.map((id) => byId.get(id)).filter((r): r is Review => Boolean(r));
   return (
     <li className="rounded-lg border border-line p-3">
       <div className="flex items-start justify-between gap-3">
         <p className="text-sm text-ink">
-          <Badge tone="brand">AI inference</Badge> <span className="ml-1">{point.point}</span>
+          <Badge tone="brand">{t('ai.inference')}</Badge> <span className="ml-1">{point.point}</span>
         </p>
         <button type="button" onClick={() => setOpen((o) => !o)} className="shrink-0 text-xs text-ink-2 hover:underline" aria-expanded={open}>
-          {reviews.length} cited review{reviews.length === 1 ? '' : 's'}
+          {t('ai.cited', { count: reviews.length })}
         </button>
       </div>
       {open && (
@@ -35,7 +38,7 @@ function Evidence({ point, byId, onOpen }: { point: AiEvidencePoint; byId: Map<s
               <button type="button" onClick={() => onOpen(r)} className="flex w-full items-start gap-2 rounded-md bg-surface-2 px-2.5 py-1.5 text-left text-xs text-ink-2 hover:bg-surface-3">
                 <Quote className="mt-0.5 size-3 shrink-0" aria-hidden />
                 <span>
-                  <span className="font-medium text-ink">{r.rating}★ customer:</span> <span className="line-clamp-2">{r.text}</span>
+                  <span className="font-medium text-ink">{t('quote.customer', { rating: r.rating })}</span> <span className="line-clamp-2">{r.text}</span>
                 </span>
               </button>
             </li>
@@ -48,19 +51,19 @@ function Evidence({ point, byId, onOpen }: { point: AiEvidencePoint; byId: Map<s
 
 export function AiPanel({ dataset, reviews, onOpenReview }: { dataset: Dataset; reviews: Review[]; onOpenReview(r: Review): void }) {
   const { settings, secrets, connection, saveDataset, notify, navigate, updateSettings } = useApp();
+  const { t } = useI18n();
   const [running, setRunning] = useState(false);
   const [error, setError] = useState<string>();
   const abortRef = useRef<AbortController | null>(null);
   const selection = useMemo(() => selectReviewsForAi(reviews), [reviews]);
   const byId = useMemo(() => new Map(dataset.reviews.map((r) => [r.id, r])), [dataset.reviews]);
   const ai = dataset.ai;
-  const vi = (ai?.language ?? settings.aiLanguage) === 'vi';
 
   const blockers: string[] = [];
-  if (!settings.aiEnabled) blockers.push('AI analysis is turned off in Settings.');
-  else if (!settings.aiConsent) blockers.push('You have not yet agreed to send review text to Anthropic.');
-  if (!secrets.accessToken || !settings.proxyUrl) blockers.push('The proxy URL / access token is not set.');
-  else if (connection && !['connected', 'not-configured'].includes(connection.state)) blockers.push(`Proxy: ${connection.message}`);
+  if (!settings.aiEnabled) blockers.push(t('ai.blockOff'));
+  else if (!settings.aiConsent) blockers.push(t('ai.blockConsent'));
+  if (!secrets.accessToken || !settings.proxyUrl) blockers.push(t('ai.blockProxy'));
+  else if (connection && !['connected', 'not-configured'].includes(connection.state)) blockers.push(t('ai.blockProxyState', { detail: connection.message }));
 
   const run = async () => {
     setError(undefined);
@@ -78,7 +81,7 @@ export function AiPanel({ dataset, reviews, onOpenReview }: { dataset: Dataset; 
         reviews: dataset.reviews.map((r) => (sentiments.has(r.id) ? { ...r, aiSentiment: sentiments.get(r.id) } : r)),
       };
       await saveDataset(updated);
-      notify('success', `AI analysed ${analysis.reviewCount} reviews.${analysis.discardedIds ? ` ${analysis.discardedIds} unverifiable citations were discarded.` : ''}`);
+      notify('success', `${t('ai.done', { count: analysis.reviewCount })}${analysis.discardedIds ? ` ${t('ai.discarded', { count: analysis.discardedIds })}` : ''}`);
     } catch (e) {
       if ((e as Error).name !== 'AbortError') setError((e as Error).message);
     } finally {
@@ -95,21 +98,21 @@ export function AiPanel({ dataset, reviews, onOpenReview }: { dataset: Dataset; 
     <Card
       title={
         <span className="inline-flex items-center gap-2">
-          <Bot className="size-4" aria-hidden /> AI analysis (Claude)
+          <Bot className="size-4" aria-hidden /> {t('ai.title')}
         </span>
       }
-      subtitle="Optional. Runs only when you click the button, through your local proxy."
-      actions={ai && <Button size="sm" variant="ghost" onClick={clearAi}>Clear AI results</Button>}
+      subtitle={t('ai.subtitle')}
+      actions={ai && <Button size="sm" variant="ghost" onClick={clearAi}>{t('ai.clear')}</Button>}
     >
       <div className="space-y-4">
         <div className="rounded-lg bg-surface-2 p-3 text-xs text-ink-2">
           <p className="flex items-center gap-1.5 font-medium text-ink">
-            <Lock className="size-3.5" aria-hidden /> What is sent
+            <Lock className="size-3.5" aria-hidden /> {t('ai.whatSent')}
           </p>
           <p className="mt-1">
-            Up to {selection.payload.length.toLocaleString()} reviews from the current selection: review ID, star rating, review text and variant. No country, photos, URLs or other metadata.
-            {selection.skippedNoText > 0 && ` ${selection.skippedNoText.toLocaleString()} reviews without text are not sent.`}
-            {selection.truncated && ' The selection exceeds the per-request limit; only the first part is sent — narrow the filters to analyse a specific subset.'}
+            {t('ai.sentBody', { count: selection.payload.length })}
+            {selection.skippedNoText > 0 && ` ${t('ai.noTextSkipped', { count: selection.skippedNoText })}`}
+            {selection.truncated && ` ${t('ai.truncated')}`}
           </p>
         </div>
 
@@ -121,16 +124,16 @@ export function AiPanel({ dataset, reviews, onOpenReview }: { dataset: Dataset; 
                 {b}
               </p>
             ))}
-            <Button size="sm" onClick={() => navigate('settings')}>Open AI settings</Button>
+            <Button size="sm" onClick={() => navigate('settings')}>{t('ai.openSettings')}</Button>
           </div>
         ) : (
           <div className="flex flex-wrap items-center gap-3">
             <Button variant="primary" loading={running} disabled={!selection.payload.length} onClick={run} icon={<Bot className="size-4" />}>
-              {ai ? 'Re-run' : 'Run'} AI analysis on {selection.payload.length.toLocaleString()} reviews
+              {t(ai ? 'ai.rerun' : 'ai.run', { count: selection.payload.length })}
             </Button>
-            {running && <Button onClick={() => abortRef.current?.abort()}>Cancel</Button>}
+            {running && <Button onClick={() => abortRef.current?.abort()}>{t('common.cancel')}</Button>}
             <label className="flex items-center gap-1.5 text-xs text-ink-2">
-              Language
+              {t('ai.language')}
               <select value={settings.aiLanguage} onChange={(e) => updateSettings({ aiLanguage: e.target.value as 'en' | 'vi' })} className="h-8 rounded-md border border-line-strong bg-surface px-1.5 text-ink">
                 <option value="en">English</option>
                 <option value="vi">Tiếng Việt</option>
@@ -147,19 +150,19 @@ export function AiPanel({ dataset, reviews, onOpenReview }: { dataset: Dataset; 
         {ai && (
           <div className="space-y-4 border-t border-line pt-4">
             <p className="text-xs text-ink-3">
-              {ai.model} · {ai.reviewCount.toLocaleString()} reviews · {new Date(ai.createdAt).toLocaleString()}
-              {ai.discardedIds > 0 && ` · ${ai.discardedIds} citation(s) to unknown reviews discarded`}
+              {ai.model} · {t('stat.reviews', { count: ai.reviewCount })} · {new Date(ai.createdAt).toLocaleString()}
+              {ai.discardedIds > 0 && ` · ${t('ai.discarded', { count: ai.discardedIds })}`}
             </p>
             <div className="rounded-lg border border-brand/30 bg-brand-soft/40 p-3.5">
-              <p className="mb-1 text-[11px] font-semibold uppercase tracking-wider text-brand-ink">{vi ? 'Tóm tắt của AI (suy luận)' : 'AI summary (inference)'}</p>
+              <p className="mb-1 text-[11px] font-semibold uppercase tracking-wider text-brand-ink">{t('ai.summary')}</p>
               <p className="whitespace-pre-line text-sm leading-relaxed text-ink">{ai.summary}</p>
             </div>
-            {SECTIONS.map(([key, en, viLabel]) => {
+            {SECTIONS.map(([key, label]) => {
               const items = ai[key] as AiEvidencePoint[];
               if (!items.length) return null;
               return (
                 <section key={key}>
-                  <h3 className="mb-2 text-sm font-semibold text-ink">{vi ? viLabel : en}</h3>
+                  <h3 className="mb-2 text-sm font-semibold text-ink">{t(label)}</h3>
                   <ul className="space-y-2">
                     {items.map((p) => (
                       <Evidence key={p.point} point={p} byId={byId} onOpen={onOpenReview} />
@@ -168,7 +171,7 @@ export function AiPanel({ dataset, reviews, onOpenReview }: { dataset: Dataset; 
                 </section>
               );
             })}
-            <p className="text-xs text-ink-3">AI points are inferences and can be wrong. Each point is shown only if it cites reviews that exist in this dataset — open them to verify.</p>
+            <p className="text-xs text-ink-3">{t('ai.disclaimer')}</p>
           </div>
         )}
       </div>

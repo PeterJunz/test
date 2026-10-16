@@ -3,6 +3,21 @@ import type { Dataset, Review } from '../types/review';
 import { randomId } from '../utils/hash';
 import { parseProductInput } from '../utils/url';
 import { useApp } from './appContext';
+import { useI18n, type TFunction } from '../i18n/context';
+import type { ProductInputError } from '../utils/url';
+
+export function productInputErrorText(e: ProductInputError, t: TFunction): string {
+  switch (e.code) {
+    case 'empty':
+      return t('url.empty');
+    case 'invalid':
+      return t('url.invalid');
+    case 'domain':
+      return t('url.domain', { host: e.host });
+    case 'no-id':
+      return t('url.noId');
+  }
+}
 
 export interface AnalyzeProgress {
   productId: string;
@@ -24,6 +39,7 @@ export type AnalyzeOutcome =
  */
 export function useAnalyze() {
   const { connection, provider, settings, datasets, saveDataset, setActiveDataset } = useApp();
+  const { t } = useI18n();
   const [progress, setProgress] = useState<AnalyzeProgress | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
@@ -32,7 +48,7 @@ export function useAnalyze() {
   const analyze = useCallback(
     async (input: string): Promise<AnalyzeOutcome> => {
       const parsed = parseProductInput(input);
-      if ('error' in parsed) return { kind: 'error', message: parsed.error };
+      if ('error' in parsed) return { kind: 'error', message: productInputErrorText(parsed, t) };
       const { productId, canonicalUrl } = parsed;
 
       if (connection?.state !== 'connected' || !provider.fetchReviews) {
@@ -77,7 +93,7 @@ export function useAnalyze() {
           setProgress(null);
           return { kind: 'error', message: (e as Error).message };
         }
-        notes.push(`Stopped early on page ${page}: ${(e as Error).message}`);
+        notes.push(t('note.stoppedEarly', { page, detail: (e as Error).message }));
         hasMore = true;
       } finally {
         abortRef.current = null;
@@ -85,21 +101,21 @@ export function useAnalyze() {
       setProgress(null);
 
       const pagesFetched = Math.min(page, settings.maxPages);
-      if (hasMore) notes.push(`Stopped after ${pagesFetched} page(s) (limit set in Settings). More reviews are available from the provider.`);
-      if (skipped) notes.push(`${skipped} provider rows were skipped during normalisation (missing/invalid rating or duplicates).`);
-      if (total !== undefined) notes.push(`Provider reports ${total.toLocaleString()} reviews in total; ${reviews.length.toLocaleString()} were fetched.`);
+      if (hasMore) notes.push(t('note.pageLimit', { pages: pagesFetched }));
+      if (skipped) notes.push(t('note.skippedRows', { count: skipped }));
+      if (total !== undefined) notes.push(t('note.providerTotal', { total, fetched: reviews.length }));
       const completeness: Dataset['completeness'] = hasMore ? 'partial' : total !== undefined && reviews.length >= total ? 'complete' : 'unknown';
       if (completeness !== 'complete') {
-        notes.push('Third-party providers usually expose a subset of reviews (e.g. a capped number of pages or a default sort). Treat these results as a sample.');
+        notes.push(t('note.subset'));
       } else {
-        notes.push('All reviews the provider reports for this product were fetched. The provider’s own coverage of AliExpress may still be incomplete.');
+        notes.push(t('note.allFetched'));
       }
 
       const dataset: Dataset = {
         id: datasetId,
-        name: `Product ${productId} — ${connection.providerName ?? 'data provider'}`,
+        name: t('analyze.datasetName', { id: productId, provider: connection.providerName ?? t('analyze.provider') }),
         origin: 'api',
-        sourceLabel: connection.providerName ?? 'Licensed data provider',
+        sourceLabel: connection.providerName ?? t('analyze.provider'),
         productId,
         productUrl: canonicalUrl,
         createdAt: new Date().toISOString(),
@@ -107,12 +123,12 @@ export function useAnalyze() {
         completeness,
         notes,
       };
-      if (!reviews.length) return { kind: 'error', message: 'The provider returned no reviews for this product.' };
+      if (!reviews.length) return { kind: 'error', message: t('analyze.noReviews') };
       await saveDataset(dataset);
       setActiveDataset(dataset.id);
       return { kind: 'fetched', dataset };
     },
-    [connection, provider, settings.maxPages, datasets, saveDataset, setActiveDataset],
+    [connection, provider, settings.maxPages, datasets, saveDataset, setActiveDataset, t],
   );
 
   return { analyze, progress, cancel };

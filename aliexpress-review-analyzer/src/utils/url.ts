@@ -34,23 +34,27 @@ export interface ParsedProductInput {
  *   https://www.aliexpress.com/i/1005006123456789.html
  *   1005006123456789
  */
-export function parseProductInput(input: string): ParsedProductInput | { error: string } {
+export type ProductInputError =
+  | { error: string; code: 'empty' | 'invalid' | 'no-id' }
+  | { error: string; code: 'domain'; host: string };
+
+export function parseProductInput(input: string): ParsedProductInput | ProductInputError {
   const value = input.trim();
-  if (!value) return { error: 'Enter an AliExpress product URL or product ID.' };
+  if (!value) return { error: 'Enter an AliExpress product URL or product ID.', code: 'empty' };
 
   if (/^\d{6,20}$/.test(value)) {
     return { productId: value, canonicalUrl: `https://www.aliexpress.com/item/${value}.html` };
   }
 
   const safe = toSafeHttpUrl(value.includes('://') || value.startsWith('//') ? value : `https://${value}`);
-  if (!safe) return { error: 'This is not a valid URL or numeric product ID.' };
+  if (!safe) return { error: 'This is not a valid URL or numeric product ID.', code: 'invalid' };
   const url = new URL(safe);
   if (!ALIEXPRESS_HOST.test(url.hostname)) {
-    return { error: `"${url.hostname}" is not an AliExpress domain.` };
+    return { error: `"${url.hostname}" is not an AliExpress domain.`, code: 'domain', host: url.hostname };
   }
   const match = url.pathname.match(/\/(?:item|i)\/(?:[^/]*?)(\d{6,20})\.html/i);
   const fromQuery = url.searchParams.get('productId') ?? url.searchParams.get('itemId');
   const productId = match?.[1] ?? (fromQuery && /^\d{6,20}$/.test(fromQuery) ? fromQuery : undefined);
-  if (!productId) return { error: 'Could not find a product ID in this URL (expected /item/<id>.html).' };
+  if (!productId) return { error: 'Could not find a product ID in this URL (expected /item/<id>.html).', code: 'no-id' };
   return { productId, canonicalUrl: `https://www.aliexpress.com/item/${productId}.html` };
 }

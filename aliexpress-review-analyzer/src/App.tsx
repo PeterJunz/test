@@ -1,4 +1,5 @@
 import { useApp } from './hooks/appContext';
+import { useI18n } from './i18n/context';
 import { Header } from './components/Header';
 import { Sidebar } from './components/Sidebar';
 import { Toasts } from './components/Toasts';
@@ -12,17 +13,11 @@ import { SettingsPage } from './pages/SettingsPage';
 import { ReviewsView } from './features/reviews/ReviewsView';
 import type { Scope } from './features/filters/scope';
 
-const TITLES: Record<Scope, string> = {
-  all: 'All reviews',
-  positive: 'Positive reviews',
-  negative: 'Negative reviews',
-  photos: 'Photo reviews',
-  videos: 'Video reviews',
-};
 
 function Content() {
   const { view, activeDataset, loaded } = useApp();
-  if (!loaded) return <Spinner label="Loading saved data…" />;
+  const { t } = useI18n();
+  if (!loaded) return <Spinner label={t('app.loading')} />;
   if (view === 'settings') return <SettingsPage />;
   if (view === 'sources') return <DataSourcesPage />;
   if (!activeDataset) return <NoDataState />;
@@ -37,7 +32,7 @@ function Content() {
       const scope = view as Scope;
       return (
         <div className="space-y-3">
-          <h1 className="text-xl font-semibold tracking-tight">{TITLES[scope]}</h1>
+          <h1 className="text-xl font-semibold tracking-tight">{t(`page.${scope}`)}</h1>
           <ReviewsView key={scope} dataset={activeDataset} scope={scope} />
         </div>
       );
@@ -47,13 +42,14 @@ function Content() {
 
 export default function App() {
   const { storageError } = useApp();
+  const { t } = useI18n();
   return (
     <div className="flex h-full flex-col">
       <Header />
       <div className="flex min-h-0 flex-1">
         <Sidebar />
         <main className="min-w-0 flex-1 overflow-y-auto p-5 scrollbar-thin">
-          {storageError && <p className="mb-4 rounded-lg bg-warn-soft px-3 py-2 text-sm text-warn-ink">{storageError}</p>}
+          {storageError && <p className="mb-4 rounded-lg bg-warn-soft px-3 py-2 text-sm text-warn-ink">{t('storage.unavailable', { detail: storageError })}</p>}
           <Content />
         </main>
       </div>

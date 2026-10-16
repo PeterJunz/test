@@ -1,32 +1,32 @@
 import { Database, FileUp, FlaskConical, Plug } from 'lucide-react';
 import { useApp } from '../hooks/appContext';
 import { useLoadDemo } from '../hooks/useLoadDemo';
+import { useI18n } from '../i18n/context';
 import { Button, EmptyState } from './ui';
 
 export function NoDataState() {
   const { navigate } = useApp();
+  const { t } = useI18n();
   const loadDemo = useLoadDemo();
   return (
     <EmptyState
       icon={<Database className="size-5" />}
-      title="No review data yet"
+      title={t('empty.title')}
       actions={
         <>
           <Button variant="primary" icon={<FileUp className="size-4" />} onClick={() => navigate('sources')}>
-            Import CSV / JSON
+            {t('empty.import')}
           </Button>
           <Button icon={<Plug className="size-4" />} onClick={() => navigate('settings')}>
-            Connect a data provider
+            {t('empty.connect')}
           </Button>
           <Button variant="ghost" icon={<FlaskConical className="size-4" />} onClick={loadDemo}>
-            Load labelled demo data
+            {t('empty.demo')}
           </Button>
         </>
       }
     >
-      <p>
-        Import a review export you are allowed to use, or connect a licensed review-data API through the bundled proxy, then paste a product URL above. Every number on this dashboard is computed from the data you load — nothing is pre-filled.
-      </p>
+      <p>{t('empty.body')}</p>
     </EmptyState>
   );
 }

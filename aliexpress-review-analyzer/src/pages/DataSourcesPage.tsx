@@ -1,48 +1,50 @@
 import { CircleCheck, CircleDashed, CircleSlash, FileSpreadsheet, FlaskConical, Plug, Trash2 } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useApp } from '../hooks/appContext';
-import { AliExpressOpenPlatformProvider } from '../services/data-providers/aliexpressOpenPlatform';
 import { Badge, Button, Card, Modal } from '../components/ui';
 import { useLoadDemo } from '../hooks/useLoadDemo';
 import { ImportWizard } from '../features/import/ImportWizard';
+import { useI18n } from '../i18n/context';
+import { useConnectionMessage } from '../hooks/useConnectionMessage';
 
 export function DataSourcesPage() {
   const { datasets, activeDataset, setActiveDataset, removeDataset, connection, navigate, notify } = useApp();
+  const { t } = useI18n();
+  const connectionMessage = useConnectionMessage();
   const loadDemo = useLoadDemo();
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
-  const official = useMemo(() => new AliExpressOpenPlatformProvider(), []);
 
   const sources = [
     {
       icon: FileSpreadsheet,
-      name: 'File import (CSV / JSON)',
-      status: <Badge tone="pos"><CircleCheck className="size-3" /> Ready</Badge>,
-      body: 'Import an export you are entitled to use: your own store’s review export, a review app export, or a data provider’s download. Parsed locally.',
+      name: t('sources.fileName'),
+      status: <Badge tone="pos"><CircleCheck className="size-3" /> {t('sources.ready')}</Badge>,
+      body: t('sources.fileBody'),
     },
     {
       icon: Plug,
-      name: 'Licensed data provider (via local proxy)',
+      name: t('sources.providerName'),
       status:
         connection?.state === 'connected' ? (
-          <Badge tone="pos"><CircleCheck className="size-3" /> Connected</Badge>
+          <Badge tone="pos"><CircleCheck className="size-3" /> {t('sources.connected')}</Badge>
         ) : (
-          <Badge tone="warn"><CircleDashed className="size-3" /> {connection?.state === 'unreachable' ? 'Proxy unreachable' : 'Needs configuration'}</Badge>
+          <Badge tone="warn"><CircleDashed className="size-3" /> {t(connection?.state === 'unreachable' ? 'status.unreachable' : 'sources.needsConfig')}</Badge>
         ),
-      body: connection?.message ?? 'Connect any third-party review API (one you have a plan with) through server/. Configure the endpoint and key on the server.',
-      action: <Button size="sm" onClick={() => navigate('settings')}>Configure</Button>,
+      body: connection ? connectionMessage : t('sources.providerBody'),
+      action: <Button size="sm" onClick={() => navigate('settings')}>{t('sources.configure')}</Button>,
     },
     {
       icon: CircleSlash,
-      name: official.name,
-      status: <Badge><CircleSlash className="size-3" /> Not available</Badge>,
-      body: official.description,
+      name: t('sources.officialName'),
+      status: <Badge><CircleSlash className="size-3" /> {t('sources.notAvailable')}</Badge>,
+      body: t('sources.officialBody'),
     },
     {
       icon: FlaskConical,
-      name: 'Demo generator',
-      status: <Badge tone="warn">Synthetic</Badge>,
-      body: 'Creates a clearly labelled synthetic dataset to try the filters and charts. Not real reviews.',
-      action: <Button size="sm" onClick={loadDemo}>Load demo</Button>,
+      name: t('sources.demoName'),
+      status: <Badge tone="warn">{t('sources.synthetic')}</Badge>,
+      body: t('sources.demoBody'),
+      action: <Button size="sm" onClick={loadDemo}>{t('sources.loadDemo')}</Button>,
     },
   ];
 
@@ -51,8 +53,8 @@ export function DataSourcesPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-semibold tracking-tight">Data sources & import</h1>
-        <p className="text-sm text-ink-3">Where review data can come from, and what each source can actually deliver.</p>
+        <h1 className="text-xl font-semibold tracking-tight">{t('nav.sources')}</h1>
+        <p className="text-sm text-ink-3">{t('sources.subtitle')}</p>
       </div>
 
       <div className="grid gap-3 md:grid-cols-2 2xl:grid-cols-4">
@@ -69,11 +71,11 @@ export function DataSourcesPage() {
         ))}
       </div>
 
-      <Card title="Import a review file" subtitle="CSV or JSON · column mapping · validation report before anything is saved">
+      <Card title={t('sources.importTitle')} subtitle={t('sources.importSub')}>
         <ImportWizard />
       </Card>
 
-      <Card title="Saved datasets" subtitle="Stored in this browser only (IndexedDB)">
+      <Card title={t('sources.savedTitle')} subtitle={t('sources.savedSub')}>
         {datasets.length ? (
           <ul className="divide-y divide-line">
             {datasets.map((d) => (
@@ -83,49 +85,49 @@ export function DataSourcesPage() {
                     {d.origin === 'demo' && <Badge tone="warn">DEMO</Badge>} {d.name}
                   </p>
                   <p className="text-xs text-ink-3">
-                    {d.reviews.length.toLocaleString()} reviews · {d.origin} · {d.completeness} · {new Date(d.createdAt).toLocaleString()}
-                    {d.ai && ' · AI analysed'}
+                    {t('stat.reviews', { count: d.reviews.length })} · {t(`origin.${d.origin}`)} · {t(`completeness.${d.completeness}`)} · {new Date(d.createdAt).toLocaleString()}
+                    {d.ai && ` · ${t('sources.aiAnalysed')}`}
                   </p>
                 </div>
                 {activeDataset?.id === d.id ? (
-                  <Badge tone="brand">Active</Badge>
+                  <Badge tone="brand">{t('sources.active')}</Badge>
                 ) : (
                   <Button size="sm" onClick={() => setActiveDataset(d.id)}>
-                    Open
+                    {t('sources.open')}
                   </Button>
                 )}
-                <Button size="sm" variant="ghost" aria-label={`Delete ${d.name}`} icon={<Trash2 className="size-4" />} onClick={() => setConfirmDelete(d.id)} />
+                <Button size="sm" variant="ghost" aria-label={t('sources.deleteAria', { name: d.name })} icon={<Trash2 className="size-4" />} onClick={() => setConfirmDelete(d.id)} />
               </li>
             ))}
           </ul>
         ) : (
-          <p className="text-sm text-ink-3">No datasets yet.</p>
+          <p className="text-sm text-ink-3">{t('sources.noDatasets')}</p>
         )}
       </Card>
 
       <Modal
         open={Boolean(target)}
         onClose={() => setConfirmDelete(null)}
-        title="Delete dataset?"
+        title={t('sources.deleteTitle')}
         footer={
           <>
-            <Button onClick={() => setConfirmDelete(null)}>Cancel</Button>
+            <Button onClick={() => setConfirmDelete(null)}>{t('common.cancel')}</Button>
             <Button
               variant="danger"
               onClick={async () => {
                 if (!target) return;
                 await removeDataset(target.id);
                 setConfirmDelete(null);
-                notify('info', `Deleted “${target.name}”.`);
+                notify('info', t('sources.deleted', { name: target.name }));
               }}
             >
-              Delete
+              {t('common.delete')}
             </Button>
           </>
         }
       >
         <p className="text-sm text-ink-2">
-          “{target?.name}” and its {target?.reviews.length.toLocaleString()} reviews will be removed from this browser. This cannot be undone.
+          {t('sources.deleteBody', { name: target?.name ?? '', count: target?.reviews.length ?? 0 })}
         </p>
       </Modal>
     </div>

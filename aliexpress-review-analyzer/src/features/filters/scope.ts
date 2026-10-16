@@ -2,14 +2,6 @@ import type { ReviewFilters } from '../../types/filters';
 
 export type Scope = 'all' | 'positive' | 'negative' | 'photos' | 'videos';
 
-export const SCOPE_LABELS: Record<Scope, string> = {
-  all: 'All reviews',
-  positive: 'Positive reviews',
-  negative: 'Negative reviews',
-  photos: 'Reviews with photos',
-  videos: 'Reviews with video',
-};
-
 /** Which filter fields a scope locks (shown disabled in the filter panel). */
 export const SCOPE_LOCKS: Record<Scope, Array<keyof ReviewFilters>> = {
   all: [],

@@ -30,14 +30,14 @@ export function normalizeCountry(raw: unknown): string | undefined {
   return value.slice(0, 60);
 }
 
-let displayNames: Intl.DisplayNames | undefined;
+const displayNames = new Map<string, Intl.DisplayNames>();
 
-export function countryName(code: string | undefined): string {
-  if (!code) return 'Unknown';
+export function countryName(code: string | undefined, lang = 'en'): string {
+  if (!code) return lang === 'vi' ? 'Không rõ' : 'Unknown';
   if (!/^[A-Z]{2}$/.test(code)) return code;
   try {
-    displayNames ??= new Intl.DisplayNames(['en'], { type: 'region' });
-    return displayNames.of(code) ?? code;
+    if (!displayNames.has(lang)) displayNames.set(lang, new Intl.DisplayNames([lang], { type: 'region' }));
+    return displayNames.get(lang)!.of(code) ?? code;
   } catch {
     return code;
   }

@@ -1,7 +1,7 @@
 import { useEffect, useRef, type ButtonHTMLAttributes, type ReactNode } from 'react';
 import { Loader2, Star, X } from 'lucide-react';
 import type { SentimentLabel, SentimentResult } from '../types/review';
-import { SENTIMENT_LABEL } from './labels';
+import { useI18n } from '../i18n/context';
 
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
 
@@ -64,8 +64,9 @@ export function EmptyState({ icon, title, children, actions }: { icon: ReactNode
 }
 
 export function Stars({ rating, size = 14 }: { rating: number; size?: number }) {
+  const { t } = useI18n();
   return (
-    <span className="inline-flex items-center gap-0.5" role="img" aria-label={`${rating} out of 5 stars`}>
+    <span className="inline-flex items-center gap-0.5" role="img" aria-label={t('stars.aria', { rating })}>
       {[1, 2, 3, 4, 5].map((i) => (
         <Star key={i} style={{ width: size, height: size }} className={i <= rating ? 'fill-amber-400 text-amber-400' : 'fill-transparent text-line-strong'} aria-hidden />
       ))}
@@ -82,10 +83,11 @@ const SENTIMENT_STYLE: Record<SentimentLabel, string> = {
 
 
 export function SentimentBadge({ result, showConfidence = true }: { result: SentimentResult; showConfidence?: boolean }) {
-  const title = `${result.method === 'ai' ? 'AI' : result.method === 'rating-only' ? 'Stars only' : 'Rule-based'} · ${result.reason}`;
+  const { t } = useI18n();
+  const title = `${t(`method.${result.method}`)} · ${result.reason}`;
   return (
-    <span title={title} className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${SENTIMENT_STYLE[result.label]}`}>
-      {SENTIMENT_LABEL[result.label]}
+    <span title={title} className={`inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-medium ${SENTIMENT_STYLE[result.label]}`}>
+      {t(`sentiment.${result.label}`)}
       {showConfidence && <span className="tabular opacity-70">{Math.round(result.confidence * 100)}%</span>}
       {result.method === 'ai' && <span className="rounded bg-current/10 px-1 text-[10px] uppercase">AI</span>}
     </span>
@@ -136,6 +138,7 @@ export function Spinner({ label }: { label?: string }) {
 /** Accessible modal dialog using the native <dialog> element (focus trap + Esc for free). */
 export function Modal({ open, onClose, title, children, footer, wide }: { open: boolean; onClose(): void; title: string; children: ReactNode; footer?: ReactNode; wide?: boolean }) {
   const ref = useRef<HTMLDialogElement>(null);
+  const { t } = useI18n();
   useEffect(() => {
     const d = ref.current;
     if (!d) return;
@@ -153,7 +156,7 @@ export function Modal({ open, onClose, title, children, footer, wide }: { open: 
         <div className="flex max-h-[85vh] flex-col">
           <header className="flex items-center justify-between border-b border-line px-5 py-3.5">
             <h2 className="text-base font-semibold">{title}</h2>
-            <button type="button" onClick={onClose} className="rounded-md p-1 text-ink-3 hover:bg-surface-3 hover:text-ink" aria-label="Close">
+            <button type="button" onClick={onClose} className="rounded-md p-1 text-ink-3 hover:bg-surface-3 hover:text-ink" aria-label={t('common.close')}>
               <X className="size-4" />
             </button>
           </header>

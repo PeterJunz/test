@@ -15,6 +15,7 @@ import {
   type AppSettings,
   type Secrets,
 } from '../services/storage/settings';
+import { useI18n } from '../i18n/context';
 import { AppContext, VIEWS, type AppContextValue, type Toast, type View } from './appContext';
 
 const ACTIVE_KEY = 'aerap.activeDataset';
@@ -25,6 +26,7 @@ function viewFromHash(): View {
 }
 
 export function AppProvider({ children }: { children: ReactNode }) {
+  const { t } = useI18n();
   const [loaded, setLoaded] = useState(false);
   const [storageError, setStorageError] = useState<string>();
   const [datasets, setDatasets] = useState<Dataset[]>([]);
@@ -51,7 +53,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     datasetStore
       .list()
       .then((list) => setDatasets(list.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))))
-      .catch((e: Error) => setStorageError(`Local storage unavailable — data will not survive a reload (${e.message}).`))
+      .catch((e: Error) => setStorageError(e.message))
       .finally(() => setLoaded(true));
   }, []);
 
@@ -85,9 +87,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
     try {
       await datasetStore.put(dataset);
     } catch (e) {
-      notify('error', `Saved for this session only: ${(e as Error).message}`);
+      notify('error', t('storage.sessionOnly', { detail: (e as Error).message }));
     }
-  }, [notify]);
+  }, [notify, t]);
 
   const removeDataset = useCallback(async (id: string) => {
     setDatasets((list) => list.filter((d) => d.id !== id));

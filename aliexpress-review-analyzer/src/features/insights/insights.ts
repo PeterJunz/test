@@ -36,12 +36,26 @@ export interface AspectInsight {
   quotes: { positive: Quote[]; negative: Quote[] };
 }
 
+export interface SummaryItem {
+  tag: ReviewTag;
+  count: number;
+  withText: number;
+  share: number;
+}
+
+export type Caution =
+  | { kind: 'small-sample'; total: number }
+  | { kind: 'little-text'; noText: number; total: number; withText: number }
+  | { kind: 'non-english'; count: number }
+  | { kind: 'functional-problems' };
+
+/** Structured so the UI can render it in any language; see formatSummary.ts. */
 export interface RuleSummary {
   basedOn: number;
   withText: number;
-  strengths: string[];
-  complaints: string[];
-  cautions: string[];
+  strengths: SummaryItem[];
+  complaints: SummaryItem[];
+  cautions: Caution[];
 }
 
 const isPositiveTag = (t: ReviewTag): t is PositiveTag => t in POSITIVE_TAG_LABELS;
@@ -132,21 +146,21 @@ export function computeAspectInsights(reviews: Review[], maxQuotes = 2): AspectI
 }
 
 /**
- * Deterministic, explainable summary built from tag counts. Every bullet states the
+ * Deterministic, explainable summary built from tag counts. Every item carries the
  * count it is based on, so it is clear this is an inference from the data, not a quote.
  */
 export function buildRuleSummary(reviews: Review[], tags: TagInsight[]): RuleSummary {
   const withText = reviews.filter((r) => r.text.trim()).length;
   const minCount = Math.max(2, Math.ceil(withText * 0.03));
-  const fmt = (t: TagInsight) => `${t.label} — mentioned in ${t.count} of ${withText} written reviews (${Math.round(t.share * 100)}%)`;
-  const strengths = tags.filter((t) => t.polarity === 'positive' && t.count >= minCount).slice(0, 5).map(fmt);
-  const complaints = tags.filter((t) => t.polarity === 'negative' && t.count >= minCount).slice(0, 6).map(fmt);
-  const cautions: string[] = [];
-  if (reviews.length < 30) cautions.push(`Only ${reviews.length} reviews in the current selection — patterns may not be representative.`);
-  if (withText < reviews.length * 0.4) cautions.push(`${reviews.length - withText} of ${reviews.length} reviews have no text; text-based insights cover ${withText} reviews.`);
+  const item = (t: TagInsight): SummaryItem => ({ tag: t.tag, count: t.count, withText, share: t.share });
+  const strengths = tags.filter((t) => t.polarity === 'positive' && t.count >= minCount).slice(0, 5).map(item);
+  const complaints = tags.filter((t) => t.polarity === 'negative' && t.count >= minCount).slice(0, 6).map(item);
+  const cautions: Caution[] = [];
+  if (reviews.length < 30) cautions.push({ kind: 'small-sample', total: reviews.length });
+  if (withText < reviews.length * 0.4) cautions.push({ kind: 'little-text', noText: reviews.length - withText, total: reviews.length, withText });
   const nonEnglish = reviews.filter((r) => r.text && !['en', 'und'].includes(r.language)).length;
-  if (nonEnglish > withText * 0.3) cautions.push(`${nonEnglish} written reviews are not in English; keyword rules cover English best, so mentions may be under-counted. Consider AI analysis.`);
+  if (nonEnglish > withText * 0.3) cautions.push({ kind: 'non-english', count: nonEnglish });
   const defects = tags.find((t) => t.tag === 'defective' || t.tag === 'not-working');
-  if (defects && defects.share >= 0.05) cautions.push(`Functional problems appear in ≥5% of written reviews — inspect photo reviews before selling.`);
+  if (defects && defects.share >= 0.05) cautions.push({ kind: 'functional-problems' });
   return { basedOn: reviews.length, withText, strengths, complaints, cautions };
 }

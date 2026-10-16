@@ -57,13 +57,13 @@ export function detectLanguage(text: string): string {
   return best;
 }
 
-let names: Intl.DisplayNames | undefined;
+const names = new Map<string, Intl.DisplayNames>();
 
-export function languageName(code: string): string {
-  if (!code || code === 'und') return 'Undetermined';
+export function languageName(code: string, lang = 'en'): string {
+  if (!code || code === 'und') return lang === 'vi' ? 'Không xác định' : 'Undetermined';
   try {
-    names ??= new Intl.DisplayNames(['en'], { type: 'language' });
-    return names.of(code) ?? code;
+    if (!names.has(lang)) names.set(lang, new Intl.DisplayNames([lang], { type: 'language' }));
+    return names.get(lang)!.of(code) ?? code;
   } catch {
     return code;
   }

@@ -19,6 +19,14 @@ React 19 · TypeScript · Vite · Tailwind CSS v4 · Lucide · Recharts · proxy
 
 **Lưu ý về độ đầy đủ:** nhà cung cấp bên thứ ba thường chỉ trả về một phần đánh giá (giới hạn số trang, sắp xếp mặc định…). Mỗi dataset có trường `completeness` (`complete` / `partial` / `unknown`) và banner cảnh báo tương ứng; app không bao giờ tuyên bố đã lấy "toàn bộ" đánh giá khi nguồn không xác nhận điều đó.
 
+### Ngôn ngữ giao diện (Tiếng Việt / English)
+
+- Chuyển ngôn ngữ bằng nút **VI / EN** ở góc phải header, hoặc trong **Cài đặt → Ngôn ngữ giao diện**. Lựa chọn được lưu trong trình duyệt; lần đầu mở, app tự chọn theo ngôn ngữ của trình duyệt.
+- Toàn bộ giao diện được dịch: menu, bộ lọc, bảng, biểu đồ, thông báo, báo cáo import, trạng thái kết nối, tóm tắt rule-based, tên quốc gia/ngôn ngữ và định dạng ngày theo locale (`vi-VN` / `en-US`).
+- Giữ nguyên tiếng Anh có chủ đích: nội dung đánh giá của khách hàng, tên cột và metadata trong file xuất (CSV/JSON/XLSX dùng tên cột chuẩn để nhập lại được), báo cáo PDF (font PDF tích hợp không hiển thị được dấu tiếng Việt), và thông báo lỗi kỹ thuật từ server/nhà cung cấp.
+- Ngôn ngữ của bản tóm tắt AI được chọn riêng (Cài đặt → AI).
+- Từ điển: `src/i18n/en.ts` (nguồn) và `src/i18n/vi.ts`. TypeScript báo lỗi nếu bản tiếng Việt thiếu khóa; unit test kiểm tra hai bản dùng cùng placeholder. Thêm ngôn ngữ mới: tạo file từ điển cùng kiểu và đăng ký trong `src/i18n/translate.ts`.
+
 ---
 
 ## 2. Cài đặt & chạy
@@ -51,7 +59,7 @@ npm run preview    # phục vụ dist/ tại http://localhost:4173
 ```bash
 npm run lint       # ESLint (cấm innerHTML, quy tắc React hooks)
 npm run typecheck  # tsc --noEmit cho app + server
-npm test           # Vitest: 109 test cho normalizer, filter, sentiment, import/export, proxy
+npm test           # Vitest: 116 test cho normalizer, filter, sentiment, import/export, proxy, i18n
 npm run build
 ```
 
@@ -183,6 +191,7 @@ src/
   hooks/                 AppProvider/appContext (state), useAnalyze, useLoadDemo
   types/                 review.ts, filters.ts
   utils/                 date, country, language, url, hash, objectPath
+  i18n/                  en.ts, vi.ts (từ điển), I18nProvider, translate (nội suy, số ít/nhiều)
   styles/                index.css (design tokens light/dark)
 server/                  index.ts, app.ts (routes), config.ts, ai.ts (Claude), rateLimit.ts
 samples/                 file mẫu để thử import (SAMPLE DATA)

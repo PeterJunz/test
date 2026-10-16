@@ -47,8 +47,8 @@ export interface ImportReport {
   skipped: number;
   skipReasons: Partial<Record<SkipReason, number>>;
   warnings: Partial<Record<WarningKind, number>>;
-  /** First few problems with 1-based row numbers, for display. */
-  examples: Array<{ row: number; message: string }>;
+  /** First few problems with 1-based row numbers, for display. `message` is the English text. */
+  examples: Array<{ row: number; kind: SkipReason | 'invalid-date'; detail?: string; message: string }>;
 }
 
 export const MAX_TEXT_LENGTH = 5000;
@@ -164,7 +164,7 @@ export function normalizeRows(rows: RawRow[], mapping: FieldMapping, options: No
     report.skipped++;
     report.skipReasons[reason] = (report.skipReasons[reason] ?? 0) + 1;
     if (report.examples.length < MAX_EXAMPLES) {
-      report.examples.push({ row: rowIndex + 1, message: detail ? `${SKIP_REASON_LABELS[reason]}: ${detail}` : SKIP_REASON_LABELS[reason] });
+      report.examples.push({ row: rowIndex + 1, kind: reason, detail, message: detail ? `${SKIP_REASON_LABELS[reason]}: ${detail}` : SKIP_REASON_LABELS[reason] });
     }
   };
   const warn = (kind: WarningKind, count = 1) => {
@@ -193,7 +193,10 @@ export function normalizeRows(rows: RawRow[], mapping: FieldMapping, options: No
     const date = parseReviewDate(rawDate, options.dateOrder);
     if (!date && rawDate !== undefined && rawDate !== null && String(rawDate).trim() !== '') {
       warn('invalid-date');
-      if (report.examples.length < MAX_EXAMPLES) report.examples.push({ row: index + 1, message: `Invalid date "${String(rawDate).slice(0, 30)}" — kept without a date` });
+      if (report.examples.length < MAX_EXAMPLES) {
+        const detail = String(rawDate).slice(0, 30);
+        report.examples.push({ row: index + 1, kind: 'invalid-date', detail, message: `Invalid date "${detail}" — kept without a date` });
+      }
     }
 
     const images = cleanUrls(get(row, 'review_images'));

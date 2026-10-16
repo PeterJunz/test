@@ -81,8 +81,9 @@ export function formatDate(iso: string | undefined, locale = 'en-US'): string {
 }
 
 /** Compact table format: 16 Oct 26. */
-export function formatShortDate(iso: string | undefined): string {
+export function formatShortDate(iso: string | undefined, locale = 'en-GB'): string {
   if (!iso) return '—';
   const [y, m, d] = iso.split('-').map(Number);
-  return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString('en-GB', { year: '2-digit', month: 'short', day: 'numeric', timeZone: 'UTC' });
+  if (locale.startsWith('vi')) return `${pad(d)}/${pad(m)}/${String(y).slice(2)}`;
+  return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString(locale === 'en-US' ? 'en-GB' : locale, { year: '2-digit', month: 'short', day: 'numeric', timeZone: 'UTC' });
 }

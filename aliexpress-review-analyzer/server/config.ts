@@ -71,7 +71,8 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): ServerConfig {
     port: Number(env.PORT) || 8787,
     accessToken,
     accessTokenGenerated: generated,
-    allowedOrigins: (env.ALLOWED_ORIGINS || 'http://localhost:5173,http://127.0.0.1:5173,http://localhost:4173')
+    // "null" is the origin of the standalone HTML opened from disk; requests still need the token.
+    allowedOrigins: (env.ALLOWED_ORIGINS || 'http://localhost:5173,http://127.0.0.1:5173,http://localhost:4173,null')
       .split(',')
       .map((s) => s.trim())
       .filter(Boolean),

@@ -1,6 +1,7 @@
 import { defineConfig, type Plugin } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
+import { viteSingleFile } from 'vite-plugin-singlefile';
 
 /**
  * Content-Security-Policy for production builds. Review images/videos are loaded
@@ -28,12 +29,18 @@ function cspPlugin(): Plugin {
   };
 }
 
-export default defineConfig({
-  plugins: [react(), tailwindcss(), cspPlugin()],
+/**
+ * `--mode standalone` produces ONE self-contained HTML file (scripts, styles and the
+ * lazily loaded XLSX/PDF libraries inlined) that opens by double-click, no server needed.
+ * The CSP meta is left out there because every script is inline by design.
+ */
+export default defineConfig(({ mode }) => ({
+  plugins: mode === 'standalone' ? [react(), tailwindcss(), viteSingleFile()] : [react(), tailwindcss(), cspPlugin()],
+  base: mode === 'standalone' ? './' : '/',
   server: { port: 5173 },
-  build: { chunkSizeWarningLimit: 1200 },
+  build: mode === 'standalone' ? { outDir: 'release', emptyOutDir: false, chunkSizeWarningLimit: 6000 } : { chunkSizeWarningLimit: 1200 },
   test: {
     environment: 'node',
     include: ['src/**/*.test.ts', 'server/**/*.test.ts'],
   },
-});
+}));

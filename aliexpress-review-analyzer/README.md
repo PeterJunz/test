@@ -6,6 +6,16 @@ React 19 · TypeScript · Vite · Tailwind CSS v4 · Lucide · Recharts · proxy
 
 > **Không có dữ liệu giả trên dashboard.** Mọi con số được tính từ dữ liệu bạn nạp vào. Bộ dữ liệu demo (nếu bạn chủ động bấm "Load demo") được gắn nhãn **DEMO** ở mọi nơi: banner, header, tên dataset, cột `data_origin` khi xuất file, báo cáo PDF. Ảnh trong demo là ảnh giữ chỗ ghi rõ *"not a real customer photo"*.
 
+## ⚡ Dùng nhanh — không cần cài gì
+
+1. Tải file **[`release/AliExpress-Review-Analyzer.html`](release/AliExpress-Review-Analyzer.html)** (khoảng 2,6 MB).
+2. **Bấm đúp** để mở bằng Chrome, Edge hoặc Firefox. Không cần cài Node.js, không cần mạng.
+3. Dùng ngay: nạp demo, nhập CSV/JSON, lọc, xem biểu đồ, phân tích theo quy tắc, xuất CSV/JSON/XLSX/PDF, chuyển VI/EN. Dữ liệu được lưu trong trình duyệt (gắn với vị trí của file; nếu chuyển file sang thư mục khác thì sẽ bắt đầu với dữ liệu trống).
+
+Chỉ có hai tính năng cần chạy thêm proxy (mục 4): **lấy review qua API của nhà cung cấp** và **phân tích AI**. Lý do: API key không được để lộ trong trình duyệt.
+
+Tạo lại file này từ mã nguồn: `npm run build:standalone`.
+
 ---
 
 ## 1. Lấy dữ liệu AliExpress hợp lệ — kết quả nghiên cứu
@@ -50,6 +60,7 @@ Chỉ dùng import file? Không cần chạy proxy.
 Build production:
 
 ```bash
+npm run build:standalone   # 1 file HTML tự chứa trong release/
 npm run build      # typecheck + build vào dist/
 npm run preview    # phục vụ dist/ tại http://localhost:4173
 ```

@@ -58,6 +58,16 @@ const COUNTRIES: Array<[string, number]> = [
 ];
 const VARIANTS = ['Color: Black', 'Color: White', 'Color: Pink', 'Color: Black / Bundle: with 2 cups', 'Color: Green / Bundle: Standard'];
 
+/**
+ * Labelled placeholder graphic, embedded as a data URI so the demo also works when the
+ * app is opened straight from disk (file://) with no server.
+ */
+export function demoPhoto(n: number): string {
+  const hue = n * 50;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="480" height="480" viewBox="0 0 480 480"><rect width="480" height="480" fill="hsl(${hue} 30% 88%)"/><rect x="24" y="24" width="432" height="432" rx="16" fill="none" stroke="hsl(${hue} 30% 55%)" stroke-width="4" stroke-dasharray="12 10"/><text x="240" y="220" font-family="system-ui,sans-serif" font-size="40" font-weight="700" text-anchor="middle" fill="hsl(${hue} 35% 30%)">DEMO PHOTO ${n}</text><text x="240" y="270" font-family="system-ui,sans-serif" font-size="20" text-anchor="middle" fill="hsl(${hue} 25% 35%)">Synthetic placeholder —</text><text x="240" y="300" font-family="system-ui,sans-serif" font-size="20" text-anchor="middle" fill="hsl(${hue} 25% 35%)">not a real customer photo</text></svg>`;
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+}
+
 /** Deterministic PRNG so demo data (and tests) are reproducible. */
 function mulberry32(seed: number) {
   return () => {
@@ -79,8 +89,8 @@ function weighted<T>(rand: () => number, items: Array<[T, number]>): T {
   return items[items.length - 1][0];
 }
 
-export function generateDemoDataset(options: { count?: number; seed?: number; assetBaseUrl: string; now?: Date }): Dataset {
-  const { count = 240, seed = 42, assetBaseUrl, now = new Date() } = options;
+export function generateDemoDataset(options: { count?: number; seed?: number; now?: Date } = {}): Dataset {
+  const { count = 240, seed = 42, now = new Date() } = options;
   const rand = mulberry32(seed);
   const datasetId = randomId('ds');
   const productId = '1005000000000000';
@@ -92,7 +102,7 @@ export function generateDemoDataset(options: { count?: number; seed?: number; as
     const text = hasText ? pool[Math.floor(rand() * pool.length)] : '';
     const photoChance = rating <= 2 ? 0.45 : 0.25;
     const images = hasText && rand() < photoChance
-      ? Array.from({ length: 1 + Math.floor(rand() * 3) }, () => `${assetBaseUrl.replace(/\/$/, '')}/demo/photo-${1 + Math.floor(rand() * 6)}.svg`)
+      ? Array.from({ length: 1 + Math.floor(rand() * 3) }, () => demoPhoto(1 + Math.floor(rand() * 6)))
       : [];
     reviews.push(
       buildReview({

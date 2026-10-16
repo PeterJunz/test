@@ -6,7 +6,7 @@ export function useLoadDemo() {
   const { saveDataset, setActiveDataset, notify } = useApp();
   const { t } = useI18n();
   return async () => {
-    const generated = generateDemoDataset({ assetBaseUrl: new URL(import.meta.env.BASE_URL, window.location.origin).toString(), seed: Date.now() % 100000 });
+    const generated = generateDemoDataset({ seed: Date.now() % 100000 });
     const dataset = {
       ...generated,
       name: t('demo.datasetName', { id: generated.productId ?? '' }),

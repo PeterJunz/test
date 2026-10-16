@@ -67,7 +67,7 @@ export function parseJsonText(text: string): ParsedFile {
 }
 
 export function parseCsvText(text: string): ParsedFile {
-  const result = Papa.parse<RawRow>(text.replace(/^﻿/, ''), {
+  const result = Papa.parse<RawRow>(text.replace(/^\uFEFF/, ''), {
     header: true,
     skipEmptyLines: 'greedy',
     dynamicTyping: false,

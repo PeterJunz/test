@@ -22,7 +22,7 @@ export const ASPECT_PATTERNS: Record<Aspect, RegExp> = {
   size: re('size|sizes|sizing|small|smaller|big|bigger|large|larger|tiny|huge|fit|fits|fitting|tight|loose|length|width|dimensions?|cm|inch(es)?|talla|tamanho|taille|größe|размер|kích thước|size nhỏ'),
   material: re('material|materials|fabric|plastic|metal|steel|aluminum|aluminium|leather|cotton|silicone|rubber|wood|wooden|glass|polyester|nylon|tela|tecido|tissu|stoff|материал|ткань|chất liệu|vải|nhựa'),
   quality: re('quality|qualities|well made|poorly made|craftsmanship|build|calidad|qualidade|qualité|qualität|качество|chất lượng'),
-  shipping: re('shipping|shipped|delivery|delivered|arrived|arrival|courier|tracking|parcel|package arrived|post|customs|days|weeks|envío|entrega|llegó|chegou|entrega|livraison|lieferung|доставка|пришл[оа]|giao hàng|ship'),
+  shipping: re('shipping|shipped|delivery|delivered|arrived|arrival|courier|tracking|parcel|package arrived|post|customs|took (\\d+|a few|several|two|three) (days|weeks|months)|(in|within|after) \\d+ (days|weeks) (to arrive|of shipping)|envío|entrega|llegó|chegou|entrega|livraison|lieferung|доставка|пришл[оа]|giao hàng|ship'),
   durability: re('durable|durability|lasted|lasts|last long|broke|broken|break|breaks|fell apart|falls apart|wear|worn|after (a|one|two|few) (day|week|month)s?|sturdy|flimsy|fragile|duradero|resistente|durável|solide|langlebig|прочн\\p{L}*|bền'),
   packaging: re('packaging|packaged|packed|package|packing|box|boxes|wrapped|bubble wrap|embalaje|embalagem|emballage|verpackung|упаковка|đóng gói|hộp'),
   functionality: re('works?|worked|working|function(s|ing|al)?|stopped|turns? on|charge|charging|battery|power|funciona|fonctionne|funktioniert|работает|hoạt động|dùng được'),

@@ -73,9 +73,13 @@ export function computeTagInsights(reviews: Review[], maxQuotes = 3): TagInsight
       // Prefer quotes from helpful, longer reviews.
       const ranked = [...list].sort((a, b) => (b.helpfulCount ?? 0) - (a.helpfulCount ?? 0) || b.text.length - a.text.length);
       const quotes: Quote[] = [];
+      const seenText = new Set<string>();
       for (const r of ranked) {
         const q = quoteFor(r, pattern);
-        if (q) quotes.push(q);
+        if (q && !seenText.has(q.text.toLowerCase())) {
+          seenText.add(q.text.toLowerCase());
+          quotes.push(q);
+        }
         if (quotes.length >= maxQuotes) break;
       }
       return {

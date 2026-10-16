@@ -1,8 +1,8 @@
-import type { Review } from '../../types/review';
+import type { DataOrigin, Review } from '../../types/review';
 import { EXPORT_COLUMNS, neutralizeFormula, toExportRow } from './rows';
 
 /** Builds an .xlsx workbook. ExcelJS is loaded on demand to keep the main bundle small. */
-export async function toXlsx(reviews: Review[], summary: Array<[string, string | number]>): Promise<Blob> {
+export async function toXlsx(reviews: Review[], summary: Array<[string, string | number]>, origin?: DataOrigin): Promise<Blob> {
   const { default: ExcelJS } = await import('exceljs');
   const wb = new ExcelJS.Workbook();
   wb.creator = 'AliExpress Review Analyzer Pro';
@@ -15,7 +15,7 @@ export async function toXlsx(reviews: Review[], summary: Array<[string, string |
     width: key === 'review_text' ? 80 : key === 'review_images' || key === 'source_url' ? 40 : 16,
   }));
   for (const r of reviews) {
-    const row = toExportRow(r);
+    const row = toExportRow(r, origin);
     sheet.addRow(Object.fromEntries(EXPORT_COLUMNS.map((c) => [c, typeof row[c] === 'string' ? neutralizeFormula(row[c] as string) : row[c]])));
   }
   sheet.getRow(1).font = { bold: true };

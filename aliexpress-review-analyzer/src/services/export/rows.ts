@@ -1,4 +1,4 @@
-import type { Review } from '../../types/review';
+import type { DataOrigin, Review } from '../../types/review';
 import { tagLabel } from '../../features/insights/insights';
 
 /**
@@ -23,12 +23,19 @@ export const EXPORT_COLUMNS = [
   'tags',
   'aspects',
   'helpful_count',
+  'data_origin',
 ] as const;
 
 export type ExportColumn = (typeof EXPORT_COLUMNS)[number];
 export type ExportRow = Record<ExportColumn, string | number>;
 
-export function toExportRow(r: Review): ExportRow {
+const ORIGIN_VALUE: Record<DataOrigin, string> = {
+  import: 'imported-file',
+  api: 'data-provider',
+  demo: 'DEMO-synthetic-not-real',
+};
+
+export function toExportRow(r: Review, origin?: DataOrigin): ExportRow {
   const s = r.aiSentiment ?? r.sentiment;
   return {
     review_id: r.id,
@@ -48,6 +55,7 @@ export function toExportRow(r: Review): ExportRow {
     tags: r.tags.map(tagLabel).join('; '),
     aspects: r.aspects.join('; '),
     helpful_count: r.helpfulCount ?? '',
+    data_origin: origin ? ORIGIN_VALUE[origin] : '',
   };
 }
 
@@ -64,24 +72,24 @@ function csvCell(value: string | number): string {
   return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
 }
 
-export function toCsv(reviews: Review[]): string {
+export function toCsv(reviews: Review[], origin?: DataOrigin): string {
   const lines = [EXPORT_COLUMNS.join(',')];
   for (const r of reviews) {
-    const row = toExportRow(r);
+    const row = toExportRow(r, origin);
     lines.push(EXPORT_COLUMNS.map((c) => csvCell(row[c])).join(','));
   }
   // BOM so Excel opens UTF-8 (Vietnamese, Cyrillic...) correctly.
-  return `﻿${lines.join('\r\n')}\r\n`;
+  return `\uFEFF${lines.join('\r\n')}\r\n`;
 }
 
-export function toJson(reviews: Review[], meta: Record<string, unknown>): string {
+export function toJson(reviews: Review[], meta: Record<string, unknown>, origin?: DataOrigin): string {
   return JSON.stringify(
     {
       ...meta,
       exportedAt: new Date().toISOString(),
       count: reviews.length,
       reviews: reviews.map((r) => ({
-        ...toExportRow(r),
+        ...toExportRow(r, origin),
         review_images: r.images,
         review_video: r.videos,
         tags: r.tags,

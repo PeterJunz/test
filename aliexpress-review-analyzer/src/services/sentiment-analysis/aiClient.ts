@@ -118,7 +118,7 @@ export async function requestAiAnalysis(config: AiRequestConfig, payload: AiRevi
     });
   } catch (e) {
     if ((e as Error).name === 'AbortError') throw e;
-    throw new Error(`Cannot reach the proxy at ${config.baseUrl}.`);
+    throw new Error(`Cannot reach the proxy at ${config.baseUrl}.`, { cause: e });
   }
   const body = (await res.json().catch(() => ({}))) as RawResponse;
   if (!res.ok) throw new Error(typeof body.error === 'string' ? body.error : `AI request failed (HTTP ${res.status}).`);

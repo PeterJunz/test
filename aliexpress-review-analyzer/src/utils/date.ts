@@ -79,3 +79,10 @@ export function formatDate(iso: string | undefined, locale = 'en-US'): string {
     year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC',
   });
 }
+
+/** Compact table format: 16 Oct 26. */
+export function formatShortDate(iso: string | undefined): string {
+  if (!iso) return '—';
+  const [y, m, d] = iso.split('-').map(Number);
+  return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString('en-GB', { year: '2-digit', month: 'short', day: 'numeric', timeZone: 'UTC' });
+}

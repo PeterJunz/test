@@ -28,6 +28,8 @@ export function pdfSafe(text: string): string {
     .replace(/[“”]/g, '"')
     .replace(/[–—]/g, '-')
     .replace(/…/g, '...')
+    .replace(/≥/g, '>=')
+    .replace(/≤/g, '<=')
     .replace(/[^\x20-\x7e\xa0-\xff\n]/g, '')
     .trim();
 }

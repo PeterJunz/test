@@ -31,7 +31,7 @@ describe('proxy server', () => {
     expect((await fetch(`${base}/api/status`, { headers: { Authorization: 'Bearer wrong' } })).status).toBe(401);
     const ok = await fetch(`${base}/api/status`, { headers: auth });
     expect(ok.status).toBe(200);
-    expect((await ok.json()).provider.configured).toBe(false);
+    expect(((await ok.json()) as { provider: { configured: boolean } }).provider.configured).toBe(false);
   });
 
   it('rejects disallowed origins and answers CORS preflight for allowed ones', async () => {

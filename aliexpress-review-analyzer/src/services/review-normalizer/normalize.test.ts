@@ -103,7 +103,7 @@ describe('normalizeRows', () => {
 
 describe('file parsing', () => {
   it('parses CSV with quoted multi-line fields and a BOM', () => {
-    const csv = '﻿rating,review_text\n5,"Line one\nline two, with comma"\n1,"He said ""broken"""\n';
+    const csv = '\uFEFFrating,review_text\n5,"Line one\nline two, with comma"\n1,"He said ""broken"""\n';
     const parsed = parseCsvText(csv);
     expect(parsed.columns).toEqual(['rating', 'review_text']);
     expect(parsed.rows).toHaveLength(2);

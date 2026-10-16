@@ -14,7 +14,7 @@ const reviews = [
 describe('CSV export', () => {
   it('escapes and neutralises formulas', () => {
     const csv = toCsv(reviews);
-    expect(csv.startsWith('﻿review_id,')).toBe(true);
+    expect(csv.startsWith('\uFEFFreview_id,')).toBe(true);
     expect(csv).toContain(`"'=HYPERLINK(""http://evil"")"`);
   });
 

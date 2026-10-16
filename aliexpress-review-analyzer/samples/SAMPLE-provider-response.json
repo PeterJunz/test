@@ -1,0 +1,11 @@
+{
+  "_note": "SAMPLE DATA for testing the JSON importer and the proxy response mapping. Not real AliExpress reviews.",
+  "data": {
+    "total": 3,
+    "reviews": [
+      { "id": "s-1", "star": 100, "content": "SAMPLE DATA: Good quality, well packaged.", "time": "2026-09-10", "buyer": { "country": "US" }, "images": [{ "url": "https://example.com/sample-a.jpg" }], "sku": "Color: Red" },
+      { "id": "s-2", "star": 20, "content": "SAMPLE DATA: Does not work at all.", "time": "2026-09-12", "buyer": { "country": "PL" }, "images": [], "video": "https://example.com/sample-video.mp4" },
+      { "id": "s-2", "star": 20, "content": "SAMPLE DATA: duplicate id (should be skipped)", "time": "2026-09-12" }
+    ]
+  }
+}

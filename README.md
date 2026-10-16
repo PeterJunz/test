@@ -111,3 +111,9 @@ pytest
 - Ngày báo cáo được tính theo `TIMEZONE`; Facebook tính số liệu theo múi giờ của tài khoản quảng cáo, nên hãy đặt `TIMEZONE` trùng với múi giờ tài khoản.
 - Số liệu của Facebook có thể còn cập nhật thêm vài giờ sau khi hết ngày, vì vậy báo cáo hằng ngày nên gửi vào buổi sáng.
 - Nếu nhiều tài khoản dùng các loại tiền khác nhau, tổng chi tiêu được hiển thị riêng theo từng loại tiền.
+
+---
+
+# AliExpress Review Analyzer Pro
+
+Công cụ lọc, phân loại và phân tích đánh giá sản phẩm AliExpress (React + TypeScript + Vite) nằm trong thư mục [`aliexpress-review-analyzer/`](aliexpress-review-analyzer/README.md). Xem README trong thư mục đó để cài đặt, cấu hình nguồn dữ liệu và sử dụng.

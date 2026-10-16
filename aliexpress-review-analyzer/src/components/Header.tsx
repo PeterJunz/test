@@ -1,7 +1,8 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { CircleAlert, CircleCheck, CircleDashed, FileUp, Link2, RefreshCw, Search, Settings2, ShieldAlert } from 'lucide-react';
 import { useApp } from '../hooks/appContext';
 import { useAnalyze, type FetchPlan } from '../hooks/useAnalyze';
+import { PlanBody, PlanButtons } from './FetchPlanDialog';
 import { useI18n } from '../i18n/context';
 import type { MessageKey } from '../i18n/en';
 import type { ConnectionState } from '../services/data-providers/types';
@@ -25,7 +26,8 @@ export function Header() {
   const { t } = useI18n();
   const connectionMessage = useConnectionMessage();
   const { analyze, progress, cancel, lastCredits } = useAnalyze();
-  const [input, setInput] = useState('');
+  const [initialProduct] = useState(() => new URLSearchParams(window.location.search).get('product') ?? '');
+  const [input, setInput] = useState(initialProduct);
   // The error belongs to the page it was raised on and disappears when the user navigates.
   const [errorState, setErrorState] = useState<{ message: string; view: string } | null>(null);
   const error = errorState?.view === view ? errorState.message : undefined;
@@ -40,10 +42,9 @@ export function Header() {
   const status = STATUS[checkingConnection ? 'checking' : connection?.state ?? 'none'];
   const StatusIcon = status.icon;
 
-  const onSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+  const run = async (value: string) => {
     setError(undefined);
-    const outcome = await analyze(input, (p) => new Promise<number>((resolve) => setPlan({ plan: p, resolve })));
+    const outcome = await analyze(value, (p) => new Promise<number>((resolve) => setPlan({ plan: p, resolve })));
     switch (outcome.kind) {
       case 'error':
         setError(outcome.message);
@@ -69,6 +70,19 @@ export function Header() {
         break;
     }
   };
+
+  const onSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    void run(input);
+  };
+
+  // The extension opens the app with ?product=<id> when clicked on an AliExpress product page.
+  const autoRan = useRef(false);
+  useEffect(() => {
+    if (autoRan.current || !initialProduct || connection?.state !== 'connected') return;
+    autoRan.current = true;
+    void run(initialProduct);
+  });
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-line bg-surface/95 px-5 backdrop-blur">
@@ -135,34 +149,9 @@ export function Header() {
         open={Boolean(plan)}
         onClose={() => choose(1)}
         title={t('plan.title')}
-        footer={
-          plan && (
-            <>
-              <Button onClick={() => choose(1)}>{t('plan.stop')}</Button>
-              {plan.plan.pageLimit < plan.plan.totalPages && (
-                <Button onClick={() => choose(plan.plan.pageLimit)}>
-                  {t('plan.limit', { pages: plan.plan.pageLimit, reviews: Math.min(plan.plan.total, plan.plan.pageLimit * 20), credits: (plan.plan.pageLimit - 1) * plan.plan.creditsPerPage })}
-                </Button>
-              )}
-              <Button variant="primary" onClick={() => choose(plan.plan.totalPages)}>
-                {t('plan.all', { reviews: plan.plan.total, credits: (plan.plan.totalPages - 1) * plan.plan.creditsPerPage })}
-              </Button>
-            </>
-          )
-        }
+        footer={plan && <PlanButtons plan={plan.plan} onChoose={choose} />}
       >
-        {plan && (
-          <div className="space-y-3 text-sm text-ink-2">
-            <p>{t('plan.body', { total: plan.plan.total, pages: plan.plan.totalPages, credits: (plan.plan.totalPages - 1) * plan.plan.creditsPerPage })}</p>
-            {plan.plan.creditsRemaining !== undefined && (
-              <p className={plan.plan.creditsRemaining < (plan.plan.totalPages - 1) * plan.plan.creditsPerPage ? 'font-medium text-neg' : ''}>
-                {t('plan.balance', { count: plan.plan.creditsRemaining })}
-                {plan.plan.creditsRemaining < (plan.plan.totalPages - 1) * plan.plan.creditsPerPage && ` ${t('plan.notEnough')}`}
-              </p>
-            )}
-            <p className="text-xs text-ink-3">{t('plan.note')}</p>
-          </div>
-        )}
+        {plan && <PlanBody plan={plan.plan} />}
       </Modal>
 
       <Modal

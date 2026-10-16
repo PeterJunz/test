@@ -568,6 +568,26 @@ export const vi: Record<Exclude<MessageKey, PluralOneKey>, string> & Partial<Rec
   'settings.wipeBody': 'Thao tác này xóa {count} bộ dữ liệu, kết quả AI, key đã lưu và cài đặt khỏi trình duyệt này. Dữ liệu trên proxy hoặc nhà cung cấp không bị ảnh hưởng.',
   'settings.wiped': 'Đã xóa toàn bộ dữ liệu, key và cài đặt cục bộ.',
 
+  // Direct AliExpress source
+  'sources.aeBody': 'Dán link sản phẩm là app đọc toàn bộ đánh giá công khai trực tiếp từ AliExpress. Miễn phí, không cần API key. Chạy trong bản tiện ích trình duyệt.',
+  'sources.needsExtension': 'Cần bản tiện ích',
+  'conn.aeConnected': 'Sẵn sàng đọc đánh giá trực tiếp từ AliExpress — dán link sản phẩm ở ô trên cùng.',
+  'conn.aeNeedsExtension': 'Đọc trực tiếp từ AliExpress chỉ chạy trong bản tiện ích (extension) của trình duyệt. Xem Cài đặt → Nguồn dữ liệu để cài trong 1 phút.',
+  'plan.bodyTime': 'Sản phẩm này có {total} đánh giá trên {pages} trang. Đọc hết mất khoảng {minutes} phút (mỗi giây một yêu cầu, để không làm phiền AliExpress).',
+  'plan.noteTime': 'Miễn phí — không cần API key hay credit. Nếu AliExpress yêu cầu xác minh, app sẽ dừng và giữ lại các đánh giá đã đọc được.',
+  'plan.limitTime': '{pages} trang đầu (~{reviews} đánh giá, ~{minutes} phút)',
+  'plan.allTime': 'Đọc toàn bộ {reviews} đánh giá (~{minutes} phút)',
+  'settings.srcAe': 'Trực tiếp từ AliExpress (miễn phí)',
+  'settings.srcAeHint': 'Không cần API key, không qua web nào khác. Cần bản tiện ích trình duyệt (cài một lần).',
+  'settings.aeNeedExt': 'Bạn đang dùng bản file HTML. Trình duyệt chặn trang web đọc dữ liệu AliExpress, nên nguồn này cần bản tiện ích (extension):',
+  'settings.aeExt1': 'Giải nén AliExpress-Review-Analyzer-Extension.zip vào một thư mục cố định.',
+  'settings.aeExt2': 'Mở chrome://extensions (hoặc edge://extensions) và bật “Chế độ dành cho nhà phát triển” (Developer mode).',
+  'settings.aeExt3': 'Bấm “Tải tiện ích đã giải nén” (Load unpacked) và chọn thư mục vừa giải nén.',
+  'settings.aeExt4': 'Bấm vào biểu tượng tiện ích (hoặc bấm khi đang ở trang sản phẩm AliExpress) để mở app.',
+  'settings.aeRules': 'Đọc đúng dữ liệu đánh giá công khai mà trang sản phẩm AliExpress hiển thị cho mọi khách: mỗi giây một yêu cầu, không đăng nhập, không bao giờ vượt CAPTCHA, không lưu tên người đánh giá. Điều khoản của AliExpress có thể hạn chế việc thu thập tự động — hãy dùng cho mục đích nghiên cứu sản phẩm của riêng bạn và tự cân nhắc.',
+  'settings.aeLanguageHint': 'AliExpress trả về nội dung đánh giá đã dịch sang ngôn ngữ này (en_US cho kết quả phân tích tự động tốt nhất).',
+  'settings.maxPagesAe': 'Đọc tối đa {reviews} đánh giá (50 mỗi trang) rồi hỏi bạn có đọc tiếp không. Miễn phí.',
+
   // SocialCrawl data source
   'conn.scConnected': 'SocialCrawl API key hợp lệ — dán link sản phẩm ở ô trên cùng để lấy đánh giá.',
   'plan.title': 'Lấy toàn bộ đánh giá?',

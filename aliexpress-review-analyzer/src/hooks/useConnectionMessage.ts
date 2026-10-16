@@ -21,6 +21,10 @@ export function useConnectionMessage(): string {
       return t('conn.unreachable', { detail: connection.message });
     case 'unsupported':
       return t('conn.unsupported');
+    case 'ae-connected':
+      return t('conn.aeConnected');
+    case 'ae-needs-extension':
+      return t('conn.aeNeedsExtension');
     case 'sc-connected':
       return t('conn.scConnected');
     case 'sc-missing-key':

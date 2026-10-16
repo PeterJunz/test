@@ -574,6 +574,26 @@ export const en = {
   'settings.wipeBody': 'This removes {count} dataset(s), AI results, saved keys and settings from this browser. Data on your proxy server or provider is not affected.',
   'settings.wiped': 'All local data, keys and settings were deleted.',
 
+  // Direct AliExpress source
+  'sources.aeBody': 'Paste a product link and every public review is read straight from AliExpress. Free, no API key. Works in the browser-extension version.',
+  'sources.needsExtension': 'Needs the extension',
+  'conn.aeConnected': 'Ready to read reviews directly from AliExpress — paste a product link at the top.',
+  'conn.aeNeedsExtension': 'Reading directly from AliExpress only works in the browser-extension version. See Settings → Data source for the 1-minute install.',
+  'plan.bodyTime': 'This product has {total} reviews on {pages} pages. Reading them all takes about {minutes} min (one request per second, to stay polite to AliExpress).',
+  'plan.noteTime': 'Free — no API key or credits. If AliExpress asks for a verification, fetching stops and the reviews read so far are kept.',
+  'plan.limitTime': 'First {pages} pages (~{reviews} reviews, ~{minutes} min)',
+  'plan.allTime': 'Read all {reviews} reviews (~{minutes} min)',
+  'settings.srcAe': 'Directly from AliExpress (free)',
+  'settings.srcAeHint': 'No API key, no other website. Needs the browser-extension version (installed once).',
+  'settings.aeNeedExt': 'You are using the HTML-file version. Browsers block web pages from reading AliExpress, so this source needs the extension version:',
+  'settings.aeExt1': 'Unzip AliExpress-Review-Analyzer-Extension.zip into a folder you will keep.',
+  'settings.aeExt2': 'Open chrome://extensions (or edge://extensions) and turn on “Developer mode”.',
+  'settings.aeExt3': 'Click “Load unpacked” and choose the unzipped folder.',
+  'settings.aeExt4': 'Click the extension icon (or click it on an AliExpress product page) to open the app.',
+  'settings.aeRules': 'Reads the same public review data an AliExpress product page shows to any visitor: one request per second, no login, never bypasses CAPTCHAs, reviewer names are not stored. AliExpress’ terms may restrict automated collection — use it for your own product research and at your own discretion.',
+  'settings.aeLanguageHint': 'AliExpress returns review text translated into this language (en_US gives the best automatic analysis).',
+  'settings.maxPagesAe': 'Reads up to {reviews} reviews (50 per page) before asking whether to continue. Free.',
+
   // SocialCrawl data source
   'conn.scConnected': 'SocialCrawl API key accepted — paste a product link at the top to fetch its reviews.',
   'plan.title': 'Fetch every review?',

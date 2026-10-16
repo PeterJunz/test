@@ -11,6 +11,8 @@ export type ConnectionCode =
   | 'unauthorized'
   | 'unreachable'
   | 'unsupported'
+  | 'ae-connected'
+  | 'ae-needs-extension'
   | 'sc-connected'
   | 'sc-missing-key'
   | 'sc-invalid-key'

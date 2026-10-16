@@ -1,10 +1,15 @@
 import type { FieldMapping } from '../review-normalizer/fields';
 import type { DateOrder } from '../../utils/date';
 import type { SocialCrawlLanguage } from '../data-providers/socialCrawlProvider';
+import type { AeLanguage } from '../data-providers/aliexpressDirectProvider';
 
 export interface AppSettings {
-  /** Where "Analyze Reviews" gets data: SocialCrawl directly from the browser, or the local proxy. */
-  dataSource: 'socialcrawl' | 'proxy';
+  /**
+   * Where "Analyze Reviews" gets data: AliExpress' public review feed (extension only),
+   * SocialCrawl directly from the browser, or the local proxy.
+   */
+  dataSource: 'aliexpress' | 'socialcrawl' | 'proxy';
+  aeLanguage: AeLanguage;
   socialcrawlLanguage: SocialCrawlLanguage;
   socialcrawlSort: 'default' | 'newest';
   proxyUrl: string;
@@ -32,7 +37,8 @@ export interface Secrets {
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
-  dataSource: 'socialcrawl',
+  dataSource: 'aliexpress',
+  aeLanguage: 'en_US',
   socialcrawlLanguage: 'EN',
   socialcrawlSort: 'newest',
   proxyUrl: 'http://localhost:8787',

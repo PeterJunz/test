@@ -12,6 +12,21 @@ React 19 · TypeScript · Vite · Tailwind CSS v4 · Lucide · Recharts · proxy
 2. **Bấm đúp** để mở bằng Chrome, Edge hoặc Firefox. Không cần cài Node.js, không cần mạng.
 3. Dùng ngay: nạp demo, nhập CSV/JSON, lọc, xem biểu đồ, phân tích theo quy tắc, xuất CSV/JSON/XLSX/PDF, chuyển VI/EN. Dữ liệu được lưu trong trình duyệt (gắn với vị trí của file; nếu chuyển file sang thư mục khác thì sẽ bắt đầu với dữ liệu trống).
 
+### Dán link → tự lấy toàn bộ đánh giá, miễn phí (bản tiện ích trình duyệt)
+
+Không cần API key, không qua web trung gian. App đọc đúng nguồn dữ liệu đánh giá công khai mà trang sản phẩm AliExpress dùng để hiển thị cho mọi khách (`feedback.aliexpress.com`), 50 đánh giá mỗi lần, **mỗi giây tối đa 1 yêu cầu**. Ví dụ đã thử: sản phẩm có 590 đánh giá được đọc đủ 590/590 trong khoảng 14 giây, phân bố sao khớp đúng thống kê của AliExpress.
+
+Trình duyệt không cho trang web thường đọc dữ liệu từ AliExpress (CORS), nên nguồn này chạy trong **bản tiện ích (extension)**:
+
+1. Giải nén [`release/AliExpress-Review-Analyzer-Extension.zip`](release/AliExpress-Review-Analyzer-Extension.zip) vào một thư mục cố định.
+2. Mở `chrome://extensions` (Edge: `edge://extensions`), bật **Developer mode / Chế độ dành cho nhà phát triển**.
+3. Bấm **Load unpacked / Tải tiện ích đã giải nén**, chọn thư mục vừa giải nén.
+4. Bấm biểu tượng tiện ích để mở app. Nếu bấm khi đang ở trang sản phẩm AliExpress, app tự phân tích sản phẩm đó.
+
+Quyền tiện ích xin: chỉ `https://feedback.aliexpress.com/*` và `activeTab` (đọc URL tab hiện tại khi bạn bấm icon). Không đăng nhập, không bao giờ vượt CAPTCHA (gặp xác minh thì dừng và giữ phần đã lấy), không lưu tên/ảnh đại diện người mua. Điều khoản của AliExpress có thể hạn chế việc thu thập tự động — hãy dùng cho nghiên cứu sản phẩm của riêng bạn và tự cân nhắc. Endpoint này không được AliExpress công bố chính thức nên có thể thay đổi bất cứ lúc nào.
+
+Tạo lại gói: `npm run build:extension` (hoặc `npm run build:release` để tạo cả file HTML lẫn tiện ích).
+
 ### Dán link → tự lấy toàn bộ đánh giá (SocialCrawl)
 
 1. Tạo tài khoản miễn phí tại https://www.socialcrawl.dev (tặng 100 credit, không cần thẻ; 5 credit / trang 20 đánh giá ≈ 400 đánh giá miễn phí).
@@ -78,7 +93,7 @@ npm run preview    # phục vụ dist/ tại http://localhost:4173
 ```bash
 npm run lint       # ESLint (cấm innerHTML, quy tắc React hooks)
 npm run typecheck  # tsc --noEmit cho app + server
-npm test           # Vitest: 121 test cho normalizer, filter, sentiment, import/export, proxy, i18n
+npm test           # Vitest: 129 test cho normalizer, filter, sentiment, import/export, proxy, i18n
 npm run build
 ```
 

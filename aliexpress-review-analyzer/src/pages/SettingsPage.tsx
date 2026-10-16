@@ -3,6 +3,19 @@ import { useState } from 'react';
 import { useApp } from '../hooks/appContext';
 import { useConnectionMessage } from '../hooks/useConnectionMessage';
 import { useI18n, type Lang } from '../i18n/context';
+import type { MessageKey } from '../i18n/en';
+import { AE_LANGUAGES, AE_PAGE_SIZE, isExtensionContext, type AeLanguage } from '../services/data-providers/aliexpressDirectProvider';
+
+const SOURCE_LABEL: Record<'aliexpress' | 'socialcrawl' | 'proxy', MessageKey> = {
+  aliexpress: 'settings.srcAe',
+  socialcrawl: 'settings.srcSocialcrawl',
+  proxy: 'settings.srcProxy',
+};
+const SOURCE_HINT: Record<'aliexpress' | 'socialcrawl' | 'proxy', MessageKey> = {
+  aliexpress: 'settings.srcAeHint',
+  socialcrawl: 'settings.srcSocialcrawlHint',
+  proxy: 'settings.srcProxyHint',
+};
 import { CANONICAL_FIELDS, type CanonicalField } from '../services/review-normalizer/fields';
 import { EMPTY_SECRETS, MAX_PAGES_LIMIT } from '../services/storage/settings';
 import { estimateCredits, SOCIALCRAWL_LANGUAGES, SOCIALCRAWL_SIGNUP_URL, SOCIALCRAWL_PAGE_SIZE, type SocialCrawlLanguage } from '../services/data-providers/socialCrawlProvider';
@@ -72,13 +85,13 @@ export function SettingsPage() {
         }
       >
         <div className="space-y-4">
-          <div className="grid gap-2 md:grid-cols-2" role="radiogroup" aria-label={t('settings.sourceTitle')}>
-            {(['socialcrawl', 'proxy'] as const).map((src) => (
+          <div className="grid gap-2 md:grid-cols-3" role="radiogroup" aria-label={t('settings.sourceTitle')}>
+            {(['aliexpress', 'socialcrawl', 'proxy'] as const).map((src) => (
               <label key={src} className={`flex cursor-pointer items-start gap-2.5 rounded-lg border p-3 text-sm ${settings.dataSource === src ? 'border-brand bg-brand-soft/50' : 'border-line hover:border-line-strong'}`}>
                 <input type="radio" name="data-source" className="mt-0.5 accent-[var(--brand)]" checked={settings.dataSource === src} onChange={() => updateSettings({ dataSource: src })} />
                 <span>
-                  <span className="block font-medium text-ink">{t(src === 'socialcrawl' ? 'settings.srcSocialcrawl' : 'settings.srcProxy')}</span>
-                  <span className="mt-0.5 block text-xs text-ink-3">{t(src === 'socialcrawl' ? 'settings.srcSocialcrawlHint' : 'settings.srcProxyHint')}</span>
+                  <span className="block font-medium text-ink">{t(SOURCE_LABEL[src])}</span>
+                  <span className="mt-0.5 block text-xs text-ink-3">{t(SOURCE_HINT[src])}</span>
                 </span>
               </label>
             ))}
@@ -86,6 +99,32 @@ export function SettingsPage() {
           <p className={`rounded-lg px-3 py-2 text-sm ${connection?.state === 'connected' ? 'bg-pos-soft text-pos' : 'bg-surface-2 text-ink-2'}`} role="status">
             {checkingConnection ? t('status.checking') : connection ? connectionMessage : t('settings.notChecked')}
           </p>
+
+          {settings.dataSource === 'aliexpress' && (
+            <div className="space-y-4">
+              {!isExtensionContext() && (
+                <div className="rounded-lg border border-warn-ink/30 bg-warn-soft p-3 text-sm text-warn-ink">
+                  <p className="font-medium">{t('settings.aeNeedExt')}</p>
+                  <ol className="mt-1.5 list-decimal space-y-0.5 pl-5">
+                    <li>{t('settings.aeExt1')}</li>
+                    <li>{t('settings.aeExt2')}</li>
+                    <li>{t('settings.aeExt3')}</li>
+                    <li>{t('settings.aeExt4')}</li>
+                  </ol>
+                </div>
+              )}
+              <p className="rounded-lg bg-surface-2 px-3 py-2 text-xs text-ink-2">{t('settings.aeRules')}</p>
+              <Field label={t('settings.scLanguage')} hint={t('settings.aeLanguageHint')}>
+                <select className={`${inputClass} max-w-60`} value={settings.aeLanguage} onChange={(e) => updateSettings({ aeLanguage: e.target.value as AeLanguage })}>
+                  {AE_LANGUAGES.map((l) => (
+                    <option key={l} value={l}>
+                      {l}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+            </div>
+          )}
 
           {settings.dataSource === 'socialcrawl' && (
             <div className="space-y-4">
@@ -125,10 +164,14 @@ export function SettingsPage() {
 
           <Field
             label={t('settings.maxPages')}
-            hint={t('settings.maxPagesEstimate', {
-              reviews: settings.maxPages * SOCIALCRAWL_PAGE_SIZE,
-              credits: estimateCredits(settings.maxPages * SOCIALCRAWL_PAGE_SIZE).credits,
-            })}
+            hint={
+              settings.dataSource === 'aliexpress'
+                ? t('settings.maxPagesAe', { reviews: settings.maxPages * AE_PAGE_SIZE })
+                : t('settings.maxPagesEstimate', {
+                    reviews: settings.maxPages * SOCIALCRAWL_PAGE_SIZE,
+                    credits: estimateCredits(settings.maxPages * SOCIALCRAWL_PAGE_SIZE).credits,
+                  })
+            }
           >
             <input
               type="number"

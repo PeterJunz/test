@@ -1,10 +1,11 @@
-import { CircleCheck, CircleDashed, CircleSlash, FileSpreadsheet, FlaskConical, Plug, Trash2, Zap } from 'lucide-react';
+import { CircleCheck, CircleDashed, CircleSlash, FileSpreadsheet, FlaskConical, Plug, ShoppingBag, Trash2, Zap } from 'lucide-react';
 import { useState } from 'react';
 import { useApp } from '../hooks/appContext';
 import { Badge, Button, Card, Modal } from '../components/ui';
 import { useLoadDemo } from '../hooks/useLoadDemo';
 import { ImportWizard } from '../features/import/ImportWizard';
 import { useI18n } from '../i18n/context';
+import { isExtensionContext } from '../services/data-providers/aliexpressDirectProvider';
 import { useConnectionMessage } from '../hooks/useConnectionMessage';
 
 export function DataSourcesPage() {
@@ -15,6 +16,18 @@ export function DataSourcesPage() {
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
 
   const sources = [
+    {
+      icon: ShoppingBag,
+      name: t('settings.srcAe'),
+      status:
+        settings.dataSource === 'aliexpress' && connection?.state === 'connected' ? (
+          <Badge tone="pos"><CircleCheck className="size-3" /> {t('sources.ready')}</Badge>
+        ) : (
+          <Badge tone="warn"><CircleDashed className="size-3" /> {t(isExtensionContext() ? 'sources.needsConfig' : 'sources.needsExtension')}</Badge>
+        ),
+      body: t('sources.aeBody'),
+      action: <Button size="sm" onClick={() => navigate('settings')}>{t('sources.configure')}</Button>,
+    },
     {
       icon: Zap,
       name: t('sources.scName'),
@@ -69,7 +82,7 @@ export function DataSourcesPage() {
         <p className="text-sm text-ink-3">{t('sources.subtitle')}</p>
       </div>
 
-      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
+      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
         {sources.map(({ icon: Icon, name, status, body, action }) => (
           <div key={name} className="flex flex-col rounded-xl border border-line bg-surface p-4">
             <div className="flex items-start justify-between gap-2">

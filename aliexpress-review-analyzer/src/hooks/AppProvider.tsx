@@ -3,6 +3,7 @@ import { EMPTY_FILTERS, type ReviewFilters, type SortState } from '../types/filt
 import type { Dataset } from '../types/review';
 import { ProxyApiProvider } from '../services/data-providers/proxyApiProvider';
 import { SocialCrawlProvider } from '../services/data-providers/socialCrawlProvider';
+import { AliExpressDirectProvider } from '../services/data-providers/aliexpressDirectProvider';
 import type { ReviewProvider } from '../services/data-providers/types';
 import type { ConnectionStatus } from '../services/data-providers/types';
 import { datasetStore } from '../services/storage/datasetStore';
@@ -131,7 +132,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const provider = useMemo<ReviewProvider>(
     () =>
-      settings.dataSource === 'socialcrawl'
+      settings.dataSource === 'aliexpress'
+        ? new AliExpressDirectProvider(settings.aeLanguage)
+        : settings.dataSource === 'socialcrawl'
         ? new SocialCrawlProvider({ apiKey: secrets.socialcrawlKey, language: settings.socialcrawlLanguage, sort: settings.socialcrawlSort })
         : new ProxyApiProvider({
             baseUrl: settings.proxyUrl,
@@ -143,7 +146,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
             ratingScale: settings.ratingScale,
             dateOrder: settings.dateOrder,
           }),
-    [settings.dataSource, settings.socialcrawlLanguage, settings.socialcrawlSort, secrets.socialcrawlKey, settings.proxyUrl, settings.reviewsPath, settings.totalPath, settings.apiMapping, settings.ratingScale, settings.dateOrder, secrets.accessToken, secrets.providerKey],
+    [settings.dataSource, settings.aeLanguage, settings.socialcrawlLanguage, settings.socialcrawlSort, secrets.socialcrawlKey, settings.proxyUrl, settings.reviewsPath, settings.totalPath, settings.apiMapping, settings.ratingScale, settings.dateOrder, secrets.accessToken, secrets.providerKey],
   );
 
   const checkSeq = useRef(0);

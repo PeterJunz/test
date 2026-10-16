@@ -34,11 +34,20 @@ function cspPlugin(): Plugin {
  * lazily loaded XLSX/PDF libraries inlined) that opens by double-click, no server needed.
  * The CSP meta is left out there because every script is inline by design.
  */
+/**
+ * `--mode extension` builds the app as the pages of a Manifest V3 browser extension
+ * (relative paths, no inline scripts — extension CSP forbids them).
+ */
 export default defineConfig(({ mode }) => ({
   plugins: mode === 'standalone' ? [react(), tailwindcss(), viteSingleFile()] : [react(), tailwindcss(), cspPlugin()],
-  base: mode === 'standalone' ? './' : '/',
+  base: mode === 'standalone' || mode === 'extension' ? './' : '/',
   server: { port: 5173 },
-  build: mode === 'standalone' ? { outDir: 'release', emptyOutDir: false, chunkSizeWarningLimit: 6000 } : { chunkSizeWarningLimit: 1200 },
+  build:
+    mode === 'standalone'
+      ? { outDir: 'release', emptyOutDir: false, chunkSizeWarningLimit: 6000 }
+      : mode === 'extension'
+        ? { outDir: 'release/extension', emptyOutDir: true, chunkSizeWarningLimit: 1200 }
+        : { chunkSizeWarningLimit: 1200 },
   test: {
     environment: 'node',
     include: ['src/**/*.test.ts', 'server/**/*.test.ts'],

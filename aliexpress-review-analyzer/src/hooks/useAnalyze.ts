@@ -30,6 +30,8 @@ export interface AnalyzeProgress {
 
 /** What fetching every page would take; shown to the user before spending credits. */
 export interface FetchPlan {
+  /** `credits`: the provider bills per page. `time`: free, but slow (polite rate limit). */
+  mode: 'credits' | 'time';
   total: number;
   totalPages: number;
   pageLimit: number;
@@ -107,10 +109,12 @@ export function useAnalyze() {
           totalPages = result.pagination.totalPages ?? totalPages;
           if (!hasMore || result.reviews.length === 0) break;
           // After the first page the total is known: let the user decide how many credits to spend.
-          // Small products (≤ 5 pages ≈ 25 credits) are fetched without asking.
-          if (page === 1 && confirmPlan && total !== undefined && totalPages !== undefined && totalPages > 5) {
+          // Ask before spending: paid providers beyond 5 pages, or anything beyond the page cap.
+          const paid = (result.creditsUsed ?? 0) > 0;
+          if (page === 1 && confirmPlan && total !== undefined && totalPages !== undefined && ((paid && totalPages > 5) || totalPages > pageLimit)) {
             setProgress(null);
             const chosen = await confirmPlan({
+              mode: paid ? 'credits' : 'time',
               total,
               totalPages,
               pageLimit: Math.min(settings.maxPages, totalPages),

@@ -1,0 +1,72 @@
+<ul class="pet-features">
+  <li class="pet-features__item">
+    <span class="pet-features__icon">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+    </span>
+    <p class="pet-features__text"><strong>Dual-force technology</strong> — microfiber grip + electrostatic pull extracts hair from inside fabric</p>
+  </li>
+  <li class="pet-features__item">
+    <span class="pet-features__icon">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m16 22-1-4"/><path d="M19 13.99a1 1 0 0 0 1-1V12a2 2 0 0 0-2-2h-3a1 1 0 0 1-1-1V4a2 2 0 0 0-4 0v5a1 1 0 0 1-1 1H6a2 2 0 0 0-2 2v.99a1 1 0 0 0 1 1"/><path d="M5 14h14l1.973 6.767A1 1 0 0 1 20 22H4a1 1 0 0 1-.973-1.233z"/><path d="m8 22 1-4"/></svg>
+    </span>
+    <p class="pet-features__text"><strong>95% removal in one pass</strong> — what vacuums can't do in three</p>
+  </li>
+  <li class="pet-features__item">
+    <span class="pet-features__icon">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 2h8v4H8z"/><rect x="5" y="6" width="14" height="16" rx="2"/><path d="M14.5 10.5h-3.25a1.75 1.75 0 0 0 0 3.5h1.5a1.75 1.75 0 0 1 0 3.5H9.5"/><path d="M12 9v1.5"/><path d="M12 17.5V19"/></svg>
+    </span>
+    <p class="pet-features__text"><strong>Zero refills, zero waste</strong> — rinse and reuse. Saves $200+/year vs. lint rollers</p>
+  </li>
+  <li class="pet-features__item">
+    <span class="pet-features__icon">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/></svg>
+    </span>
+    <p class="pet-features__text"><strong>Works on everything</strong> — furniture, bedding, clothes, car seats, carpets</p>
+  </li>
+</ul>
+
+<style>
+  .pet-features {
+    list-style: none;
+    margin: 0 0 16px;
+    padding: 0;
+    font-family: inherit;
+  }
+  .pet-features__item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 0 0 14px;
+  }
+  .pet-features__item:last-child {
+    margin-bottom: 0;
+  }
+  .pet-features__icon {
+    flex: 0 0 22px;
+    width: 22px;
+    height: 22px;
+    margin-top: 2px;
+  }
+  .pet-features__icon svg {
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke: #2BAA8C;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .pet-features__text {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #3a3a3a;
+  }
+  .pet-features__text strong {
+    font-weight: 700;
+    color: #2b2b2b;
+  }
+  @media (max-width: 749px) {
+    .pet-features__text { font-size: 15px; }
+  }
+</style>

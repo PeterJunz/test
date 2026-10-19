@@ -1,0 +1,223 @@
+{%- comment -%}
+  Dán link video (.mp4) HOẶC link ảnh vào 2 dòng dưới (Shopify Admin → Content → Files → copy link).
+  Có video thì video được ưu tiên; để trống video_url nếu chỉ dùng ảnh.
+{%- endcomment -%}
+{%- assign video_url = 'https://cdn.shopify.com/YOUR-VIDEO.mp4' -%}
+{%- assign image_url = 'https://cdn.shopify.com/YOUR-IMAGE.jpg' -%}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<section class="dual-mech">
+  <div class="dual-mech__inner">
+    <div class="dual-mech__top">
+      <div class="dual-mech__text">
+        <h2 class="dual-mech__title">DUAL-MECHANISM ENGINEERING</h2>
+        <p class="dual-mech__subtitle">The Only Glove Engineered To Remove Embedded Hair</p>
+
+        <div class="dual-mech__side">
+          <h3 class="dual-mech__side-title">
+            <svg class="dual-mech__icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M2 9c2-2 4-2 6 0s4 2 6 0 4-2 6 0 2 1 2 1"/><path d="M2 15c2-2 4-2 6 0s4 2 6 0 4-2 6 0 2 1 2 1"/></svg>
+            Side 1: Directional Microfiber Array
+          </h3>
+          <ul class="dual-mech__list">
+            <li>Penetrates between fabric threads</li>
+            <li>Hooks embedded hair at the root level</li>
+            <li>Grips both long fur and short stubborn fur</li>
+          </ul>
+        </div>
+
+        <div class="dual-mech__side">
+          <h3 class="dual-mech__side-title">
+            <svg class="dual-mech__icon" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+            Side 2: Electrostatic Polymer Coating
+          </h3>
+          <ul class="dual-mech__list">
+            <li>Creates molecular-level static attraction</li>
+            <li>Pulls hair from below the surface</li>
+            <li>Hair literally can't escape</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="dual-mech__media">
+        {%- if video_url != blank -%}
+          <video src="{{ video_url }}" {% if image_url != blank %}poster="{{ image_url }}"{% endif %} autoplay muted loop playsinline preload="metadata"></video>
+        {%- else -%}
+          <img src="{{ image_url }}" alt="Glove removing embedded pet hair from fabric" loading="lazy" width="600" height="600">
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="dual-mech__result">
+      <p class="dual-mech__result-title">
+        <svg class="dual-mech__icon dual-mech__icon--lg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 2.5v4M22 4.5h-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        The Result :
+      </p>
+      <p class="dual-mech__result-line">Mechanical extraction + electrical attraction</p>
+      <p class="dual-mech__result-strong">= <strong>95% hair removal in one pass.</strong></p>
+    </div>
+  </div>
+</section>
+
+<style>
+  body { overflow-x: clip; }
+  .dual-mech {
+    position: relative;
+    width: 100%;
+    max-width: none;
+    background: #f6fdf9;
+    padding: 64px 24px;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+    color: #1f1f1f;
+  }
+  .dual-mech__inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .dual-mech__top {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+  .dual-mech__title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 46px;
+    line-height: 1.1;
+    letter-spacing: .3px;
+    text-align: center;
+    color: #1a1a1a;
+    margin: 0 0 10px;
+  }
+  .dual-mech__subtitle {
+    font-size: 19px;
+    font-weight: 600;
+    text-align: center;
+    color: #2b2b2b;
+    margin: 0 0 32px;
+  }
+  .dual-mech__side { margin: 0 0 28px; }
+  .dual-mech__side:last-child { margin-bottom: 0; }
+  .dual-mech__side-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 21px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0 0 12px;
+  }
+  .dual-mech__icon {
+    width: 26px;
+    height: 26px;
+    flex: 0 0 26px;
+    color: #2BAA8C;
+  }
+  .dual-mech__icon--lg { width: 32px; height: 32px; flex-basis: 32px; }
+  .dual-mech__list {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 40px;
+  }
+  .dual-mech__list li {
+    position: relative;
+    padding-left: 32px;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #2b2b2b;
+    margin: 0 0 12px;
+  }
+  .dual-mech__list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 1px;
+    width: 20px;
+    height: 20px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232BAA8C' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 10l5 5-5 5'/%3E%3Cpath d='M4 4v7a4 4 0 0 0 4 4h12'/%3E%3C/svg%3E") no-repeat center / contain;
+  }
+  .dual-mech__media {
+    border-radius: 16px;
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+    background: #e6e6e6;
+  }
+  .dual-mech__media video,
+  .dual-mech__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .dual-mech__result {
+    border-top: 1px solid #d9dedb;
+    margin-top: 48px;
+    padding-top: 28px;
+    text-align: center;
+  }
+  .dual-mech__result-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0 0 10px;
+  }
+  .dual-mech__result-line {
+    font-size: 21px;
+    color: #1f1f1f;
+    margin: 0 0 12px;
+  }
+  .dual-mech__result-strong {
+    font-size: 17px;
+    margin: 0;
+  }
+  .dual-mech__result-strong strong { font-weight: 700; }
+  @media (max-width: 989px) {
+    .dual-mech__top { gap: 32px; }
+    .dual-mech__title { font-size: 38px; }
+    .dual-mech__side-title { font-size: 19px; }
+  }
+  @media (max-width: 749px) {
+    .dual-mech { padding: 40px 16px; }
+    .dual-mech__top { grid-template-columns: 1fr; }
+    .dual-mech__title { font-size: 32px; }
+    .dual-mech__subtitle { font-size: 16px; margin-bottom: 24px; }
+    .dual-mech__side-title { font-size: 18px; }
+    .dual-mech__list { padding-left: 12px; }
+    .dual-mech__list li { font-size: 15px; }
+    .dual-mech__media { max-width: 480px; width: 100%; margin: 0 auto; }
+    .dual-mech__result { margin-top: 36px; }
+    .dual-mech__result-title { font-size: 20px; }
+    .dual-mech__result-line { font-size: 17px; }
+    .dual-mech__result-strong { font-size: 16px; }
+  }
+</style>
+
+<script>
+  (function () {
+    function fit() {
+      var vw = document.documentElement.clientWidth;
+      document.querySelectorAll('.dual-mech').forEach(function (el) {
+        el.style.width = vw + 'px';
+        el.style.marginLeft = '0px';
+        // Lặp vài lần để căn đúng giữa màn hình dù khung cha của theme lệch hay co giãn
+        for (var i = 0; i < 3; i++) {
+          var left = el.getBoundingClientRect().left;
+          if (Math.abs(left) < 0.5) break;
+          el.style.marginLeft = (parseFloat(el.style.marginLeft) - left) + 'px';
+        }
+      });
+    }
+    fit();
+    window.addEventListener('load', fit);
+    window.addEventListener('resize', fit);
+    document.addEventListener('shopify:section:load', fit);
+  })();
+</script>

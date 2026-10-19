@@ -1,0 +1,47 @@
+<div class="pet-rating-block">
+  <p class="pet-rating-block__headline">
+    Removes embedded pet hair your vacuum can't touch. One swipe. Actually clean.
+  </p>
+  <div class="pet-rating-block__rating">
+    <span class="pet-rating-block__stars" aria-label="5 out of 5 stars">
+      {%- for i in (1..5) -%}
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+          <path fill="#F5A623" d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.6 7.3L12 17.8 5.8 21.5l1.6-7.3L2 9.5l7.1-.6z"/>
+        </svg>
+      {%- endfor -%}
+    </span>
+    <span class="pet-rating-block__text">2,500+ Highly rated by pet owners</span>
+  </div>
+</div>
+
+<style>
+  .pet-rating-block {
+    font-family: inherit;
+    margin: 0 0 16px;
+  }
+  .pet-rating-block__headline {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.4;
+    color: #3a3a3a;
+    margin: 0 0 6px;
+  }
+  .pet-rating-block__rating {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .pet-rating-block__stars {
+    display: inline-flex;
+    gap: 2px;
+  }
+  .pet-rating-block__text {
+    font-size: 15px;
+    color: #3a3a3a;
+  }
+  @media (max-width: 749px) {
+    .pet-rating-block__headline { font-size: 16px; }
+    .pet-rating-block__text { font-size: 14px; }
+  }
+</style>

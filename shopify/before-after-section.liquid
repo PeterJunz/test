@@ -27,11 +27,9 @@
 
     <div class="ba-diff__slider" style="--pos: 50%;">
       <img class="ba-diff__img" src="{{ after_image }}" alt="After: sofa cleaned of pet hair" loading="lazy" width="800" height="1000">
-      <span class="ba-diff__label ba-diff__label--after">After</span>
 
       <div class="ba-diff__before">
         <img class="ba-diff__img" src="{{ before_image }}" alt="Before: sofa covered in pet hair" loading="lazy" width="800" height="1000">
-        <span class="ba-diff__label ba-diff__label--before">Before</span>
       </div>
 
       <div class="ba-diff__handle" aria-hidden="true">
@@ -135,21 +133,6 @@
     inset: 0;
     clip-path: inset(0 calc(100% - var(--pos)) 0 0);
   }
-  .ba-diff__label {
-    position: absolute;
-    top: 20px;
-    padding: 4px 14px;
-    border-radius: 999px;
-    background: rgba(255,255,255,.85);
-    color: #2b2b2b;
-    font-size: 18px;
-    font-weight: 600;
-    font-variant: small-caps;
-    letter-spacing: .5px;
-    line-height: 1.3;
-  }
-  .ba-diff__label--before { left: 20px; }
-  .ba-diff__label--after { right: 20px; }
   .ba-diff__handle {
     position: absolute;
     top: 0;
@@ -204,9 +187,6 @@
     .ba-diff__lead { font-size: 17px; margin-bottom: 24px; }
     .ba-diff__list li { font-size: 16px; margin-bottom: 16px; }
     .ba-diff__slider { max-width: 480px; width: 100%; margin: 0 auto; }
-    .ba-diff__label { font-size: 15px; top: 14px; }
-    .ba-diff__label--before { left: 14px; }
-    .ba-diff__label--after { right: 14px; }
   }
 </style>
 

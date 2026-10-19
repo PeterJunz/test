@@ -1,0 +1,124 @@
+{%- comment -%}
+  Dán link 4 video (.mp4) vào 4 dòng dưới (Shopify Admin → Content → Files → copy link).
+  Để trống ('') dòng nào thì ô đó sẽ ẩn đi.
+{%- endcomment -%}
+{%- assign video_1 = 'https://cdn.shopify.com/YOUR-VIDEO-1.mp4' -%}
+{%- assign video_2 = 'https://cdn.shopify.com/YOUR-VIDEO-2.mp4' -%}
+{%- assign video_3 = 'https://cdn.shopify.com/YOUR-VIDEO-3.mp4' -%}
+{%- assign video_4 = 'https://cdn.shopify.com/YOUR-VIDEO-4.mp4' -%}
+{%- assign videos = video_1 | append: '|' | append: video_2 | append: '|' | append: video_3 | append: '|' | append: video_4 | split: '|' -%}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&family=Inter:wght@400&display=swap" rel="stylesheet">
+
+<section class="rt-videos">
+  <div class="rt-videos__inner">
+    <h2 class="rt-videos__title">SEE IT WORK IN REAL TIME</h2>
+    <p class="rt-videos__subtitle">One swipe. Massive removal. Every surface.</p>
+
+    <div class="rt-videos__grid">
+      {%- for v in videos -%}
+        {%- if v != blank -%}
+          <div class="rt-videos__item">
+            <video src="{{ v }}" autoplay muted loop playsinline preload="metadata"></video>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<style>
+  body { overflow-x: clip; }
+  .rt-videos {
+    position: relative;
+    width: 100%;
+    max-width: none;
+    padding: 56px 24px;
+    box-sizing: border-box;
+    text-align: center;
+  }
+  .rt-videos__inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .rt-videos__title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 52px;
+    line-height: 1.1;
+    letter-spacing: .3px;
+    color: #1a1a1a;
+    margin: 0 0 14px;
+  }
+  .rt-videos__subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 21px;
+    color: #555;
+    margin: 0 0 28px;
+  }
+  .rt-videos__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .rt-videos__item {
+    aspect-ratio: 9 / 16;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #e6e6e6;
+  }
+  .rt-videos__item video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  @media (max-width: 989px) {
+    .rt-videos__title { font-size: 42px; }
+    .rt-videos__subtitle { font-size: 18px; }
+  }
+  @media (max-width: 749px) {
+    .rt-videos { padding: 40px 0; }
+    .rt-videos__title { font-size: 34px; padding: 0 16px; }
+    .rt-videos__subtitle { font-size: 16px; padding: 0 16px; margin-bottom: 20px; }
+    /* Điện thoại: vuốt ngang, thấy khoảng 2 video */
+    .rt-videos__grid {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding: 0 16px;
+      scrollbar-width: none;
+    }
+    .rt-videos__grid::-webkit-scrollbar { display: none; }
+    .rt-videos__item {
+      flex: 0 0 44%;
+      scroll-snap-align: start;
+      scroll-margin-left: 16px;
+    }
+  }
+</style>
+
+<script>
+  (function () {
+    function fit() {
+      var vw = document.documentElement.clientWidth;
+      document.querySelectorAll('.rt-videos').forEach(function (el) {
+        el.style.width = vw + 'px';
+        el.style.marginLeft = '0px';
+        // Lặp vài lần để căn đúng giữa màn hình dù khung cha của theme lệch hay co giãn
+        for (var i = 0; i < 3; i++) {
+          var left = el.getBoundingClientRect().left;
+          if (Math.abs(left) < 0.5) break;
+          el.style.marginLeft = (parseFloat(el.style.marginLeft) - left) + 'px';
+        }
+      });
+    }
+    fit();
+    window.addEventListener('load', fit);
+    window.addEventListener('resize', fit);
+    document.addEventListener('shopify:section:load', fit);
+  })();
+</script>

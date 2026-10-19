@@ -1,0 +1,243 @@
+{%- comment -%}
+  Dán link 2 ảnh (Shopify Admin → Content → Files → copy link):
+  before_image = ảnh TRƯỚC khi dùng (nhiều lông), after_image = ảnh SAU khi dùng (sạch).
+  Nên dùng 2 ảnh cùng góc chụp, cùng kích thước để kéo so sánh khớp nhau.
+{%- endcomment -%}
+{%- assign before_image = 'https://cdn.shopify.com/YOUR-BEFORE-IMAGE.jpg' -%}
+{%- assign after_image = 'https://cdn.shopify.com/YOUR-AFTER-IMAGE.jpg' -%}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<section class="ba-diff">
+  <div class="ba-diff__inner">
+    <div class="ba-diff__text">
+      <h2 class="ba-diff__title">SEE THE DIFFERENCE IN SECONDS</h2>
+      <p class="ba-diff__lead">From embedded fur to a clean surface, StaticLift lifts hair fast without sticky sheets.</p>
+
+      <ul class="ba-diff__list">
+        <li><strong>Lifts embedded fur</strong> from fabric fibers</li>
+        <li><strong>No sticky residue</strong>, rinse and reuse</li>
+        <li><strong>Works on sofas, clothing, bedding, and car seats</strong></li>
+      </ul>
+
+      <p class="ba-diff__note">No sticky sheets. No residue. Just results.</p>
+    </div>
+
+    <div class="ba-diff__slider" style="--pos: 50%;">
+      <img class="ba-diff__img" src="{{ after_image }}" alt="After: sofa cleaned of pet hair" loading="lazy" width="800" height="1000">
+      <span class="ba-diff__label ba-diff__label--after">After</span>
+
+      <div class="ba-diff__before">
+        <img class="ba-diff__img" src="{{ before_image }}" alt="Before: sofa covered in pet hair" loading="lazy" width="800" height="1000">
+        <span class="ba-diff__label ba-diff__label--before">Before</span>
+      </div>
+
+      <div class="ba-diff__handle" aria-hidden="true">
+        <span class="ba-diff__knob">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 6l-6 6 6 6z"/><path d="M15 6l6 6-6 6z"/></svg>
+        </span>
+      </div>
+
+      <input class="ba-diff__range" type="range" min="0" max="100" value="50" step="0.1" aria-label="Drag to compare before and after">
+    </div>
+  </div>
+</section>
+
+<style>
+  body { overflow-x: clip; }
+  .ba-diff {
+    position: relative;
+    width: 100%;
+    max-width: none;
+    padding: 56px 24px;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+    color: #1f1f1f;
+  }
+  .ba-diff__inner {
+    max-width: 1150px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 64px;
+    align-items: center;
+  }
+  .ba-diff__title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 64px;
+    line-height: 1.12;
+    letter-spacing: .5px;
+    color: #1a1a1a;
+    margin: 0 0 36px;
+  }
+  .ba-diff__lead {
+    font-size: 21px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: #2b2b2b;
+    margin: 0 0 40px;
+  }
+  .ba-diff__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .ba-diff__list li {
+    position: relative;
+    padding-left: 36px;
+    font-size: 19px;
+    line-height: 1.45;
+    color: #2b2b2b;
+    margin: 0 0 22px;
+  }
+  .ba-diff__list li strong { font-weight: 700; color: #1a1a1a; }
+  .ba-diff__list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 1px;
+    width: 25px;
+    height: 25px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%232BAA8C'/%3E%3Cpath d='M7 12.5l3.2 3.2L17 9' fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center / contain;
+  }
+  .ba-diff__note {
+    border-top: 1px solid #d9d9d9;
+    display: inline-block;
+    padding-top: 18px;
+    margin: 18px 0 0;
+    font-size: 16px;
+    color: #6b6b6b;
+  }
+
+  /* Khung kéo so sánh */
+  .ba-diff__slider {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: #e6e6e6;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .ba-diff__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+  }
+  .ba-diff__before {
+    position: absolute;
+    inset: 0;
+    clip-path: inset(0 calc(100% - var(--pos)) 0 0);
+  }
+  .ba-diff__label {
+    position: absolute;
+    top: 20px;
+    padding: 4px 14px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.85);
+    color: #2b2b2b;
+    font-size: 18px;
+    font-weight: 600;
+    font-variant: small-caps;
+    letter-spacing: .5px;
+    line-height: 1.3;
+  }
+  .ba-diff__label--before { left: 20px; }
+  .ba-diff__label--after { right: 20px; }
+  .ba-diff__handle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--pos);
+    width: 3px;
+    margin-left: -1.5px;
+    background: #fff;
+    box-shadow: 0 0 6px rgba(0,0,0,.25);
+    pointer-events: none;
+  }
+  .ba-diff__knob {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 2px solid #fff;
+    background: rgba(255,255,255,.25);
+    backdrop-filter: blur(2px);
+    box-shadow: 0 2px 8px rgba(0,0,0,.25);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .ba-diff__knob svg { width: 22px; height: 22px; }
+  .ba-diff__range {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: ew-resize;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  @media (max-width: 989px) {
+    .ba-diff__inner { gap: 40px; }
+    .ba-diff__title { font-size: 50px; }
+    .ba-diff__lead { font-size: 18px; }
+    .ba-diff__list li { font-size: 17px; }
+  }
+  @media (max-width: 749px) {
+    .ba-diff { padding: 40px 16px; }
+    .ba-diff__inner { grid-template-columns: 1fr; gap: 32px; }
+    .ba-diff__title { font-size: 40px; margin-bottom: 20px; }
+    .ba-diff__lead { font-size: 17px; margin-bottom: 24px; }
+    .ba-diff__list li { font-size: 16px; margin-bottom: 16px; }
+    .ba-diff__slider { max-width: 480px; width: 100%; margin: 0 auto; }
+    .ba-diff__label { font-size: 15px; top: 14px; }
+    .ba-diff__label--before { left: 14px; }
+    .ba-diff__label--after { right: 14px; }
+  }
+</style>
+
+<script>
+  (function () {
+    // Kéo thanh trượt để so sánh trước / sau
+    document.querySelectorAll('.ba-diff__slider').forEach(function (slider) {
+      var range = slider.querySelector('.ba-diff__range');
+      if (!range || range.dataset.bound) return;
+      range.dataset.bound = '1';
+      range.addEventListener('input', function () {
+        slider.style.setProperty('--pos', range.value + '%');
+      });
+    });
+
+    function fit() {
+      var vw = document.documentElement.clientWidth;
+      document.querySelectorAll('.ba-diff').forEach(function (el) {
+        el.style.width = vw + 'px';
+        el.style.marginLeft = '0px';
+        // Lặp vài lần để căn đúng giữa màn hình dù khung cha của theme lệch hay co giãn
+        for (var i = 0; i < 3; i++) {
+          var left = el.getBoundingClientRect().left;
+          if (Math.abs(left) < 0.5) break;
+          el.style.marginLeft = (parseFloat(el.style.marginLeft) - left) + 'px';
+        }
+      });
+    }
+    fit();
+    window.addEventListener('load', fit);
+    window.addEventListener('resize', fit);
+    document.addEventListener('shopify:section:load', fit);
+  })();
+</script>

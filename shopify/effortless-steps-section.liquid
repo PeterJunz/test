@@ -1,0 +1,158 @@
+{%- comment -%}
+  Dán link 4 ảnh (Shopify Admin → Content → Files → copy link) vào 4 dòng dưới.
+{%- endcomment -%}
+{%- assign img_1 = 'https://cdn.shopify.com/YOUR-STEP-1-IMAGE.jpg' -%}
+{%- assign img_2 = 'https://cdn.shopify.com/YOUR-STEP-2-IMAGE.jpg' -%}
+{%- assign img_3 = 'https://cdn.shopify.com/YOUR-STEP-3-IMAGE.jpg' -%}
+{%- assign img_4 = 'https://cdn.shopify.com/YOUR-STEP-4-IMAGE.jpg' -%}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<section class="ez-steps">
+  <div class="ez-steps__inner">
+    <h2 class="ez-steps__title">EFFORTLESS TO USE</h2>
+    <p class="ez-steps__subtitle">Charge.Lift.Clump.Rinse</p>
+
+    <div class="ez-steps__grid">
+      <div class="ez-steps__item">
+        <div class="ez-steps__media"><img src="{{ img_1 }}" alt="Swipe the glove across the sofa" loading="lazy" width="600" height="600"></div>
+        <p class="ez-steps__num">Step 1</p>
+        <h3 class="ez-steps__name">SWIPE &amp; CHARGE</h3>
+        <p class="ez-steps__desc">Glide across fabric to activate StaticLift™</p>
+      </div>
+
+      <div class="ez-steps__item">
+        <div class="ez-steps__media"><img src="{{ img_2 }}" alt="Glove lifting deep fur from fabric" loading="lazy" width="600" height="600"></div>
+        <p class="ez-steps__num">Step 2</p>
+        <h3 class="ez-steps__name">LIFT DEEP FUR</h3>
+        <p class="ez-steps__desc">StaticLift™+fibers pull fur out of the weave.</p>
+      </div>
+
+      <div class="ez-steps__item">
+        <div class="ez-steps__media"><img src="{{ img_3 }}" alt="Fur rolling into clumps on the glove" loading="lazy" width="600" height="600"></div>
+        <p class="ez-steps__num">Step 3</p>
+        <h3 class="ez-steps__name">ROLL INTO CLUMPS</h3>
+        <p class="ez-steps__desc">Fur gathers into easy-to-remove clumps.</p>
+      </div>
+
+      <div class="ez-steps__item">
+        <div class="ez-steps__media"><img src="{{ img_4 }}" alt="Rinsing the glove under a tap" loading="lazy" width="600" height="600"></div>
+        <p class="ez-steps__num">Step 4</p>
+        <h3 class="ez-steps__name">RINSE &amp; REUSE</h3>
+        <p class="ez-steps__desc">Rinse clean. Ready for the next round.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  body { overflow-x: clip; }
+  .ez-steps {
+    position: relative;
+    width: 100%;
+    max-width: none;
+    background: #eef5f1;
+    padding: 56px 24px;
+    box-sizing: border-box;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+  }
+  .ez-steps__inner {
+    max-width: 1150px;
+    margin: 0 auto;
+  }
+  .ez-steps__title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 72px;
+    line-height: 1.05;
+    letter-spacing: .5px;
+    color: #1f1f1f;
+    margin: 0 0 18px;
+  }
+  .ez-steps__subtitle {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 300;
+    font-size: 36px;
+    line-height: 1.2;
+    color: #333;
+    margin: 0 0 28px;
+  }
+  .ez-steps__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+  }
+  .ez-steps__media {
+    aspect-ratio: 1 / 1;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #dfe7e3;
+  }
+  .ez-steps__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .ez-steps__num {
+    font-size: 15px;
+    font-weight: 600;
+    color: #707a80;
+    margin: 18px 0 4px;
+  }
+  .ez-steps__name {
+    font-family: 'Inter', sans-serif;
+    font-size: 23px;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: .2px;
+    color: #111;
+    margin: 0 0 8px;
+  }
+  .ez-steps__desc {
+    font-size: 17px;
+    line-height: 1.65;
+    color: #555;
+    margin: 0 auto;
+    max-width: 270px;
+  }
+  @media (max-width: 989px) {
+    .ez-steps__title { font-size: 56px; }
+    .ez-steps__subtitle { font-size: 30px; }
+    .ez-steps__grid { grid-template-columns: repeat(2, 1fr); gap: 28px 18px; }
+  }
+  @media (max-width: 749px) {
+    .ez-steps { padding: 40px 16px; }
+    .ez-steps__title { font-size: 44px; }
+    .ez-steps__subtitle { font-size: 26px; margin-bottom: 22px; }
+    .ez-steps__grid { gap: 24px 12px; }
+    .ez-steps__num { font-size: 13px; margin-top: 12px; }
+    .ez-steps__name { font-size: 17px; }
+    .ez-steps__desc { font-size: 14px; line-height: 1.5; }
+  }
+</style>
+
+<script>
+  (function () {
+    function fit() {
+      var vw = document.documentElement.clientWidth;
+      document.querySelectorAll('.ez-steps').forEach(function (el) {
+        el.style.width = vw + 'px';
+        el.style.marginLeft = '0px';
+        // Lặp vài lần để căn đúng giữa màn hình dù khung cha của theme lệch hay co giãn
+        for (var i = 0; i < 3; i++) {
+          var left = el.getBoundingClientRect().left;
+          if (Math.abs(left) < 0.5) break;
+          el.style.marginLeft = (parseFloat(el.style.marginLeft) - left) + 'px';
+        }
+      });
+    }
+    fit();
+    window.addEventListener('load', fit);
+    window.addEventListener('resize', fit);
+    document.addEventListener('shopify:section:load', fit);
+  })();
+</script>

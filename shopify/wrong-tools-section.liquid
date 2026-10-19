@@ -1,0 +1,133 @@
+{%- comment -%}
+  Dán link ảnh (Shopify Admin → Content → Files → copy link) vào 3 dòng dưới.
+  Nếu ảnh của bạn ĐÃ có sẵn huy hiệu "NOT EFFECTIVE", đổi show_badge thành false.
+{%- endcomment -%}
+{%- assign img_1 = 'https://cdn.shopify.com/YOUR-VACUUM-IMAGE.jpg' -%}
+{%- assign img_2 = 'https://cdn.shopify.com/YOUR-LINT-ROLLER-IMAGE.jpg' -%}
+{%- assign img_3 = 'https://cdn.shopify.com/YOUR-RUBBER-BRUSH-IMAGE.jpg' -%}
+{%- assign show_badge = true -%}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@500&display=swap" rel="stylesheet">
+
+<section class="wrong-tools">
+  <h2 class="wrong-tools__title">You’re not bad at cleaning.<br>Your tools are just wrong.</h2>
+
+  <div class="wrong-tools__grid">
+    <div class="wrong-tools__card">
+      <div class="wrong-tools__media">
+        <img src="{{ img_1 }}" alt="Vacuum on a couch covered in pet hair" loading="lazy" width="600" height="540">
+        {%- if show_badge -%}<span class="wrong-tools__badge">NOT<br>EFFECTIVE</span>{%- endif -%}
+      </div>
+      <h3 class="wrong-tools__name">Vacuum</h3>
+      <p class="wrong-tools__desc">Suction can't break embedded hair.</p>
+    </div>
+
+    <div class="wrong-tools__card">
+      <div class="wrong-tools__media">
+        <img src="{{ img_2 }}" alt="Lint roller on a couch covered in pet hair" loading="lazy" width="600" height="540">
+        {%- if show_badge -%}<span class="wrong-tools__badge">NOT<br>EFFECTIVE</span>{%- endif -%}
+      </div>
+      <h3 class="wrong-tools__name">Lint Roller</h3>
+      <p class="wrong-tools__desc">Only grabs surface fuzz.</p>
+    </div>
+
+    <div class="wrong-tools__card">
+      <div class="wrong-tools__media">
+        <img src="{{ img_3 }}" alt="Rubber brush on a couch covered in pet hair" loading="lazy" width="600" height="540">
+        {%- if show_badge -%}<span class="wrong-tools__badge">NOT<br>EFFECTIVE</span>{%- endif -%}
+      </div>
+      <h3 class="wrong-tools__name">Rubber Brush</h3>
+      <p class="wrong-tools__desc">Flattens hair instead of removing it.</p>
+    </div>
+  </div>
+
+  <p class="wrong-tools__footer">Your tools weren’t engineered for embedded pet hair.</p>
+</section>
+
+<style>
+  .wrong-tools {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 16px;
+    text-align: center;
+  }
+  .wrong-tools__title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 40px;
+    line-height: 1.3;
+    letter-spacing: -0.3px;
+    color: #1a1a1a;
+    margin: 0 0 8px;
+  }
+  .wrong-tools__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .wrong-tools__media {
+    position: relative;
+    border-radius: 14px;
+    overflow: hidden;
+    aspect-ratio: 10 / 9;
+    background: #eee;
+  }
+  .wrong-tools__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .wrong-tools__badge {
+    position: absolute;
+    right: 4%;
+    bottom: 4%;
+    width: 28%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%, #c9343f, #a3202b);
+    box-shadow: inset 0 0 0 3px #a3202b, inset 0 0 0 5px rgba(255,255,255,.85), 0 2px 6px rgba(0,0,0,.25);
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: clamp(10px, 1.4vw, 17px);
+    line-height: 1.15;
+    letter-spacing: .5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transform: rotate(-8deg);
+  }
+  .wrong-tools__name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    color: #1a1a1a;
+    margin: 14px 0 4px;
+  }
+  .wrong-tools__desc {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    color: #666;
+    margin: 0;
+  }
+  .wrong-tools__footer {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 30px;
+    color: #444;
+    margin: 28px 0 0;
+  }
+  @media (max-width: 749px) {
+    .wrong-tools { padding: 28px 16px; }
+    .wrong-tools__title { font-size: 30px; }
+    .wrong-tools__grid { grid-template-columns: 1fr; gap: 24px; max-width: 420px; margin: 0 auto; }
+    .wrong-tools__badge { font-size: 14px; }
+    .wrong-tools__name { font-size: 24px; }
+    .wrong-tools__footer { font-size: 24px; }
+  }
+</style>

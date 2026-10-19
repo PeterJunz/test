@@ -52,8 +52,8 @@
   body { overflow-x: clip; }
   .wrong-tools {
     position: relative;
-    width: 100vw;
-    margin-left: calc(50% - 50vw);
+    width: 100%;
+    max-width: none;
     padding: 56px 24px;
     text-align: center;
     box-sizing: border-box;
@@ -61,6 +61,7 @@
   .wrong-tools__inner {
     max-width: 1200px;
     margin: 0 auto;
+    box-sizing: border-box;
   }
   .wrong-tools__title {
     font-family: 'Barlow Condensed', sans-serif;
@@ -155,3 +156,25 @@
     .wrong-tools__footer { font-size: 28px; }
   }
 </style>
+
+<script>
+  (function () {
+    function fit() {
+      var vw = document.documentElement.clientWidth;
+      document.querySelectorAll('.wrong-tools').forEach(function (el) {
+        el.style.width = vw + 'px';
+        el.style.marginLeft = '0px';
+        // Lặp vài lần để căn đúng giữa màn hình dù khung cha của theme lệch hay co giãn
+        for (var i = 0; i < 3; i++) {
+          var left = el.getBoundingClientRect().left;
+          if (Math.abs(left) < 0.5) break;
+          el.style.marginLeft = (parseFloat(el.style.marginLeft) - left) + 'px';
+        }
+      });
+    }
+    fit();
+    window.addEventListener('load', fit);
+    window.addEventListener('resize', fit);
+    document.addEventListener('shopify:section:load', fit);
+  })();
+</script>

@@ -1,0 +1,166 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<section class="faq-pet">
+  <div class="faq-pet__inner">
+    <h2 class="faq-pet__title">FREQUENTLY ASKED QUESTIONS</h2>
+    <p class="faq-pet__subtitle">Still unsure? Here’s what pet owners usually ask before ordering.</p>
+
+    <div class="faq-pet__list">
+      <details class="faq-pet__item" open>
+        <summary>How is this different from the cheap rubber gloves</summary>
+        <div class="faq-pet__answer">Those use basic rubber nubs. They can ball up loose hair on hard surfaces, but they can't extract embedded hair from fabric. They're too rigid to penetrate between fibers. Our glove uses flexible microfibers (3x higher density) PLUS electrostatic coating. Two mechanisms working together. Completely different result.</div>
+      </details>
+
+      <details class="faq-pet__item">
+        <summary>Will this work on my specific type of pet hair?</summary>
+        <div class="faq-pet__answer">Yes. The microfiber side grips both long fur and short, stubborn hair, while the electrostatic side pulls up fine hair that sits deep in the fabric. It works for dogs, cats and other shedding pets.</div>
+      </details>
+
+      <details class="faq-pet__item">
+        <summary>Can I use this on leather furniture?</summary>
+        <div class="faq-pet__answer">Yes. Use light pressure on leather and faux leather. The glove lifts hair from the surface without sticky residue. For delicate or treated leather, test on a small hidden area first.</div>
+      </details>
+
+      <details class="faq-pet__item">
+        <summary>How long does it last?</summary>
+        <div class="faq-pet__answer">It is built to be reused. There are no refills or replacement sheets: rinse it after use and it is ready again. With regular rinsing it keeps its grip through many uses.</div>
+      </details>
+
+      <details class="faq-pet__item">
+        <summary>Does it really work better than a $400 vacuum?</summary>
+        <div class="faq-pet__answer">For hair embedded in fabric, yes. Vacuum suction pulls from the surface, but hair woven into upholstery stays stuck. The glove works between the fibers to hook and lift that hair out. Many owners use both: the vacuum for floors, the glove for sofas, beds and car seats.</div>
+      </details>
+
+      <details class="faq-pet__item">
+        <summary>How do I clean the glove after use?</summary>
+        <div class="faq-pet__answer">Peel off the clump of fur, then rinse the glove under running water and let it air dry. No soap or special cleaner is needed.</div>
+      </details>
+
+      <details class="faq-pet__item">
+        <summary>What if my pet has REALLY heavy shedding?</summary>
+        <div class="faq-pet__answer">That is exactly what it is made for. Work in short strokes in one direction, remove the fur clump when it builds up, and keep going. Heavy shedders just mean a few more swipes.</div>
+      </details>
+
+      <details class="faq-pet__item">
+        <summary>I have multiple pets. Do I need more than one glove?</summary>
+        <div class="faq-pet__answer">One glove handles a whole home. Many multi-pet owners keep a second one in the car or in another room so it is always within reach.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<style>
+  body { overflow-x: clip; }
+  .faq-pet {
+    position: relative;
+    width: 100%;
+    max-width: none;
+    padding: 56px 24px;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+  }
+  .faq-pet__inner {
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  .faq-pet__title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 60px;
+    line-height: 1.1;
+    letter-spacing: .5px;
+    text-align: center;
+    color: #1f1f1f;
+    margin: 0 0 12px;
+  }
+  .faq-pet__subtitle {
+    font-size: 17px;
+    text-align: center;
+    color: #555;
+    margin: 0 0 44px;
+  }
+  .faq-pet__item {
+    margin: 0 0 12px;
+    border: 1px solid #edf2ef;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .faq-pet__item summary {
+    list-style: none;
+    cursor: pointer;
+    position: relative;
+    padding: 18px 56px 18px 22px;
+    background: #f7fdfa;
+    font-size: 19px;
+    font-weight: 700;
+    line-height: 1.4;
+    color: #1a1a1a;
+  }
+  .faq-pet__item summary::-webkit-details-marker { display: none; }
+  .faq-pet__item summary::after {
+    content: "";
+    position: absolute;
+    right: 24px;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    border-right: 1.6px solid #333;
+    border-bottom: 1.6px solid #333;
+    transform: translateY(-70%) rotate(45deg);
+    transition: transform .2s ease;
+  }
+  .faq-pet__item[open] summary::after {
+    transform: translateY(-30%) rotate(-135deg);
+  }
+  .faq-pet__item[open] summary { border-bottom: 1px solid #edf2ef; }
+  .faq-pet__answer {
+    padding: 16px 22px 18px;
+    font-size: 16px;
+    line-height: 1.75;
+    color: #555;
+  }
+  @media (max-width: 749px) {
+    .faq-pet { padding: 40px 16px; }
+    .faq-pet__title { font-size: 38px; }
+    .faq-pet__subtitle { font-size: 15px; margin-bottom: 28px; }
+    .faq-pet__item summary { font-size: 16px; padding: 16px 46px 16px 16px; }
+    .faq-pet__item summary::after { right: 18px; }
+    .faq-pet__answer { font-size: 15px; padding: 14px 16px 16px; }
+  }
+</style>
+
+<script>
+  (function () {
+    // Mở một câu thì tự đóng các câu khác
+    document.querySelectorAll('.faq-pet__list').forEach(function (list) {
+      if (list.dataset.bound) return;
+      list.dataset.bound = '1';
+      list.querySelectorAll('details').forEach(function (d) {
+        d.addEventListener('toggle', function () {
+          if (!d.open) return;
+          list.querySelectorAll('details[open]').forEach(function (o) { if (o !== d) o.open = false; });
+        });
+      });
+    });
+
+    function fit() {
+      var vw = document.documentElement.clientWidth;
+      document.querySelectorAll('.faq-pet').forEach(function (el) {
+        el.style.width = vw + 'px';
+        el.style.marginLeft = '0px';
+        // Lặp vài lần để căn đúng giữa màn hình dù khung cha của theme lệch hay co giãn
+        for (var i = 0; i < 3; i++) {
+          var left = el.getBoundingClientRect().left;
+          if (Math.abs(left) < 0.5) break;
+          el.style.marginLeft = (parseFloat(el.style.marginLeft) - left) + 'px';
+        }
+      });
+    }
+    fit();
+    window.addEventListener('load', fit);
+    window.addEventListener('resize', fit);
+    document.addEventListener('shopify:section:load', fit);
+  })();
+</script>

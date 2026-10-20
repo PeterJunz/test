@@ -1,0 +1,105 @@
+{%- comment -%}
+  Dán link ảnh vào dòng dưới (Shopify Admin → Content → Files → copy link).
+{%- endcomment -%}
+{%- assign image_url = 'https://cdn.shopify.com/YOUR-RINSE-IMAGE.jpg' -%}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600&family=Inter:wght@400&display=swap" rel="stylesheet">
+
+<section class="easy-clean">
+  <div class="easy-clean__inner">
+    <div class="easy-clean__text">
+      <h2 class="easy-clean__title">EASY TO CLEAN. READY TO REUSE.</h2>
+      <p class="easy-clean__line">Simply rinse under water to release trapped fur.</p>
+      <p class="easy-clean__line">No sticky sheets. No replacement parts.</p>
+      <p class="easy-clean__line">Dries fast and ready for the next use.</p>
+    </div>
+
+    <div class="easy-clean__media">
+      <img src="{{ image_url }}" alt="Rinsing the glove under a tap" loading="lazy" width="800" height="800">
+    </div>
+  </div>
+</section>
+
+<style>
+  body { overflow-x: clip; }
+  .easy-clean {
+    position: relative;
+    width: 100%;
+    max-width: none;
+    padding: 56px 24px;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+  }
+  .easy-clean__inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+  }
+  .easy-clean__title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    font-size: 54px;
+    line-height: 1.3;
+    letter-spacing: .5px;
+    color: #1a1a1a;
+    margin: 0 0 14px;
+  }
+  .easy-clean__line {
+    font-size: 19px;
+    line-height: 1.6;
+    color: #444;
+    margin: 0 0 8px;
+  }
+  .easy-clean__line:last-child { margin-bottom: 0; }
+  .easy-clean__media {
+    aspect-ratio: 1 / 1;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #eee;
+  }
+  .easy-clean__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  @media (max-width: 989px) {
+    .easy-clean__inner { gap: 40px; }
+    .easy-clean__title { font-size: 44px; }
+    .easy-clean__line { font-size: 17px; }
+  }
+  @media (max-width: 749px) {
+    .easy-clean { padding: 40px 16px; }
+    .easy-clean__inner { grid-template-columns: 1fr; gap: 28px; }
+    .easy-clean__title { font-size: 36px; }
+    .easy-clean__line { font-size: 16px; }
+    .easy-clean__media { max-width: 480px; width: 100%; margin: 0 auto; }
+  }
+</style>
+
+<script>
+  (function () {
+    function fit() {
+      var vw = document.documentElement.clientWidth;
+      document.querySelectorAll('.easy-clean').forEach(function (el) {
+        el.style.width = vw + 'px';
+        el.style.marginLeft = '0px';
+        // Lặp vài lần để căn đúng giữa màn hình dù khung cha của theme lệch hay co giãn
+        for (var i = 0; i < 3; i++) {
+          var left = el.getBoundingClientRect().left;
+          if (Math.abs(left) < 0.5) break;
+          el.style.marginLeft = (parseFloat(el.style.marginLeft) - left) + 'px';
+        }
+      });
+    }
+    fit();
+    window.addEventListener('load', fit);
+    window.addEventListener('resize', fit);
+    document.addEventListener('shopify:section:load', fit);
+  })();
+</script>

@@ -1,0 +1,144 @@
+{%- comment -%}
+  Dán link ảnh so sánh (Old Model / Upgraded Version) vào dòng dưới
+  (Shopify Admin → Content → Files → copy link).
+{%- endcomment -%}
+{%- assign image_url = 'https://cdn.shopify.com/YOUR-COMPARISON-IMAGE.jpg' -%}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<section class="up-design">
+  <div class="up-design__inner">
+    <div class="up-design__media">
+      <img src="{{ image_url }}" alt="Old model compared with the upgraded version" loading="lazy" width="1000" height="700">
+    </div>
+
+    <div class="up-design__text">
+      <h2 class="up-design__title">UPGRADED DESIGN<br>CLEANER RESULTS</h2>
+      <p class="up-design__lead">Wider coverage and a washable pad that keeps its grip after every rinse.</p>
+      <p class="up-design__label">What’s Improved</p>
+
+      <div class="up-design__item">
+        <h3 class="up-design__item-title">Wider coverage</h3>
+        <p class="up-design__item-desc">Lift more fur in fewer swipes.</p>
+      </div>
+      <div class="up-design__item">
+        <h3 class="up-design__item-title">Rinse &amp; reuse</h3>
+        <p class="up-design__item-desc">No sticky residue, ready again in seconds.</p>
+      </div>
+      <div class="up-design__item">
+        <h3 class="up-design__item-title">Better control</h3>
+        <p class="up-design__item-desc">Comfort strap + breathable mesh.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  body { overflow-x: clip; }
+  .up-design {
+    position: relative;
+    width: 100%;
+    max-width: none;
+    padding: 56px 24px;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+    color: #1f1f1f;
+  }
+  .up-design__inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap: 56px;
+    align-items: center;
+  }
+  .up-design__media img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 12px;
+  }
+  .up-design__title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 54px;
+    line-height: 1.2;
+    letter-spacing: .5px;
+    color: #14141f;
+    margin: 0 0 20px;
+  }
+  .up-design__lead {
+    font-size: 19px;
+    line-height: 1.55;
+    color: #444;
+    margin: 0 0 18px;
+  }
+  .up-design__label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #707070;
+    margin: 0 0 20px;
+  }
+  .up-design__item {
+    padding: 0 0 16px;
+    margin: 0 0 18px;
+    border-bottom: 1px solid #e3e3e3;
+    max-width: 380px;
+  }
+  .up-design__item:last-child {
+    border-bottom: 0;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  .up-design__item-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0 0 6px;
+  }
+  .up-design__item-desc {
+    font-size: 17px;
+    line-height: 1.5;
+    color: #444;
+    margin: 0;
+  }
+  @media (max-width: 989px) {
+    .up-design__inner { gap: 36px; }
+    .up-design__title { font-size: 44px; }
+    .up-design__lead { font-size: 17px; }
+  }
+  @media (max-width: 749px) {
+    .up-design { padding: 40px 16px; }
+    .up-design__inner { grid-template-columns: 1fr; gap: 28px; }
+    .up-design__title { font-size: 38px; }
+    .up-design__lead { font-size: 16px; }
+    .up-design__item { max-width: none; }
+    .up-design__item-title { font-size: 18px; }
+    .up-design__item-desc { font-size: 15px; }
+  }
+</style>
+
+<script>
+  (function () {
+    function fit() {
+      var vw = document.documentElement.clientWidth;
+      document.querySelectorAll('.up-design').forEach(function (el) {
+        el.style.width = vw + 'px';
+        el.style.marginLeft = '0px';
+        // Lặp vài lần để căn đúng giữa màn hình dù khung cha của theme lệch hay co giãn
+        for (var i = 0; i < 3; i++) {
+          var left = el.getBoundingClientRect().left;
+          if (Math.abs(left) < 0.5) break;
+          el.style.marginLeft = (parseFloat(el.style.marginLeft) - left) + 'px';
+        }
+      });
+    }
+    fit();
+    window.addEventListener('load', fit);
+    window.addEventListener('resize', fit);
+    document.addEventListener('shopify:section:load', fit);
+  })();
+</script>

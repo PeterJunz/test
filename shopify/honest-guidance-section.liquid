@@ -1,0 +1,158 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+<section class="honest">
+  <div class="honest__inner">
+    <div class="honest__left">
+      <h2 class="honest__title">HONEST GUIDANCE</h2>
+      <p class="honest__subtitle">A Better View, Not a Shortcut.</p>
+      <p class="honest__body">QuickScan Pro™ helps improve visibility before trimming, but every nail trim should still be done slowly, gently, and with care.</p>
+      <p class="honest__note">On very dark nails, visibility can vary. When unsure, clip less and smooth gradually.</p>
+    </div>
+
+    <ul class="honest__list">
+      <li class="honest__item">
+        <h3 class="honest__item-title">Go Slowly</h3>
+        <p class="honest__item-desc">QuickScan Pro™ helps improve visibility before trimming, but every nail trim should still be done slowly, gently, and with care.</p>
+      </li>
+      <li class="honest__item">
+        <h3 class="honest__item-title">Check First</h3>
+        <p class="honest__item-desc">Use the LED light and clear viewing cover to inspect the nail before trimming.</p>
+      </li>
+      <li class="honest__item">
+        <h3 class="honest__item-title">Smooth Gradually</h3>
+        <p class="honest__item-desc">Use the grinder to round the edge after clipping.</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  body { overflow-x: clip; }
+  .honest {
+    position: relative;
+    width: 100%;
+    max-width: none;
+    background: #f8f7f3;
+    padding: 56px 24px;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+    color: #1f1f1f;
+  }
+  .honest__inner {
+    max-width: 1050px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    align-items: center;
+  }
+  .honest__title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    font-size: 54px;
+    line-height: 1.1;
+    letter-spacing: .5px;
+    color: #1a1a1a;
+    margin: 0 0 8px;
+  }
+  .honest__subtitle {
+    font-size: 21px;
+    color: #333;
+    margin: 0 0 32px;
+  }
+  .honest__body {
+    font-size: 17px;
+    line-height: 1.75;
+    color: #444;
+    margin: 0;
+  }
+  .honest__note {
+    position: relative;
+    padding-top: 18px;
+    margin: 26px 0 0;
+    font-size: 16px;
+    line-height: 1.75;
+    color: #666;
+  }
+  .honest__note::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 130px;
+    border-top: 1px solid #e2e0da;
+  }
+  .honest__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .honest__item {
+    position: relative;
+    padding-left: 44px;
+    margin: 0 0 26px;
+  }
+  .honest__item:last-child { margin-bottom: 0; }
+  .honest__item::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 26px;
+    height: 26px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232BAA8C' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12.5l5 5L20 6.5'/%3E%3C/svg%3E") no-repeat center / contain;
+  }
+  .honest__item-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 6px;
+  }
+  .honest__item-desc {
+    font-size: 16px;
+    line-height: 1.65;
+    color: #444;
+    margin: 0;
+  }
+  @media (max-width: 989px) {
+    .honest__inner { gap: 40px; }
+    .honest__title { font-size: 46px; }
+  }
+  @media (max-width: 749px) {
+    .honest { padding: 40px 16px; }
+    .honest__inner { grid-template-columns: 1fr; gap: 32px; }
+    .honest__title { font-size: 38px; }
+    .honest__subtitle { font-size: 18px; margin-bottom: 20px; }
+    .honest__body { font-size: 15px; }
+    .honest__note { font-size: 14px; }
+    .honest__item { padding-left: 38px; margin-bottom: 20px; }
+    .honest__item::before { width: 22px; height: 22px; }
+    .honest__item-title { font-size: 16px; }
+    .honest__item-desc { font-size: 15px; }
+  }
+</style>
+
+<script>
+  (function () {
+    function fit() {
+      var vw = document.documentElement.clientWidth;
+      document.querySelectorAll('.honest').forEach(function (el) {
+        el.style.width = vw + 'px';
+        el.style.marginLeft = '0px';
+        // Lặp vài lần để căn đúng giữa màn hình dù khung cha của theme lệch hay co giãn
+        for (var i = 0; i < 3; i++) {
+          var left = el.getBoundingClientRect().left;
+          if (Math.abs(left) < 0.5) break;
+          el.style.marginLeft = (parseFloat(el.style.marginLeft) - left) + 'px';
+        }
+      });
+    }
+    fit();
+    window.addEventListener('load', fit);
+    window.addEventListener('resize', fit);
+    document.addEventListener('shopify:section:load', fit);
+  })();
+</script>

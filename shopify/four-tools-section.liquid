@@ -1,0 +1,148 @@
+{%- comment -%}
+  Dán link 4 ảnh HOẶC 4 video .mp4 (Shopify Admin → Content → Files → copy link) vào 4 dòng dưới.
+  Link kết thúc bằng .mp4 sẽ tự hiện dạng video (tự chạy, tắt tiếng, lặp lại).
+{%- endcomment -%}
+{%- assign media_1 = 'https://cdn.shopify.com/YOUR-MEDIA-1.jpg' -%}
+{%- assign media_2 = 'https://cdn.shopify.com/YOUR-MEDIA-2.jpg' -%}
+{%- assign media_3 = 'https://cdn.shopify.com/YOUR-MEDIA-3.jpg' -%}
+{%- assign media_4 = 'https://cdn.shopify.com/YOUR-MEDIA-4.jpg' -%}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+<section class="four-tools">
+  <div class="four-tools__inner">
+    <h2 class="four-tools__title">FOUR TOOLS. ONE GROOMING SESSION.</h2>
+    <p class="four-tools__subtitle">QuickScan Pro™ combines visibility, precision, trimming, and smoothing in one grooming tool.</p>
+
+    <div class="four-tools__grid">
+      {%- for i in (1..4) -%}
+        {%- case i -%}
+          {%- when 1 -%}
+            {%- assign m = media_1 -%}{%- assign t = 'TRANSILLUMINATION LED' -%}{%- assign d = 'Reveals the quick area before every cut.' -%}
+          {%- when 2 -%}
+            {%- assign m = media_2 -%}{%- assign t = '5X MAGNIFIER' -%}{%- assign d = 'Enlarges the cut zone for better precision.' -%}
+          {%- when 3 -%}
+            {%- assign m = media_3 -%}{%- assign t = 'HARDENED STEEL BLADE' -%}{%- assign d = 'Creates one clean cut without crushing.' -%}
+          {%- when 4 -%}
+            {%- assign m = media_4 -%}{%- assign t = 'ELECTRIC GRINDER' -%}{%- assign d = 'Smooths sharp edges with gradual finishing.' -%}
+        {%- endcase -%}
+        <div class="four-tools__item">
+          <div class="four-tools__media">
+            {%- assign m_lower = m | downcase | split: '?' | first -%}
+            {%- if m_lower contains '.mp4' or m_lower contains '.mov' or m_lower contains '.webm' -%}
+              <video src="{{ m }}" autoplay muted loop playsinline preload="metadata"></video>
+            {%- else -%}
+              <img src="{{ m }}" alt="{{ t | capitalize }}" loading="lazy" width="600" height="800">
+            {%- endif -%}
+          </div>
+          <h3 class="four-tools__name">{{ t }}</h3>
+          <p class="four-tools__desc">{{ d }}</p>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<style>
+  body { overflow-x: clip; }
+  .four-tools {
+    position: relative;
+    width: 100%;
+    max-width: none;
+    padding: 56px 24px;
+    box-sizing: border-box;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+  }
+  .four-tools__inner {
+    max-width: 1150px;
+    margin: 0 auto;
+  }
+  .four-tools__title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 54px;
+    line-height: 1.15;
+    letter-spacing: .3px;
+    color: #1f1f1f;
+    margin: 0 0 14px;
+  }
+  .four-tools__subtitle {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.5;
+    color: #555;
+    margin: 0 0 32px;
+  }
+  .four-tools__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+  .four-tools__media {
+    aspect-ratio: 3 / 4;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #eee;
+  }
+  .four-tools__media img,
+  .four-tools__media video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .four-tools__name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 26px;
+    line-height: 1.25;
+    letter-spacing: .3px;
+    color: #1f1f1f;
+    margin: 18px 0 6px;
+  }
+  .four-tools__desc {
+    font-size: 16px;
+    line-height: 1.5;
+    color: #666;
+    max-width: 220px;
+    margin: 0 auto;
+  }
+  @media (max-width: 989px) {
+    .four-tools__title { font-size: 44px; }
+    .four-tools__subtitle { font-size: 16px; }
+    .four-tools__grid { grid-template-columns: repeat(2, 1fr); gap: 24px 14px; }
+  }
+  @media (max-width: 749px) {
+    .four-tools { padding: 40px 16px; }
+    .four-tools__title { font-size: 34px; }
+    .four-tools__subtitle { font-size: 15px; margin-bottom: 22px; }
+    .four-tools__grid { gap: 22px 12px; }
+    .four-tools__name { font-size: 20px; margin-top: 12px; }
+    .four-tools__desc { font-size: 14px; }
+  }
+</style>
+
+<script>
+  (function () {
+    function fit() {
+      var vw = document.documentElement.clientWidth;
+      document.querySelectorAll('.four-tools').forEach(function (el) {
+        el.style.width = vw + 'px';
+        el.style.marginLeft = '0px';
+        // Lặp vài lần để căn đúng giữa màn hình dù khung cha của theme lệch hay co giãn
+        for (var i = 0; i < 3; i++) {
+          var left = el.getBoundingClientRect().left;
+          if (Math.abs(left) < 0.5) break;
+          el.style.marginLeft = (parseFloat(el.style.marginLeft) - left) + 'px';
+        }
+      });
+    }
+    fit();
+    window.addEventListener('load', fit);
+    window.addEventListener('resize', fit);
+    document.addEventListener('shopify:section:load', fit);
+  })();
+</script>

@@ -1,0 +1,128 @@
+{%- comment -%}
+  Thanh chữ chạy. Sửa chữ trong 4 dòng <span class="mq-bar__text"> bên dưới.
+  Đổi tốc độ: sửa --mq-speed (số giây chạy hết 1 vòng, số lớn = chạy chậm hơn).
+{%- endcomment -%}
+{%- capture mq_group -%}
+  <div class="mq-bar__group">
+    <span class="mq-bar__item">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+      <span class="mq-bar__text">700+ 5-Star Reviews</span>
+    </span>
+    <span class="mq-bar__dot" aria-hidden="true"></span>
+    <span class="mq-bar__item">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+      <span class="mq-bar__text">30 Day Guarantee</span>
+    </span>
+    <span class="mq-bar__dot" aria-hidden="true"></span>
+    <span class="mq-bar__item">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>
+      <span class="mq-bar__text">Fast Worldwide Shipping</span>
+    </span>
+    <span class="mq-bar__dot" aria-hidden="true"></span>
+    <span class="mq-bar__item">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+      <span class="mq-bar__text">All Nail Colors</span>
+    </span>
+    <span class="mq-bar__dot" aria-hidden="true"></span>
+  </div>
+{%- endcapture -%}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
+
+<div class="mq-bar" style="--mq-speed: 40s;">
+  <div class="mq-bar__track">
+    {%- comment -%} Nửa đầu và nửa sau giống hệt nhau để chạy nối tiếp liền mạch {%- endcomment -%}
+    <div class="mq-bar__half">{{ mq_group }}{{ mq_group }}{{ mq_group }}</div>
+    <div class="mq-bar__half" aria-hidden="true">{{ mq_group }}{{ mq_group }}{{ mq_group }}</div>
+  </div>
+</div>
+
+<style>
+  body { overflow-x: clip; }
+  .mq-bar {
+    position: relative;
+    width: 100%;
+    max-width: none;
+    overflow: hidden;
+    background: #7ee2c5;
+    color: #1f1f1f;
+    font-family: 'Inter', sans-serif;
+    box-sizing: border-box;
+  }
+  .mq-bar__track {
+    display: flex;
+    width: max-content;
+    animation: mq-bar-scroll var(--mq-speed, 40s) linear infinite;
+  }
+  .mq-bar:hover .mq-bar__track { animation-play-state: paused; }
+  .mq-bar__half,
+  .mq-bar__group {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .mq-bar__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 0;
+    white-space: nowrap;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+  .mq-bar__item svg {
+    width: 20px;
+    height: 20px;
+    flex: 0 0 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .mq-bar__dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+    margin: 0 44px;
+    flex-shrink: 0;
+  }
+  @keyframes mq-bar-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @media (max-width: 749px) {
+    .mq-bar__item { font-size: 13px; gap: 8px; padding: 10px 0; }
+    .mq-bar__item svg { width: 17px; height: 17px; flex-basis: 17px; }
+    .mq-bar__dot { margin: 0 26px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mq-bar__track { animation-duration: calc(var(--mq-speed, 40s) * 3); }
+  }
+</style>
+
+<script>
+  (function () {
+    function fit() {
+      var vw = document.documentElement.clientWidth;
+      document.querySelectorAll('.mq-bar').forEach(function (el) {
+        el.style.width = vw + 'px';
+        el.style.marginLeft = '0px';
+        // Lặp vài lần để căn đúng giữa màn hình dù khung cha của theme lệch hay co giãn
+        for (var i = 0; i < 3; i++) {
+          var left = el.getBoundingClientRect().left;
+          if (Math.abs(left) < 0.5) break;
+          el.style.marginLeft = (parseFloat(el.style.marginLeft) - left) + 'px';
+        }
+      });
+    }
+    fit();
+    window.addEventListener('load', fit);
+    window.addEventListener('resize', fit);
+    document.addEventListener('shopify:section:load', fit);
+  })();
+</script>

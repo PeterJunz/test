@@ -1,0 +1,168 @@
+{%- comment -%}
+  Dán link 3 ảnh (Shopify Admin → Content → Files → copy link) vào 3 dòng dưới.
+  Nếu ảnh của bạn ĐÃ có sẵn huy hiệu tròn màu đỏ, đổi show_badge thành false.
+{%- endcomment -%}
+{%- assign img_1 = 'https://cdn.shopify.com/YOUR-IMAGE-1.jpg' -%}
+{%- assign img_2 = 'https://cdn.shopify.com/YOUR-IMAGE-2.jpg' -%}
+{%- assign img_3 = 'https://cdn.shopify.com/YOUR-IMAGE-3.jpg' -%}
+{%- assign show_badge = true -%}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&family=Inter:wght@600;800&display=swap" rel="stylesheet">
+
+<section class="nail-margin">
+  <div class="nail-margin__inner">
+    <h2 class="nail-margin__title">ONE MILLIMETER.<br>THAT'S THE MARGIN.</h2>
+    <p class="nail-margin__lead">The quick sits closer to the tip than most owners realize. On dark nails, it's completely invisible.</p>
+    <p class="nail-margin__lead">Standard clippers give you nothing. So every cut is a guess, and one wrong guess hurts.</p>
+
+    <div class="nail-margin__grid">
+      <div class="nail-margin__card">
+        <div class="nail-margin__media">
+          <img src="{{ img_1 }}" alt="Owner holding a dog's paw with dark nails" loading="lazy" width="600" height="600">
+          {%- if show_badge -%}<span class="nail-margin__badge">NO CLEAR<br>GUIDE</span>{%- endif -%}
+        </div>
+        <p class="nail-margin__caption">The quick stays hidden, so every trim becomes a guess.</p>
+      </div>
+
+      <div class="nail-margin__card">
+        <div class="nail-margin__media">
+          <img src="{{ img_2 }}" alt="Standard clipper on a dog's nail" loading="lazy" width="600" height="600">
+          {%- if show_badge -%}<span class="nail-margin__badge">ONE-CUT<br>RISK</span>{%- endif -%}
+        </div>
+        <p class="nail-margin__caption">One wrong cut can hit the sensitive part of the nail.</p>
+      </div>
+
+      <div class="nail-margin__card">
+        <div class="nail-margin__media">
+          <img src="{{ img_3 }}" alt="Nervous dog giving its paw for a nail trim" loading="lazy" width="600" height="600">
+          {%- if show_badge -%}<span class="nail-margin__badge">TRIM<br>FEAR</span>{%- endif -%}
+        </div>
+        <p class="nail-margin__caption">After one painful trim, pets remember the fear.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  body { overflow-x: clip; }
+  .nail-margin {
+    position: relative;
+    width: 100%;
+    max-width: none;
+    padding: 56px 24px;
+    box-sizing: border-box;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+  }
+  .nail-margin__inner {
+    max-width: 1150px;
+    margin: 0 auto;
+  }
+  .nail-margin__title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 60px;
+    line-height: 1.15;
+    letter-spacing: .5px;
+    color: #1f1f1f;
+    margin: 0 0 18px;
+  }
+  .nail-margin__lead {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.5;
+    color: #333;
+    max-width: 900px;
+    margin: 0 auto 18px;
+  }
+  .nail-margin__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-top: 32px;
+  }
+  .nail-margin__media {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #eee;
+    container-type: inline-size;
+  }
+  .nail-margin__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .nail-margin__badge {
+    position: absolute;
+    right: 4%;
+    bottom: 8%;
+    width: 30%;
+    aspect-ratio: 1;
+    box-sizing: border-box;
+    padding: 0 3%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%, #c9343f, #a3202b);
+    box-shadow: inset 0 0 0 3px #a3202b, inset 0 0 0 5px rgba(255,255,255,.85), 0 2px 6px rgba(0,0,0,.25);
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 14px;
+    font-size: 4.2cqw;
+    line-height: 1.15;
+    letter-spacing: 0;
+    text-transform: none;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transform: rotate(-8deg);
+  }
+  .nail-margin__caption {
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: #1f1f1f;
+    max-width: 300px;
+    margin: 16px auto 0;
+  }
+  @media (max-width: 989px) {
+    .nail-margin__title { font-size: 48px; }
+    .nail-margin__lead { font-size: 16px; }
+    .nail-margin__caption { font-size: 15px; }
+  }
+  @media (max-width: 749px) {
+    .nail-margin { padding: 40px 16px; }
+    .nail-margin__title { font-size: 38px; }
+    .nail-margin__lead { font-size: 15px; margin-bottom: 14px; }
+    .nail-margin__grid { grid-template-columns: 1fr; gap: 28px; max-width: 480px; margin: 24px auto 0; }
+    .nail-margin__caption { font-size: 16px; }
+  }
+</style>
+
+<script>
+  (function () {
+    function fit() {
+      var vw = document.documentElement.clientWidth;
+      document.querySelectorAll('.nail-margin').forEach(function (el) {
+        el.style.width = vw + 'px';
+        el.style.marginLeft = '0px';
+        // Lặp vài lần để căn đúng giữa màn hình dù khung cha của theme lệch hay co giãn
+        for (var i = 0; i < 3; i++) {
+          var left = el.getBoundingClientRect().left;
+          if (Math.abs(left) < 0.5) break;
+          el.style.marginLeft = (parseFloat(el.style.marginLeft) - left) + 'px';
+        }
+      });
+    }
+    fit();
+    window.addEventListener('load', fit);
+    window.addEventListener('resize', fit);
+    document.addEventListener('shopify:section:load', fit);
+  })();
+</script>

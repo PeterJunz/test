@@ -1,0 +1,153 @@
+{%- comment -%}
+  Dán link video (.mp4) HOẶC link ảnh vào 2 dòng dưới (Shopify Admin → Content → Files → copy link).
+  Có video thì video được ưu tiên; để trống video_url ('') nếu chỉ dùng ảnh.
+{%- endcomment -%}
+{%- assign video_url = 'https://cdn.shopify.com/YOUR-VIDEO.mp4' -%}
+{%- assign image_url = 'https://cdn.shopify.com/YOUR-IMAGE.jpg' -%}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<section class="vasc">
+  <div class="vasc__inner">
+    <div class="vasc__text">
+      <h2 class="vasc__title">Not A Light.<br>A Vascular Detection System.</h2>
+      <p class="vasc__lead">Focused LED light passes through the keratin nail matrix. Hemoglobin in the quick absorbs light differently than dead nail tissue — creating a visible boundary.</p>
+
+      <div class="vasc__card">
+        <div class="vasc__item">
+          <h3 class="vasc__item-title">QuickScan Transillumination™</h3>
+          <p class="vasc__item-desc">You see where safe ends before you cut.</p>
+        </div>
+        <div class="vasc__item">
+          <h3 class="vasc__item-title">Medical-Inspired Visibility</h3>
+          <p class="vasc__item-desc">The same optical principle used in medical vein detection. Now in a pet nail clipper.</p>
+        </div>
+        <div class="vasc__item">
+          <h3 class="vasc__item-title">5X Optical Magnifier</h3>
+          <p class="vasc__item-desc">Enlarges the cutting zone so your decision is precise, not panicked.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="vasc__media">
+      {%- if video_url != blank -%}
+        <video src="{{ video_url }}" {% if image_url != blank %}poster="{{ image_url }}"{% endif %} autoplay muted loop playsinline preload="metadata"></video>
+      {%- else -%}
+        <img src="{{ image_url }}" alt="LED clipper lighting up the quick of a cat's nail" loading="lazy" width="800" height="800">
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+<style>
+  body { overflow-x: clip; }
+  .vasc {
+    position: relative;
+    width: 100%;
+    max-width: none;
+    background: #f6fdf9;
+    padding: 56px 24px;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+    color: #1f1f1f;
+  }
+  .vasc__inner {
+    max-width: 1150px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+  .vasc__title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 58px;
+    line-height: 1.2;
+    text-align: center;
+    color: #1a1a1a;
+    margin: 0 0 22px;
+  }
+  .vasc__lead {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.5;
+    text-align: center;
+    color: #222;
+    max-width: 480px;
+    margin: 0 auto 32px;
+  }
+  .vasc__card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 8px 24px;
+  }
+  .vasc__item { padding: 18px 0; }
+  .vasc__item-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 21px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: #1a1a1a;
+    margin: 0 0 8px;
+  }
+  .vasc__item-desc {
+    font-size: 16px;
+    line-height: 1.7;
+    color: #555;
+    margin: 0;
+  }
+  .vasc__media {
+    aspect-ratio: 1 / 1;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #e6e6e6;
+  }
+  .vasc__media video,
+  .vasc__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  @media (max-width: 989px) {
+    .vasc__inner { gap: 32px; }
+    .vasc__title { font-size: 46px; }
+    .vasc__item-title { font-size: 19px; }
+  }
+  @media (max-width: 749px) {
+    .vasc { padding: 40px 16px; }
+    .vasc__inner { grid-template-columns: 1fr; gap: 28px; }
+    .vasc__title { font-size: 38px; }
+    .vasc__lead { font-size: 15px; margin-bottom: 24px; }
+    .vasc__card { padding: 4px 18px; }
+    .vasc__item { padding: 14px 0; }
+    .vasc__item-title { font-size: 18px; }
+    .vasc__item-desc { font-size: 15px; }
+    .vasc__media { max-width: 480px; width: 100%; margin: 0 auto; }
+  }
+</style>
+
+<script>
+  (function () {
+    function fit() {
+      var vw = document.documentElement.clientWidth;
+      document.querySelectorAll('.vasc').forEach(function (el) {
+        el.style.width = vw + 'px';
+        el.style.marginLeft = '0px';
+        // Lặp vài lần để căn đúng giữa màn hình dù khung cha của theme lệch hay co giãn
+        for (var i = 0; i < 3; i++) {
+          var left = el.getBoundingClientRect().left;
+          if (Math.abs(left) < 0.5) break;
+          el.style.marginLeft = (parseFloat(el.style.marginLeft) - left) + 'px';
+        }
+      });
+    }
+    fit();
+    window.addEventListener('load', fit);
+    window.addEventListener('resize', fit);
+    document.addEventListener('shopify:section:load', fit);
+  })();
+</script>

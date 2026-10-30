@@ -1,0 +1,166 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<section class="faq-nail">
+  <div class="faq-nail__inner">
+    <h2 class="faq-nail__title">FREQUENTLY ASKED QUESTIONS</h2>
+    <p class="faq-nail__subtitle">Still unsure? Here’s what pet parents usually ask before trimming.</p>
+
+    <div class="faq-nail__list">
+      <details class="faq-nail__item">
+        <summary>Does this work on cats?</summary>
+        <div class="faq-nail__answer">Yes. It works on both cats and dogs. For cats, gently press the paw pad to extend the claw, check the nail with the LED light, then trim only the tip.</div>
+      </details>
+
+      <details class="faq-nail__item">
+        <summary>What about very dark nails?</summary>
+        <div class="faq-nail__answer">The LED light helps improve visibility on dark nails, but how clearly you can see the quick varies from nail to nail. When you're unsure, clip a little less and use the grinder to smooth the rest gradually.</div>
+      </details>
+
+      <details class="faq-nail__item">
+        <summary>Is it safe if I’m nervous about cutting the quick?</summary>
+        <div class="faq-nail__answer">It's designed to help you trim with more confidence: the light and magnifier let you check the nail before every cut. Take it slowly, trim small amounts at a time, and finish with the grinder instead of cutting close.</div>
+      </details>
+
+      <details class="faq-nail__item">
+        <summary>Can I use the grinder only?</summary>
+        <div class="faq-nail__answer">Yes. If your pet doesn't like clippers, you can use the grinder on its own to shorten and smooth nails little by little. It takes a bit longer but gives you more control.</div>
+      </details>
+
+      <details class="faq-nail__item">
+        <summary>Does it catch nail clippings?</summary>
+        <div class="faq-nail__answer">Yes. The built-in debris catcher collects clippings as you trim, so there's less mess to clean up. Empty it after each session.</div>
+      </details>
+
+      <details class="faq-nail__item">
+        <summary>Is the grinder loud?</summary>
+        <div class="faq-nail__answer">The grinder makes a gentle humming sound. If your pet is sensitive to noise, turn it on near them for a few seconds before you start so they get used to the sound.</div>
+      </details>
+
+      <details class="faq-nail__item">
+        <summary>Can I use it for large and small pets?</summary>
+        <div class="faq-nail__answer">Yes. It's suitable for small, medium and large dogs as well as cats. For very thick nails, trim small amounts and use the grinder to finish.</div>
+      </details>
+
+      <details class="faq-nail__item">
+        <summary>How do I charge it?</summary>
+        <div class="faq-nail__answer">Charge it with the included USB-C cable. No batteries needed.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<style>
+  body { overflow-x: clip; }
+  .faq-nail {
+    position: relative;
+    width: 100%;
+    max-width: none;
+    padding: 56px 24px;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+  }
+  .faq-nail__inner {
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  .faq-nail__title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 60px;
+    line-height: 1.1;
+    letter-spacing: .5px;
+    text-align: center;
+    color: #1f1f1f;
+    margin: 0 0 12px;
+  }
+  .faq-nail__subtitle {
+    font-size: 17px;
+    text-align: center;
+    color: #555;
+    margin: 0 0 44px;
+  }
+  .faq-nail__item {
+    margin: 0 0 12px;
+    border: 1px solid #edf2ef;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .faq-nail__item summary {
+    list-style: none;
+    cursor: pointer;
+    position: relative;
+    padding: 18px 56px 18px 22px;
+    background: #f7fdfa;
+    font-size: 19px;
+    font-weight: 700;
+    line-height: 1.4;
+    color: #1a1a1a;
+  }
+  .faq-nail__item summary::-webkit-details-marker { display: none; }
+  .faq-nail__item summary::after {
+    content: "";
+    position: absolute;
+    right: 24px;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    border-right: 1.6px solid #333;
+    border-bottom: 1.6px solid #333;
+    transform: translateY(-70%) rotate(45deg);
+    transition: transform .2s ease;
+  }
+  .faq-nail__item[open] summary::after {
+    transform: translateY(-30%) rotate(-135deg);
+  }
+  .faq-nail__item[open] summary { border-bottom: 1px solid #edf2ef; }
+  .faq-nail__answer {
+    padding: 16px 22px 18px;
+    font-size: 16px;
+    line-height: 1.75;
+    color: #555;
+  }
+  @media (max-width: 749px) {
+    .faq-nail { padding: 40px 16px; }
+    .faq-nail__title { font-size: 38px; }
+    .faq-nail__subtitle { font-size: 15px; margin-bottom: 28px; }
+    .faq-nail__item summary { font-size: 16px; padding: 16px 46px 16px 16px; }
+    .faq-nail__item summary::after { right: 18px; }
+    .faq-nail__answer { font-size: 15px; padding: 14px 16px 16px; }
+  }
+</style>
+
+<script>
+  (function () {
+    // Mở một câu thì tự đóng các câu khác
+    document.querySelectorAll('.faq-nail__list').forEach(function (list) {
+      if (list.dataset.bound) return;
+      list.dataset.bound = '1';
+      list.querySelectorAll('details').forEach(function (d) {
+        d.addEventListener('toggle', function () {
+          if (!d.open) return;
+          list.querySelectorAll('details[open]').forEach(function (o) { if (o !== d) o.open = false; });
+        });
+      });
+    });
+
+    function fit() {
+      var vw = document.documentElement.clientWidth;
+      document.querySelectorAll('.faq-nail').forEach(function (el) {
+        el.style.width = vw + 'px';
+        el.style.marginLeft = '0px';
+        // Lặp vài lần để căn đúng giữa màn hình dù khung cha của theme lệch hay co giãn
+        for (var i = 0; i < 3; i++) {
+          var left = el.getBoundingClientRect().left;
+          if (Math.abs(left) < 0.5) break;
+          el.style.marginLeft = (parseFloat(el.style.marginLeft) - left) + 'px';
+        }
+      });
+    }
+    fit();
+    window.addEventListener('load', fit);
+    window.addEventListener('resize', fit);
+    document.addEventListener('shopify:section:load', fit);
+  })();
+</script>

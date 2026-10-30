@@ -1,0 +1,47 @@
+<div class="qs-rating-block">
+  <p class="qs-rating-block__text">
+    Medical-grade transillumination + 5x magnification + precision grinder. Built for pet owners who are done guessing.
+  </p>
+  <div class="qs-rating-block__rating">
+    <span class="qs-rating-block__stars" aria-label="5 out of 5 stars">
+      {%- for i in (1..5) -%}
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+          <path fill="#F5A623" d="M12 2l2.9 6.9 7.1.6-5.4 4.7 1.6 7.3L12 17.8 5.8 21.5l1.6-7.3L2 9.5l7.1-.6z"/>
+        </svg>
+      {%- endfor -%}
+    </span>
+    <span class="qs-rating-block__count">1,200+ Highly rated by pet owners</span>
+  </div>
+</div>
+
+<style>
+  .qs-rating-block {
+    font-family: inherit;
+    margin: 0 0 16px;
+  }
+  .qs-rating-block__text {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.5;
+    color: #3a3a3a;
+    margin: 0 0 6px;
+  }
+  .qs-rating-block__rating {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .qs-rating-block__stars {
+    display: inline-flex;
+    gap: 2px;
+  }
+  .qs-rating-block__count {
+    font-size: 14px;
+    color: #3a3a3a;
+  }
+  @media (max-width: 749px) {
+    .qs-rating-block__text { font-size: 15px; }
+    .qs-rating-block__count { font-size: 13px; }
+  }
+</style>

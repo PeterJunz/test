@@ -1,0 +1,164 @@
+{%- comment -%}
+  Dán link ảnh vào dòng dưới (Shopify Admin → Content → Files → copy link).
+{%- endcomment -%}
+{%- assign image_url = 'https://cdn.shopify.com/YOUR-LIFESTYLE-IMAGE.jpg' -%}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<section class="who-for">
+  <div class="who-for__inner">
+    <div class="who-for__media">
+      <img src="{{ image_url }}" alt="Owner trimming a dog's nails at home with a cat nearby" loading="lazy" width="750" height="1000">
+    </div>
+
+    <div class="who-for__text">
+      <p class="who-for__eyebrow">WHO IT’S FOR</p>
+      <h2 class="who-for__title">BUILT FOR THIS EXACT MOMENT.</h2>
+      <p class="who-for__lead">If nail trims make you nervous, QuickScan Pro™ helps you slow down, see more clearly, and trim with more control.</p>
+      <p class="who-for__label">Best For</p>
+
+      <div class="who-for__item">
+        <h3 class="who-for__item-title">Nervous Pets</h3>
+        <p class="who-for__item-desc">Helps make trimming feel slower, calmer, and more controlled.</p>
+      </div>
+      <div class="who-for__item">
+        <h3 class="who-for__item-title">Light or Dark Nails</h3>
+        <p class="who-for__item-desc">Designed to improve visibility before each trim.</p>
+      </div>
+      <div class="who-for__item">
+        <h3 class="who-for__item-title">Dogs &amp; Cats</h3>
+        <p class="who-for__item-desc">Made for careful nail care on both dogs and cats.</p>
+      </div>
+      <div class="who-for__item">
+        <h3 class="who-for__item-title">At-Home Grooming</h3>
+        <p class="who-for__item-desc">A simpler way to maintain nails between grooming visits.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  body { overflow-x: clip; }
+  .who-for {
+    position: relative;
+    width: 100%;
+    max-width: none;
+    background: #f6fdf9;
+    padding: 56px 24px;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+    color: #1f1f1f;
+  }
+  .who-for__inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 72px;
+    align-items: center;
+  }
+  .who-for__media {
+    aspect-ratio: 3 / 4;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #e6ece9;
+  }
+  .who-for__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .who-for__eyebrow {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: .5px;
+    color: #3a8a72;
+    margin: 0 0 14px;
+  }
+  .who-for__title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 52px;
+    line-height: 1.25;
+    letter-spacing: .3px;
+    color: #14141f;
+    margin: 0 0 18px;
+  }
+  .who-for__lead {
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: #333;
+    margin: 0 0 18px;
+  }
+  .who-for__label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #707070;
+    margin: 0 0 18px;
+  }
+  .who-for__item {
+    padding: 0 0 18px;
+    margin: 0 0 18px;
+    border-bottom: 1px solid #e3e8e5;
+    max-width: 420px;
+  }
+  .who-for__item:last-child {
+    border-bottom: 0;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  .who-for__item-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 19px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0 0 6px;
+  }
+  .who-for__item-desc {
+    font-size: 16px;
+    line-height: 1.5;
+    color: #444;
+    margin: 0;
+  }
+  @media (max-width: 989px) {
+    .who-for__inner { gap: 40px; }
+    .who-for__title { font-size: 42px; }
+    .who-for__lead { font-size: 16px; }
+  }
+  @media (max-width: 749px) {
+    .who-for { padding: 40px 16px; }
+    .who-for__inner { grid-template-columns: 1fr; gap: 28px; }
+    .who-for__media { max-width: 480px; width: 100%; margin: 0 auto; }
+    .who-for__title { font-size: 36px; }
+    .who-for__lead { font-size: 15px; }
+    .who-for__item { max-width: none; }
+    .who-for__item-title { font-size: 17px; }
+    .who-for__item-desc { font-size: 15px; }
+  }
+</style>
+
+<script>
+  (function () {
+    function fit() {
+      var vw = document.documentElement.clientWidth;
+      document.querySelectorAll('.who-for').forEach(function (el) {
+        el.style.width = vw + 'px';
+        el.style.marginLeft = '0px';
+        // Lặp vài lần để căn đúng giữa màn hình dù khung cha của theme lệch hay co giãn
+        for (var i = 0; i < 3; i++) {
+          var left = el.getBoundingClientRect().left;
+          if (Math.abs(left) < 0.5) break;
+          el.style.marginLeft = (parseFloat(el.style.marginLeft) - left) + 'px';
+        }
+      });
+    }
+    fit();
+    window.addEventListener('load', fit);
+    window.addEventListener('resize', fit);
+    document.addEventListener('shopify:section:load', fit);
+  })();
+</script>
